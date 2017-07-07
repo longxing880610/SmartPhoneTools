@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. ZhangLong
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backimg_main"
+    android:orientation="vertical"
+    android:id="@+id/linearLayout1"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:visibility="visible"
+    android:weightSum="1"
+    tools:context=".MainActivity">
+
+
+    <EditText
+        android:id="@+id/data_edt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType=""
+        android:text="张龙"
+        android:textColor="@android:color/holo_orange_light" />
+
+    <ScrollView
+        android:id="@+id/ScrollLog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="false"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/data_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="hello_world11"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="visible" />
+
+    </ScrollView>
+</LinearLayout>
