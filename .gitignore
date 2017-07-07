@@ -2,3 +2,4 @@ build/
 app/libs/
 .gradle/4.0/
 .gradle/buildOutputCleanup/
+.idea/workspace.xml
