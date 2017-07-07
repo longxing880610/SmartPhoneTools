@@ -1,2 +1,2 @@
 # SmartPhoneTools
-smart phone tools, clude hce, sd file manage
+smart phone tools, include hce, sd file manage

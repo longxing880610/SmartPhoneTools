@@ -205,6 +205,6 @@ public class CardService extends HostApduService {
      */
     public void DisplayLog(String msg)
     {
-        mUiTabLog.dispalyLog(msg);
+        mUiTabLog.displayLog(msg);
     }
 }
