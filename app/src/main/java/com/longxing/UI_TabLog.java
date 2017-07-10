@@ -37,17 +37,15 @@ public class UI_TabLog {
     private static UI_TabLog sUiTablog;
 
 
-    private UI_TabLog(){
+    private UI_TabLog() {
 
     }
 
     /**
-     *
      * @return
      */
-    public static UI_TabLog getInstance(){
-        if (sUiTablog == null)
-        {
+    public static UI_TabLog getInstance() {
+        if (sUiTablog == null) {
             sUiTablog = new UI_TabLog();
             sUiTablog.mMainActivity = MainActivity.GetInstance();
         }
@@ -56,11 +54,10 @@ public class UI_TabLog {
 
     public void initUI(View rootView) {
 
-        if (mIsInited)
-        {   // execute only once
+        if (mIsInited) {   // execute only once
             return;
         }
-        mIsInited = true;
+        //mIsInited = true;
         //View rootView = mMainActivity.GetLayerById(R.layout.tab_log);
 
         mScrollViewLog = (ScrollView) rootView.findViewById(R.id.ScrollLog);
@@ -91,7 +88,7 @@ public class UI_TabLog {
         Log.i(TAG, "AccountStorage.GetAccount(mMainActivity): " + account);
         // add listen to edit view
         EditText dataEdit = (EditText) rootView.findViewById(R.id.data_edt);
-        //dataEdit.setText(account);
+        dataEdit.setText(account);
         dataEdit.addTextChangedListener(new UI_TabLog.AccountUpdater());
 
 
@@ -99,23 +96,19 @@ public class UI_TabLog {
     }
 
     /**
-     *
      * @param msg
      */
-    public void displayLog(String msg)
-    {
+    public void displayLog(String msg) {
         displayLog(msg, 1);
     }
+
     /**
-     *
      * @param msg
      * @param line
      */
-    public void displayLog(String msg, int line)
-    {
+    public void displayLog(String msg, int line) {
         StringBuilder strBuilder = new StringBuilder(msg);
-        for(int i=0; i<line; ++i)
-        {
+        for (int i = 0; i < line; ++i) {
             strBuilder.append("\r\n");
         }
         Message msgObj = new Message();
@@ -145,9 +138,15 @@ public class UI_TabLog {
             //byte[] adpu = {0x00,(byte)0xB0,(byte)0x84,0x00,0x00};
             //new CardService().processCommandApdu(adpu, null);
             String account = s.toString();
+            boolean isYaping = false;
             //
-            if (account.contains("雅平")) {
-                displayLog("I love " + account);
+            int index = account.indexOf("王雅平");
+            if (index < 0) {
+                index = account.indexOf("雅平");
+                isYaping = true;
+            }
+            if (index >= 0) {
+                displayLog("I love " + (isYaping ? "王" : "") + account.substring(index));
             } else {
                 displayLog("No no no " + account);
             }

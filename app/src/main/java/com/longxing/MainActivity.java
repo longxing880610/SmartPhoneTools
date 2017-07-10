@@ -151,8 +151,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static MainActivity GetInstance()
-    {
+    public static MainActivity GetInstance() {
         return sMainActivity;
     }
 

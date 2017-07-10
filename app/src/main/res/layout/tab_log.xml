@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2017. ZhangLong
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backimg_main"
     android:orientation="vertical"
-    android:id="@+id/linearLayout1"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -22,8 +21,10 @@
         android:id="@+id/data_edt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/textview_border"
         android:inputType=""
-        android:text="张龙"
+        android:labelFor="@+id/data_edt"
+        android:text="@string/defaultName"
         android:textColor="@android:color/holo_orange_light" />
 
     <ScrollView
@@ -40,7 +41,10 @@
             android:layout_height="wrap_content"
             android:text="hello_world11"
             android:textColor="@android:color/holo_red_dark"
-            android:visibility="visible" />
+            android:textIsSelectable="true"
+            android:textStyle="bold"
+            android:visibility="visible"
+            tools:ignore="HardcodedText" />
 
     </ScrollView>
 </LinearLayout>
