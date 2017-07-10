@@ -1,4 +1,4 @@
-package com.longxing;
+package com.longxing.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.longxing.R;
 
 
 public class MainActivity extends AppCompatActivity {

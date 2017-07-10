@@ -1,4 +1,4 @@
-package com.longxing;
+package com.longxing.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.longxing.R;
 import com.longxing.cardemulation.AccountStorage;
 
 /**
@@ -90,7 +91,7 @@ public class UI_TabLog {
         dataEdit.addTextChangedListener(new UI_TabLog.AccountUpdater());
 
 
-        displayLog("初始化完成" + account);
+        displayLog("日志面板初始化完成:" + account);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.longxing;
+package com.longxing.ui;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.longxing.R;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -53,6 +55,9 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             rootView = inflater.inflate(resId, container, false);
             if (resId == R.layout.tab_log) {
                 UI_TabLog.getInstance().initUI(rootView);
+            }
+            if (resId == R.layout.tab_sd_card) {
+                UI_TabSdFiles.getInstance().initUI(rootView);
             }
             mViewPages[position] = rootView;
         }
