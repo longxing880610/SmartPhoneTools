@@ -1,32 +1,25 @@
 package com.longxing;
 
-import android.content.Context;
-import android.os.Handler;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MyLog/MainActivity";
+    //private static final String TAG = "MyLog/MainActivity";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -40,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    //private ViewPager mViewPager;
 
     private static MainActivity sMainActivity;
-    private UI_TabLog mUiTabLog;
+    //private UI_TabLog mUiTabLog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -75,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // init tabPage
-        mUiTabLog = UI_TabLog.getInstance();
+        //mUiTabLog = UI_TabLog.getInstance();
         //mUiTabLog.initUI();
 
     }
@@ -85,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 点击程序版本按钮
      *
-     * @param view
+     * @param view the view
      */
     public void onBtnVersionClick(View view) {
         Toast.makeText(MainActivity.this, this.getString(R.string.app_version), Toast.LENGTH_SHORT).show();
@@ -145,9 +138,7 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             int tabId = getArguments().getInt(ARG_SECTION_NUMBER);
 
-            View rootView = sMainActivity.mSectionsPagerAdapter.getPageView(tabId, inflater, container, savedInstanceState);
-
-            return rootView;
+            return sMainActivity.mSectionsPagerAdapter.getPageView(tabId, inflater, container);
         }
     }
 

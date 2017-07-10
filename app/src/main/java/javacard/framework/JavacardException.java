@@ -14,16 +14,15 @@ public class JavacardException extends Exception {
     public short m_reasonVal = 0;
     private String m_reasonStr = null;
 
-    public String GetReason()
-    {
+    public String GetReason() {
         return m_reasonStr;
     }
+
     /**
-     *
      * @param reasonVal
      * @param reasonStr
      */
-    public JavacardException(short reasonVal, String reasonStr){
+    public JavacardException(short reasonVal, String reasonStr) {
         m_reasonVal = reasonVal;
         m_reasonStr = reasonStr;
     }

@@ -24,8 +24,6 @@ import android.os.Bundle;
 import com.longxing.UI_TabLog;
 import com.longxing.com.longxing.log.LogToFile;
 
-import java.util.Arrays;
-
 import javacard.framework.APDU;
 import javacard.framework.ISO7816;
 import javacard.framework.ISOException;
@@ -51,16 +49,6 @@ import javacard.framework.Util;
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class CardService extends HostApduService {
     private static final String TAG = "MyLog/CardService";
-    // AID for our loyalty card service.
-    private static final String SAMPLE_LOYALTY_CARD_AID = "F123422222";
-    // ISO-DEP command HEADER for selecting an AID.
-    // Format: [Class | Instruction | Parameter 1 | Parameter 2]
-    private static final String SELECT_APDU_HEADER = "00A40400";
-    // "OK" status word sent in response to SELECT AID command (0x9000)
-    private static final byte[] SELECT_OK_SW = HexStringToByteArray("1000");
-    // "UNKNOWN" status word sent in response to invalid APDU command (0x0000)
-    private static final byte[] UNKNOWN_CMD_SW = HexStringToByteArray("0000");
-    private static final byte[] SELECT_APDU = BuildSelectApdu(SAMPLE_LOYALTY_CARD_AID);
 
     private static final byte[] AID_Name = {0x10, (byte) 0xD1, (byte) 0x56, 0x00, 0x01, 0x01, (byte) 0x80, 0x08, (byte) 0x80, 0x16, (byte) 0x81, 0x68, 0x01, 0x00, 0x00, 0x00, 0x03};
 
@@ -113,28 +101,15 @@ public class CardService extends HostApduService {
             apdu.sendSw1Sw2(e.GetReason());
         } catch (Exception e) {
             // LogToFile.i("processCommandApdu ISOException", ""+e.GetReason());
-            apdu.sendSw1Sw2((short)0x0000);
+            apdu.sendSw1Sw2((short) 0x0000);
         }
         byte[] resp = apdu.getResponseBuffer();
         LogToFile.i(TAG, "Resp APDU: " + ByteArrayToHexString(resp));
-       // Main2Activity.sb.append("Resp APDU: " + ByteArrayToHexString(resp) + "\n");
+        // Main2Activity.sb.append("Resp APDU: " + ByteArrayToHexString(resp) + "\n");
         //Main2Activity.dataHandler.sendEmptyMessage(1);
         DisplayLog("Resp APDU: " + ByteArrayToHexString(resp));
 
         return resp;
-    }
-
-    /**
-     * Build APDU for SELECT AID command. This command indicates which service a reader is
-     * interested in communicating with. See ISO 7816-4.
-     *
-     * @param aid Application ID (AID) to select
-     * @return APDU for SELECT AID command
-     */
-    public static byte[] BuildSelectApdu(String aid) {
-        // Format: [CLASS | INSTRUCTION | PARAMETER 1 | PARAMETER 2 | LENGTH | DATA]
-        return HexStringToByteArray(SELECT_APDU_HEADER + String.format("%02X",
-                aid.length() / 2) + aid);
     }
 
     /**
@@ -156,55 +131,9 @@ public class CardService extends HostApduService {
     }
 
     /**
-     * Utility method to convert a hexadecimal string to a byte string.
-     * <p/>
-     * <p>Behavior with input strings containing non-hexadecimal characters is undefined.
-     *
-     * @param s String containing hexadecimal characters to convert
-     * @return Byte array generated from input
-     * @throws IllegalArgumentException if input length is incorrect
+     * @param msg display message
      */
-    public static byte[] HexStringToByteArray(String s) throws IllegalArgumentException {
-        int len = s.length();
-        if (len % 2 == 1) {
-            throw new IllegalArgumentException("Hex string must have even number of characters");
-        }
-        byte[] data = new byte[len / 2]; // Allocate 1 byte per 2 hex characters
-        for (int i = 0; i < len; i += 2) {
-            // Convert each character into a integer (base-16), then bit-shift into place
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
-    }
-
-    /**
-     * Utility method to concatenate two byte arrays.
-     *
-     * @param first First array
-     * @param rest  Any remaining arrays
-     * @return Concatenated copy of input arrays
-     */
-    public static byte[] ConcatArrays(byte[] first, byte[]... rest) {
-        int totalLength = first.length;
-        for (byte[] array : rest) {
-            totalLength += array.length;
-        }
-        byte[] result = Arrays.copyOf(first, totalLength);
-        int offset = first.length;
-        for (byte[] array : rest) {
-            System.arraycopy(array, 0, result, offset, array.length);
-            offset += array.length;
-        }
-        return result;
-    }
-
-    /**
-     *
-     * @param msg
-     */
-    public void DisplayLog(String msg)
-    {
+    public void DisplayLog(String msg) {
         mUiTabLog.displayLog(msg);
     }
 }

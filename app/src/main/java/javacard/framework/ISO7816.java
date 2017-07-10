@@ -24,11 +24,11 @@ public class ISO7816 {
 
     ////////////////////////////////////////////////////////////
     // INS
-    public static final byte INS_SELECT = (byte)0xA4;
+    public static final byte INS_SELECT = (byte) 0xA4;
 
     ////////////////////////////////////////////////////////////
     // ISO
-    public static final short SW_NO_ERROR = (short)0x9000;
+    public static final short SW_NO_ERROR = (short) 0x9000;
     public static final short SW_FILE_NOT_FOUND = 0x6A82;
     public static final short SW_INCORRECT_P1P2 = 0x6A86;
     public static final short SW_INS_NOT_SUPPORTED = 0x6D00;

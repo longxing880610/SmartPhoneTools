@@ -1,11 +1,5 @@
 package com.longxing;
 
-/**
- * Created by yuchangnet on 2017/7/6.
- */
-
-import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,12 +11,12 @@ import android.view.ViewGroup;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
+class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     private View[] mViewPages = new View[3];
     private static final int[] mResIds = {R.layout.tab_log, R.layout.tab_sd_card, R.layout.tab_version};
 
-    public SectionsPagerAdapter(FragmentManager fm) {
+    SectionsPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -52,8 +46,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         return null;
     }
 
-    public View getPageView(int position, LayoutInflater inflater, ViewGroup container,
-                                  Bundle savedInstanceState) {
+    View getPageView(int position, LayoutInflater inflater, ViewGroup container) {
         View rootView = mViewPages[position];
         if (rootView == null) {
             int resId = mResIds[position];

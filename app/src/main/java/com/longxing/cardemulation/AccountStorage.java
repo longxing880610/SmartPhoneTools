@@ -25,10 +25,10 @@ import com.longxing.com.longxing.log.LogToFile;
 
 /**
  * Utility class for persisting account numbers to disk.
- *
+ * <p>
  * <p>The default SharedPreferences instance is used as the backing storage. Values are cached
  * in memory for performance.
- *
+ * <p>
  * <p>This class is thread-safe.
  */
 public class AccountStorage {
@@ -39,16 +39,16 @@ public class AccountStorage {
     private static final Object sAccountLock = new Object();
 
     /**
-     *
-     * @param c
-     * @param s
+     * @param c context
+     * @param s account
      */
     public static void SetAccount(Context c, String s) {
-        synchronized(sAccountLock) {
+        synchronized (sAccountLock) {
             LogToFile.i(TAG, "Setting account number: " + s);
             Log.i(TAG, "Setting account number: " + s);
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
-            prefs.edit().putString(PREF_ACCOUNT_NUMBER, s).commit();
+            SharedPreferences prefs;
+            prefs = PreferenceManager.getDefaultSharedPreferences(c);
+            prefs.edit().putString(PREF_ACCOUNT_NUMBER, s).apply();
             sAccount = s;
         }
     }
@@ -57,8 +57,7 @@ public class AccountStorage {
         synchronized (sAccountLock) {
             if (sAccount == null) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
-                String account = prefs.getString(PREF_ACCOUNT_NUMBER, DEFAULT_ACCOUNT_NUMBER);
-                sAccount = account;
+                sAccount = prefs.getString(PREF_ACCOUNT_NUMBER, DEFAULT_ACCOUNT_NUMBER);
             }
             return sAccount;
         }

@@ -1,7 +1,11 @@
 # SmartPhoneTools
 smart phone tools, include hce, sd file manage
 
-v1.0.6
+v1.0.7
+1. 去除一些代码的警告
+
+
+v1.0.6 20170710 12
 1. 修正姓名编辑框焦点问题
 
 

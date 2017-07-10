@@ -10,7 +10,7 @@ package javacard.framework;
 public class JCSystem {
     public static final short CLEAR_ON_DESELECT = 1;
 
-    public static byte[] makeTransientByteArray(short length, short clearOnEvent){
+    public static byte[] makeTransientByteArray(short length, short clearOnEvent) {
         return new byte[length];
     }
 }
