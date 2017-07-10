@@ -53,11 +53,14 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
         if (rootView == null) {
             int resId = mResIds[position];
             rootView = inflater.inflate(resId, container, false);
+            IUI_TabMain tab = null;
             if (resId == R.layout.tab_log) {
-                UI_TabLog.getInstance().initUI(rootView);
+                tab = UI_TabLog.getInstance();
+            } else if (resId == R.layout.tab_sd_card) {
+                tab = UI_TabSdFiles.getInstance();
             }
-            if (resId == R.layout.tab_sd_card) {
-                UI_TabSdFiles.getInstance().initUI(rootView);
+            if (tab != null) {  // has instance
+                tab.initUI(rootView);
             }
             mViewPages[position] = rootView;
         }

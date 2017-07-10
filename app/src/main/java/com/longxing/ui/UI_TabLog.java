@@ -20,7 +20,7 @@ import com.longxing.cardemulation.AccountStorage;
  * log show for the app
  */
 
-public class UI_TabLog {
+public class UI_TabLog implements IUI_TabMain {
     /**
      * tag for log
      */
@@ -53,7 +53,7 @@ public class UI_TabLog {
         return sUiTabLog;
     }
 
-    void initUI(View rootView) {
+    public @Override void initUI(View rootView) {
 
         //mIsInited = true;
         //View rootView = mMainActivity.GetLayerById(R.layout.tab_log);

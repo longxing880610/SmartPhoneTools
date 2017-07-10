@@ -8,7 +8,7 @@ import android.view.View;
  * show sd files
  */
 
-public class UI_TabSdFiles {
+public class UI_TabSdFiles implements IUI_TabMain{
     /**
      * tag for log
      */
@@ -39,7 +39,7 @@ public class UI_TabSdFiles {
         return sUiTabLog;
     }
 
-    void initUI(View rootView) {
+    public @Override void initUI(View rootView) {
 
 
         //final ScrollView scrollViewLog = (ScrollView) rootView.findViewById(R.id.ScrollLog);
