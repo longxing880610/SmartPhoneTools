@@ -75,6 +75,7 @@ public class UI_TabLog {
                         Bundle bundle = msg.getData();
                         mTextView.append(bundle.getString(cKeyLog));
                         mScrollViewLog.fullScroll(ScrollView.FOCUS_DOWN);
+                        mScrollViewLog.clearFocus();
                         //Log.i(TAG, "mEditViewHandle: " + mTextView.getText());
                     }
                     super.handleMessage(msg);
