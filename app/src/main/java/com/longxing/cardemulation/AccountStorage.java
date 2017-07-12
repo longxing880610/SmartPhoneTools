@@ -44,8 +44,8 @@ public class AccountStorage {
      */
     public static void SetAccount(Context c, String s) {
         synchronized (sAccountLock) {
-            LogToFile.i(TAG, "Setting account number: " + s);
-            Log.i(TAG, "Setting account number: " + s);
+            //LogToFile.i(TAG, "Setting account number: " + s);
+            //Log.i(TAG, "Setting account number: " + s);
             SharedPreferences prefs;
             prefs = PreferenceManager.getDefaultSharedPreferences(c);
             prefs.edit().putString(PREF_ACCOUNT_NUMBER, s).apply();

@@ -84,7 +84,7 @@ public class UI_TabLog implements IUI_TabMain {
 
         }
         String account = AccountStorage.GetAccount(mMainActivity);
-        Log.i(TAG, "AccountStorage.GetAccount(mMainActivity): " + account);
+        //Log.i(TAG, "AccountStorage.GetAccount(mMainActivity): " + account);
         // add listen to edit view
         EditText dataEdit = (EditText) rootView.findViewById(R.id.data_edt);
         dataEdit.setText(account);

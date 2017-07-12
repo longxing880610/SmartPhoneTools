@@ -1,28 +1,25 @@
 package com.longxing.ui;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,16 +29,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.longxing.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.longxing.R;
-
-import static android.Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS;
 import static android.Manifest.permission.READ_CONTACTS;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -50,6 +44,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    private static final String TAG = "MyLog/LoginActivity";
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -76,6 +71,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private static String sUserName = "";
+    private static String sPassword = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +106,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        // login automatic
+        //状态 判断
+        if (savedInstanceState != null) {
+            String username = savedInstanceState.getString("username");
+            String password = savedInstanceState.getString("password");
+            if (username != null) {
+                //Toast.makeText(LoginActivity.this, "恢复用户名", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onCreate:恢复用户名:" + username);
+                sUserName = username;
+            }
+            if (password != null) {
+                sPassword = password;
+            }
+        }
+        Log.d(TAG, "onCreate:自动登陆");
+        attemptLogin(sUserName, sPassword);
     }
 
     private void populateAutoComplete() {
@@ -198,13 +212,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    private void attemptLogin() {
+
+        // Store values at the time of the login attempt.
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+        attemptLogin(email, password);
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptLogin(String userName, String password) {
         if (mAuthTask != null) {
             return;
         }
@@ -213,9 +235,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        sUserName = userName;
+        sPassword = password;
 
         boolean cancel = false;
         View focusView = null;
@@ -228,7 +249,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(userName)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
@@ -246,7 +267,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(userName, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -257,13 +278,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return true;// password.length() > 4;
     }
 
     /**
      * Shows the progress UI and hides the login form.
      */
+    @SuppressLint("ObsoleteSdkInt")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -371,7 +392,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             try {
                 // Simulate network access.
-                Thread.sleep(200);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
             }
@@ -409,6 +430,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    //region app recover at any situation
+    /**
+     * 当某个activity变得“容易”被系统销毁时，该activity的onSaveInstanceState就会被执行，
+     * 除非该activity是被用户主动销毁的，例如当用户按BACK键的时候
+     * 一个原则：即当系统“未经你许可”时销毁了你的activity，则onSaveInstanceState会被系统调用
+     * 情景：
+     * 1. 当用户按下HOME键时
+     * 2. 长按HOME键，选择运行其他的程序时。
+     * 3. 按下电源按键（关闭屏幕显示）时。
+     * 4. 从activity A中启动一个新的activity时。
+     * 5. 屏幕方向切换时，例如从竖屏切换到横屏时。
+     * 以上情景触发该函数，并且开发者可以保存一些数据状态
+     */
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.d("HELLO", "HELLO：当Activity被销毁的时候，不是用户主动按back销毁，例如按了home键");
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("username", sUserName); //这里保存一个用户名
+        savedInstanceState.putString("password", sPassword);
+    }
+
+    /**
+     * onSaveInstanceState方法和onRestoreInstanceState方法“不一定”是成对的被调用的，
+     * onRestoreInstanceState被调用的前提是，
+     * activity A“确实”被系统销毁了，而如果仅仅是停留在有这种可能性的情况下，
+     * 则该方法不会被调用，例如，当正在显示activity A的时候，用户按下HOME键回到主界面，
+     * 然后用户紧接着又返回到activity A，这种情况下activity A一般不会因为内存的原因被系统销毁，
+     * 故activity A的onRestoreInstanceState方法不会被执行
+     */
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d("HELLO", "HELLO:如果应用进程被系统咔嚓，则再次打开应用的时候会进入");
     }
     //endregion
 }
