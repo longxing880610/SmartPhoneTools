@@ -1,11 +1,16 @@
 # SmartPhoneTools
 smart phone tools, include hce, sd file manage
 
-v1.0.7
+v1.0.8
+1.
+
+
+v1.0.7 20170712 15
 1. 去除一些代码的警告
 2. 增加SD文件管理的相关类
 3. 将界面的包改到com.longxing.ui包里面
 4. 增加tab类的接口
+5. 增加登陆界面
 
 
 v1.0.6 20170710 12
