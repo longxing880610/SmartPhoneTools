@@ -54,7 +54,9 @@ public class UI_TabLog implements IUI_TabMain {
         return sUiTabLog;
     }
 
-    public @Override void initUI(View rootView) {
+    public
+    @Override
+    void initUI(View rootView) {
 
         //mIsInited = true;
         //View rootView = mMainActivity.GetLayerById(R.layout.tab_log);
@@ -97,8 +99,8 @@ public class UI_TabLog implements IUI_TabMain {
     }
 
     @Override
-    public void processKeyDown(int keyCode, KeyEvent event) {
-
+    public boolean processKeyDown(int keyCode, KeyEvent event) {
+        return false;
     }
 
     /**

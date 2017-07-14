@@ -20,9 +20,12 @@ import android.widget.Toast;
 
 import com.longxing.R;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class MainActivity extends AppCompatActivity {
-   //TODO:增加音乐功能
+    //TODO:增加音乐功能
     private static final String TAG = "MyLog/MainActivity";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -37,10 +40,19 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    //private ViewPager mViewPager;
+    private ViewPager mViewPager;
 
     private static MainActivity sMainActivity;
     //private UI_TabLog mUiTabLog;
+
+    //region back key to exit application
+    /**
+     * count of back key, use to check if exit the application
+     */
+    private int mBackKeyCount = 0;
+
+    private Timer mTimer = null;
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -91,7 +103,36 @@ public class MainActivity extends AppCompatActivity {
     //endregion
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        int tabId = mViewPager.getCurrentItem();
+        Log.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
+        IUI_TabMain tab = mSectionsPagerAdapter.getPageInterface(tabId);
+        if (tab != null) {
+            if (tab.processKeyDown(keyCode, event)) {
+                return true;
+            }
+        }
+        // check the back key, delay to exit application
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            ++mBackKeyCount;
+            Log.d(TAG, "再按一次退出应用");
+            Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+            if (mTimer == null) {
+                mTimer = new Timer();
+                mTimer.schedule(new TimerTask() {
+                    public void run() {
+                        Log.d(TAG, "退出应用的定时器:"+mBackKeyCount);
+                        mBackKeyCount = 0;
+                        mTimer.cancel();
+                        mTimer = null;
+                    }
+                }, 5 * 1000, 5*1000);
+            }
+            if (mBackKeyCount < 2) {
+                return true;
+            }
+        }
+
         return super.onKeyDown(keyCode, event);
     }
 
@@ -116,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     /**
@@ -148,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             int tabId = getArguments().getInt(ARG_SECTION_NUMBER);
-            Log.d(TAG, "onCreateView page"+tabId);
+            //Log.d(TAG, "onCreateView_page:"+tabId);
             return sMainActivity.mSectionsPagerAdapter.getPageView(tabId, inflater, container);
         }
     }

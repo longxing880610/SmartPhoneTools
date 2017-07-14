@@ -18,8 +18,10 @@ public interface IUI_TabMain {
 
     /**
      * process key down event
-     * @param keyCode
-     * @param event
+     *
+     * @param keyCode code of key
+     * @param event   event of key down
+     * @return true is over, false will continue to process to parent
      */
-    void processKeyDown(int keyCode, KeyEvent event);
+    boolean processKeyDown(int keyCode, KeyEvent event);
 }

@@ -59,9 +59,12 @@ class UI_TabSdFiles implements IUI_TabMain {
 
     /**
      * init user interface
+     *
      * @param rootView parent view
      */
-    public @Override void initUI(View rootView) {
+    public
+    @Override
+    void initUI(View rootView) {
 
         ListView fileListView = (ListView) rootView.findViewById(R.id.sdFiles);
 
@@ -82,12 +85,9 @@ class UI_TabSdFiles implements IUI_TabMain {
                         FileStruct filedirStruct = mFileName.get(position);
                         Toast.makeText(mMainActivity, filedirStruct.toString(), Toast.LENGTH_SHORT).show();
 
-                        if (filedirStruct.mIsFileOrFalseDir)
-                        {
+                        if (filedirStruct.mIsFileOrFalseDir) {
                             FileManage.openFile(mMainActivity, filedirStruct.mFilePath);
-                        }
-                        else
-                        {
+                        } else {
                             //mCurFileDirIndex = position;
                             mFileName = switchDir(filedirStruct.mFilePath);
 
@@ -103,8 +103,20 @@ class UI_TabSdFiles implements IUI_TabMain {
     }
 
     @Override
-    public void processKeyDown(int keyCode, KeyEvent event) {
-        keyCode = keyCode;
+    public boolean processKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // 返回键
+            if (mCurFileDirIndex > 0) {
+                --mCurFileDirIndex;
+
+                mFileName = switchDir(mFileDir.get(mCurFileDirIndex));
+
+                mAdapter.clear();
+                mAdapter.addAll(mFileName);
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -116,10 +128,10 @@ class UI_TabSdFiles implements IUI_TabMain {
 
     /**
      * switch directory
+     *
      * @param dir directory
      */
-    private List<FileStruct> switchDir(String dir)
-    {
+    private List<FileStruct> switchDir(String dir) {
         mCurFileDirIndex = 0;
         mFileDir.add(dir);
 

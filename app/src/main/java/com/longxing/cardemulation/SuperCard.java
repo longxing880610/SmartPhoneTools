@@ -3,7 +3,8 @@
  */
 package com.longxing.cardemulation;
 
-import com.longxing.com.longxing.log.LogToFile;
+
+import com.longxing.log.LogToFile;
 
 import javacard.framework.APDU;
 import javacard.framework.Applet;

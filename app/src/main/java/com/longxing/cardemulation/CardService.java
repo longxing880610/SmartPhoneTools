@@ -21,8 +21,8 @@ import android.nfc.cardemulation.HostApduService;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.longxing.log.LogToFile;
 import com.longxing.ui.UI_TabLog;
-import com.longxing.com.longxing.log.LogToFile;
 
 import javacard.framework.APDU;
 import javacard.framework.ISO7816;

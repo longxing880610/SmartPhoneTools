@@ -19,9 +19,6 @@ package com.longxing.cardemulation;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
-
-import com.longxing.com.longxing.log.LogToFile;
 
 /**
  * Utility class for persisting account numbers to disk.

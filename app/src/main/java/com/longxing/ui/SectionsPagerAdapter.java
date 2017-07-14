@@ -42,6 +42,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     /**
      * get page list title
+     *
      * @param position the index of page
      * @return the title of page
      */
@@ -59,9 +60,10 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     }
 
     View getPageView(int position, LayoutInflater inflater, ViewGroup container) {
-        Log.d(TAG, "positionposition" + position);
+
         View rootView = mViewPages[position];
         if (rootView == null) {
+            Log.d(TAG, "positionpositionrootView:" + position);
             int resId = mResIds[position];
             rootView = inflater.inflate(resId, container, false);
             IUI_TabMain tab = null;
@@ -69,6 +71,8 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
                 tab = UI_TabLog.getInstance();
             } else if (resId == R.layout.tab_sd_card) {
                 tab = UI_TabSdFiles.getInstance();
+            } else if (resId == R.layout.tab_version) {
+                //tab = UI_TabSdFiles.getInstance();
             }
             if (tab != null) {  // has instance
                 tab.initUI(rootView);
@@ -76,5 +80,26 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             mViewPages[position] = rootView;
         }
         return rootView;
+    }
+
+    /**
+     * get interface of page
+     *
+     * @param position page index
+     * @return interface of page
+     */
+    IUI_TabMain getPageInterface(int position) {
+
+        IUI_TabMain tab = null;
+        //Log.d(TAG, "getPageInterface:" + position);
+        int resId = mResIds[position];
+        if (resId == R.layout.tab_log) {
+            tab = UI_TabLog.getInstance();
+        } else if (resId == R.layout.tab_sd_card) {
+            tab = UI_TabSdFiles.getInstance();
+        } else if (resId == R.layout.tab_version) {
+            tab = null;
+        }
+        return tab;
     }
 }
