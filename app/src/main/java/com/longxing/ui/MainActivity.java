@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,8 +22,8 @@ import com.longxing.R;
 
 
 public class MainActivity extends AppCompatActivity {
-
-    //private static final String TAG = "MyLog/MainActivity";
+   //TODO:增加音乐功能
+    private static final String TAG = "MyLog/MainActivity";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -89,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
     //endregion
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -109,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 
     /**
@@ -140,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             int tabId = getArguments().getInt(ARG_SECTION_NUMBER);
-
+            Log.d(TAG, "onCreateView page"+tabId);
             return sMainActivity.mSectionsPagerAdapter.getPageView(tabId, inflater, container);
         }
     }

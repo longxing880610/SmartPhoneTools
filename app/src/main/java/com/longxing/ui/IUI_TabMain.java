@@ -1,5 +1,6 @@
 package com.longxing.ui;
 
+import android.view.KeyEvent;
 import android.view.View;
 
 /**
@@ -15,4 +16,10 @@ public interface IUI_TabMain {
      */
     void initUI(View rootView);
 
+    /**
+     * process key down event
+     * @param keyCode
+     * @param event
+     */
+    void processKeyDown(int keyCode, KeyEvent event);
 }

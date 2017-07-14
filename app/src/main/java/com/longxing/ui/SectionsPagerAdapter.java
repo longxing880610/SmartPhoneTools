@@ -3,6 +3,7 @@ package com.longxing.ui;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,10 @@ import com.longxing.R;
  * one of the sections/tabs/pages.
  */
 class SectionsPagerAdapter extends FragmentPagerAdapter {
+    /**
+     * tag for tab view
+     */
+    private static final String TAG = "MyLog/SectionsPagerAdap";
 
     private View[] mViewPages = new View[3];
     private static final int[] mResIds = {R.layout.tab_log, R.layout.tab_sd_card, R.layout.tab_version};
@@ -35,13 +40,18 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
         return 3;
     }
 
+    /**
+     * get page list title
+     * @param position the index of page
+     * @return the title of page
+     */
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "SECTION 1";
+                return "日志";
             case 1:
-                return "SECTION 2";
+                return "SD文件管理";
             case 2:
                 return "SECTION 3";
         }
@@ -49,6 +59,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     }
 
     View getPageView(int position, LayoutInflater inflater, ViewGroup container) {
+        Log.d(TAG, "positionposition" + position);
         View rootView = mViewPages[position];
         if (rootView == null) {
             int resId = mResIds[position];

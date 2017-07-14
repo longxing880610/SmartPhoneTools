@@ -1,15 +1,17 @@
 package com.longxing.ui;
 
 import android.os.Environment;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.longxing.R;
+import com.longxing.file.FileManage;
+import com.longxing.file.FileStruct;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,7 @@ import static android.R.layout.simple_expandable_list_item_1;
  * show sd files
  */
 
-class UI_TabSdFiles implements IUI_TabMain{
+class UI_TabSdFiles implements IUI_TabMain {
     /**
      * tag for log
      */
@@ -29,26 +31,15 @@ class UI_TabSdFiles implements IUI_TabMain{
 
     private static UI_TabSdFiles sUiTabLog;
 
-
-    private AdapterView.OnItemClickListener fileListViewItemClickListener =
-            new AdapterView.OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position,
-                                        long id) {
-                    // TODO Auto-generated method stub
-
-                    //test.........................
-                    // TextView textview = (TextView)findViewById(R.id.textViewfile);
-                    // textview.append(mFileName.get(position).toString());
-                }
-            };
-
     /**
      * main ui interface
      */
     private MainActivity mMainActivity;
     private UI_TabLog mUI_tabSdFiles;
-
+    private List<FileStruct> mFileName;
+    private List<String> mFileDir = new ArrayList<>();
+    private int mCurFileDirIndex = 0;
+    private ArrayAdapter<FileStruct> mAdapter = null;
 
     private UI_TabSdFiles() {
 
@@ -66,6 +57,10 @@ class UI_TabSdFiles implements IUI_TabMain{
         return sUiTabLog;
     }
 
+    /**
+     * init user interface
+     * @param rootView parent view
+     */
     public @Override void initUI(View rootView) {
 
         ListView fileListView = (ListView) rootView.findViewById(R.id.sdFiles);
@@ -73,28 +68,43 @@ class UI_TabSdFiles implements IUI_TabMain{
         //fileListView.
 
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File file=new File(filePath);
-        File[] files = file.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return true;//name.startsWith("a");
-            }
-        });
 
-        List<String> mFileName = new ArrayList<>();
+        mFileName = switchDir(filePath);
 
-        for (File mCurrentFile:files){
-            mFileName.add(mCurrentFile.getName());
-        }
-
-        ArrayAdapter<String> mAdapter = new ArrayAdapter<>(mMainActivity, simple_expandable_list_item_1, mFileName);
+        mAdapter = new ArrayAdapter<>(mMainActivity, simple_expandable_list_item_1, mFileName);
         fileListView.setAdapter(mAdapter);
 
-        fileListView.setOnItemClickListener(fileListViewItemClickListener);
+        fileListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position,
+                                            long id) {
+                        FileStruct filedirStruct = mFileName.get(position);
+                        Toast.makeText(mMainActivity, filedirStruct.toString(), Toast.LENGTH_SHORT).show();
+
+                        if (filedirStruct.mIsFileOrFalseDir)
+                        {
+                            FileManage.openFile(mMainActivity, filedirStruct.mFilePath);
+                        }
+                        else
+                        {
+                            //mCurFileDirIndex = position;
+                            mFileName = switchDir(filedirStruct.mFilePath);
+
+                            mAdapter.clear();
+                            mAdapter.addAll(mFileName);
+                        }
+                    }
+                });
         //final ScrollView scrollViewLog = (ScrollView) rootView.findViewById(R.id.ScrollLog);
 
 
         displayLog("SD文件管理加载完成");
+    }
+
+    @Override
+    public void processKeyDown(int keyCode, KeyEvent event) {
+        keyCode = keyCode;
     }
 
     /**
@@ -104,4 +114,15 @@ class UI_TabSdFiles implements IUI_TabMain{
         mUI_tabSdFiles.displayLog(msg);
     }
 
+    /**
+     * switch directory
+     * @param dir directory
+     */
+    private List<FileStruct> switchDir(String dir)
+    {
+        mCurFileDirIndex = 0;
+        mFileDir.add(dir);
+
+        return FileManage.GetFiles(dir);
+    }
 }
