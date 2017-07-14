@@ -6,6 +6,7 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -82,6 +83,7 @@ public class UI_TabLog implements IUI_TabMain {
 
             //textView.han
 
+
         }
         String account = AccountStorage.GetAccount(mMainActivity);
         //Log.i(TAG, "AccountStorage.GetAccount(mMainActivity): " + account);
@@ -92,6 +94,11 @@ public class UI_TabLog implements IUI_TabMain {
 
 
         displayLog("日志面板初始化完成:" + account);
+    }
+
+    @Override
+    public void processKeyDown(int keyCode, KeyEvent event) {
+
     }
 
     /**

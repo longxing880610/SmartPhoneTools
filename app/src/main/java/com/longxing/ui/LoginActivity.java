@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /**
      * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
+     *
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "123:", "王雅平:我爱张龙", "张龙:我爱王雅平"
@@ -132,6 +132,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         getLoaderManager().initLoader(0, null, this);
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
@@ -201,11 +202,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //populateAutoComplete();
-            }
-        } else if (requestCode == REQUEST_READ_EXTERNAL_STORAGE) {
+        if (requestCode == REQUEST_READ_EXTERNAL_STORAGE) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 populateAutoComplete();
             }
@@ -241,13 +238,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
         // Check for a valid email address.
         if (TextUtils.isEmpty(userName)) {
             mEmailView.setError(getString(R.string.error_field_required));
@@ -270,15 +260,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(userName, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        return true;// password.length() > 4;
     }
 
     /**
@@ -369,14 +350,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    private class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
@@ -388,8 +368,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
             try {
                 // Simulate network access.
                 Thread.sleep(2000);
@@ -405,7 +383,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
 
-            // TODO: register the new account here.
             return true;
         }
 

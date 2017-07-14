@@ -2,7 +2,10 @@
 smart phone tools, include hce, sd file manage
 
 v1.0.8
-1.
+1. 增加自动登陆机制
+2. 分离文件管理功能
+3. 增加文件显示子文件的操作
+4. 尝试拦截手机的物理按键
 
 
 v1.0.7 20170712 15

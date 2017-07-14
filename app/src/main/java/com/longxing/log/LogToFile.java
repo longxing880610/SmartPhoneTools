@@ -2,7 +2,7 @@
  * Copyright (c) 2017. ZhangLong
  */
 
-package com.longxing.com.longxing.log;
+package com.longxing.log;
 
 import android.content.Context;
 import android.os.Environment;
