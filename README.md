@@ -1,7 +1,11 @@
 # SmartPhoneTools
 smart phone tools, include hce, sd file manage
 
-v1.0.8
+v1.0.9
+1.
+
+
+v1.0.8 20170718 17
 1. 增加自动登陆机制
 2. 分离文件管理功能
 3. 增加文件显示子文件的操作

@@ -409,7 +409,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 intent.setClass(LoginActivity.this, MainActivity.class);//参数一为当前Package的context，t当前Activity的context就是this，其他Package可能用到createPackageContex()参数二为你要打开的Activity的类名
 
                 intent.putExtra(ConstDef.cUserName, sUserName);// 把返回数据存入Intent
-                setResult(ConstDef.cActiveLogin, intent);// 设置回传数据。resultCode值是1，这个值在主窗口将用来区分回传数据的来源，以做不同的处理
+                //startActivityForResult(intent, ConstDef.cActiveLogin);// 设置回传数据。resultCode值是1，这个值在主窗口将用来区分回传数据的来源，以做不同的处理
 
                 startActivity(intent);
                 finish();

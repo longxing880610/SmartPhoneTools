@@ -63,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        String userName = getIntent().getStringExtra(ConstDef.cUserName);
+        //String userName = bundle.getString(ConstDef.cUserName);// 得到子窗口ChildActivity的回传数据
+        EditText editWel = (EditText) findViewById(R.id.editText_welcome);
+        editWel.setText("欢迎您," + userName);
+
         sMainActivity = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -87,23 +92,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // init tabPage
-        //mUiTabLog = UI_TabLog.getInstance();
-        //mUiTabLog.initUI();
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode) {
+        switch (requestCode) {
             case ConstDef.cActiveLogin:         // 子窗口ChildActivity的回传数据
                 if (data != null) {
                     Bundle bundle = data.getExtras();
                     if (bundle != null) {
                         //处理代码在此地
-                        String userName = bundle.getString(ConstDef.cUserName);// 得到子窗口ChildActivity的回传数据
-                        EditText editWel = (EditText) findViewById(R.id.editText_welcome);
-                        editWel.setText("欢迎您," + userName);
+
                     }
                 }
                 break;

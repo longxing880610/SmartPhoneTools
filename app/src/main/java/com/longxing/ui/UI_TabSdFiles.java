@@ -146,8 +146,14 @@ class UI_TabSdFiles implements IUI_TabMain {
     private List<FileStruct> switchDir(String dir, boolean isAdd) {
         //mCurFileDirIndex = 0;
         if (isAdd) {
-            mFileDir.add(dir);
-            mCurFileDirIndex = mFileDir.size() - 1;
+            int index = mCurFileDirIndex + 1;
+            if (index >= mFileDir.size()) {
+                mFileDir.add(dir);
+            } else {
+                mFileDir.set(index, dir);
+            }
+            mCurFileDirIndex = index;
+            //mCurFileDirIndex = mFileDir.size() - 1;
         }
 
         return FileManage.GetFiles(dir);
