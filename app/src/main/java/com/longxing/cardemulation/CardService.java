@@ -134,6 +134,8 @@ public class CardService extends HostApduService {
      * @param msg display message
      */
     public void DisplayLog(String msg) {
-        mUiTabLog.displayLog(msg);
+        if (mUiTabLog != null) {
+            mUiTabLog.displayLog(msg);
+        }
     }
 }

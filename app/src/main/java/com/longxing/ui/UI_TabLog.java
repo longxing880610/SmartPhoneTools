@@ -76,7 +76,7 @@ public class UI_TabLog implements IUI_TabMain {
                         Bundle bundle = msg.getData();
                         textView.append(bundle.getString(cKeyLog));
                         scrollViewLog.fullScroll(ScrollView.FOCUS_DOWN);
-                        scrollViewLog.clearFocus();
+                        //scrollViewLog.clearFocus();
                         //Log.i(TAG, "mEditViewHandle: " + mTextView.getText());
                     }
                     super.handleMessage(msg);

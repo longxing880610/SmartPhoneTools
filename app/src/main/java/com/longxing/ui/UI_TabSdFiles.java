@@ -1,6 +1,7 @@
 package com.longxing.ui;
 
 import android.os.Environment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,15 +28,15 @@ class UI_TabSdFiles implements IUI_TabMain {
     /**
      * tag for log
      */
-    //private static final String TAG = "MyLog/UI_TabSdFiles";
+    private static final String TAG = "MyLog/UI_TabSdFiles";
 
-    private static UI_TabSdFiles sUiTabLog;
+    private static UI_TabSdFiles sUiTabSdFiles;
 
     /**
      * main ui interface
      */
     private MainActivity mMainActivity;
-    private UI_TabLog mUI_tabSdFiles;
+    private UI_TabLog mUI_tabLog;
     private List<FileStruct> mFileName;
     private List<String> mFileDir = new ArrayList<>();
     private int mCurFileDirIndex = 0;
@@ -49,12 +50,12 @@ class UI_TabSdFiles implements IUI_TabMain {
      * @return owner object
      */
     static UI_TabSdFiles getInstance() {
-        if (sUiTabLog == null) {
-            sUiTabLog = new UI_TabSdFiles();
-            sUiTabLog.mMainActivity = MainActivity.GetInstance();
-            sUiTabLog.mUI_tabSdFiles = UI_TabLog.getInstance();
+        if (sUiTabSdFiles == null) {
+            sUiTabSdFiles = new UI_TabSdFiles();
+            sUiTabSdFiles.mMainActivity = MainActivity.GetInstance();
+            sUiTabSdFiles.mUI_tabLog = UI_TabLog.getInstance();
         }
-        return sUiTabLog;
+        return sUiTabSdFiles;
     }
 
     /**
@@ -62,9 +63,8 @@ class UI_TabSdFiles implements IUI_TabMain {
      *
      * @param rootView parent view
      */
-    public
     @Override
-    void initUI(View rootView) {
+    public void initUI(View rootView) {
 
         ListView fileListView = (ListView) rootView.findViewById(R.id.sdFiles);
 
@@ -105,11 +105,12 @@ class UI_TabSdFiles implements IUI_TabMain {
     @Override
     public boolean processKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "返回上一目录");
             // 返回键
             if (mCurFileDirIndex > 0) {
                 --mCurFileDirIndex;
 
-                mFileName = switchDir(mFileDir.get(mCurFileDirIndex));
+                mFileName = switchDir(mFileDir.get(mCurFileDirIndex), false);
 
                 mAdapter.clear();
                 mAdapter.addAll(mFileName);
@@ -123,7 +124,9 @@ class UI_TabSdFiles implements IUI_TabMain {
      * @param msg show message
      */
     private void displayLog(String msg) {
-        mUI_tabSdFiles.displayLog(msg);
+        if (mUI_tabLog != null) {
+            mUI_tabLog.displayLog(msg);
+        }
     }
 
     /**
@@ -132,8 +135,20 @@ class UI_TabSdFiles implements IUI_TabMain {
      * @param dir directory
      */
     private List<FileStruct> switchDir(String dir) {
-        mCurFileDirIndex = 0;
-        mFileDir.add(dir);
+        return switchDir(dir, true);
+    }
+
+    /**
+     * switch directory
+     *
+     * @param dir directory
+     */
+    private List<FileStruct> switchDir(String dir, boolean isAdd) {
+        //mCurFileDirIndex = 0;
+        if (isAdd) {
+            mFileDir.add(dir);
+            mCurFileDirIndex = mFileDir.size() - 1;
+        }
 
         return FileManage.GetFiles(dir);
     }

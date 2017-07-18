@@ -1,5 +1,6 @@
 package com.longxing.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,9 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.longxing.R;
+import com.longxing.common.ConstDef;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -90,6 +93,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case ConstDef.cActiveLogin:         // 子窗口ChildActivity的回传数据
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        //处理代码在此地
+                        String userName = bundle.getString(ConstDef.cUserName);// 得到子窗口ChildActivity的回传数据
+                        EditText editWel = (EditText) findViewById(R.id.editText_welcome);
+                        editWel.setText("欢迎您," + userName);
+                    }
+                }
+                break;
+            default:
+                //其它窗口的回传数据
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
     //region 按钮事件响应函数
 
     /**
@@ -115,20 +140,20 @@ public class MainActivity extends AppCompatActivity {
         // check the back key, delay to exit application
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             ++mBackKeyCount;
-            Log.d(TAG, "再按一次退出应用");
-            Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
             if (mTimer == null) {
                 mTimer = new Timer();
                 mTimer.schedule(new TimerTask() {
                     public void run() {
-                        Log.d(TAG, "退出应用的定时器:"+mBackKeyCount);
+                        Log.d(TAG, "退出应用的定时器:" + mBackKeyCount);
                         mBackKeyCount = 0;
                         mTimer.cancel();
                         mTimer = null;
                     }
-                }, 5 * 1000, 5*1000);
+                }, 5 * 1000, 5 * 1000);
             }
             if (mBackKeyCount < 2) {
+                Log.d(TAG, "再按一次退出应用");
+                Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
                 return true;
             }
         }

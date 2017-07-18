@@ -20,6 +20,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.longxing.file.SytemSetting;
+
 /**
  * Utility class for persisting account numbers to disk.
  * <p>
@@ -40,21 +42,15 @@ public class AccountStorage {
      * @param s account
      */
     public static void SetAccount(Context c, String s) {
-        synchronized (sAccountLock) {
-            //LogToFile.i(TAG, "Setting account number: " + s);
-            //Log.i(TAG, "Setting account number: " + s);
-            SharedPreferences prefs;
-            prefs = PreferenceManager.getDefaultSharedPreferences(c);
-            prefs.edit().putString(PREF_ACCOUNT_NUMBER, s).apply();
-            sAccount = s;
-        }
+
+        SytemSetting.SaveCfg(c, PREF_ACCOUNT_NUMBER, s);
+        sAccount = s;
     }
 
     public static String GetAccount(Context c) {
         synchronized (sAccountLock) {
             if (sAccount == null) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
-                sAccount = prefs.getString(PREF_ACCOUNT_NUMBER, DEFAULT_ACCOUNT_NUMBER);
+                sAccount = SytemSetting.GetCfg(c, PREF_ACCOUNT_NUMBER);
             }
             return sAccount;
         }
