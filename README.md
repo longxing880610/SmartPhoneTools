@@ -2,7 +2,7 @@
 smart phone tools, include hce, sd file manage
 
 v1.0.9
-1.
+1. 增加文件查看的前进功能
 
 
 v1.0.8 20170718 17

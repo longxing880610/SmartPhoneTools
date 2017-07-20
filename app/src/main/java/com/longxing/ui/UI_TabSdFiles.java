@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -98,6 +99,23 @@ class UI_TabSdFiles implements IUI_TabMain {
                 });
         //final ScrollView scrollViewLog = (ScrollView) rootView.findViewById(R.id.ScrollLog);
 
+        //
+        Button btn = (Button)rootView.findViewById(R.id.button_forward);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "跳转前一目录");
+                // 返回键
+                if (mCurFileDirIndex < mFileDir.size()-1) {
+                    ++mCurFileDirIndex;
+
+                    mFileName = switchDir(mFileDir.get(mCurFileDirIndex), false);
+
+                    mAdapter.clear();
+                    mAdapter.addAll(mFileName);
+                }
+            }
+        });
 
         displayLog("SD文件管理加载完成");
     }
