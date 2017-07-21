@@ -82,7 +82,7 @@ public class CardService extends HostApduService {
     @Override
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
 
-        //Log.i(TAG, "Received APDU: " + ByteArrayToHexString(commandApdu));
+        //LogToSystem.i(TAG, "Received APDU: " + ByteArrayToHexString(commandApdu));
         LogToFile.i(TAG, "Received APDU: " + ByteArrayToHexString(commandApdu));
         //Main2Activity.sb.append("Received APDU: " + ByteArrayToHexString(commandApdu) + "\n");
         //Main2Activity.dataHandler.sendEmptyMessage(1);

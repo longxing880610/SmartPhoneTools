@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.longxing.R;
 import com.longxing.common.ConstDef;
 import com.longxing.file.SytemSetting;
+import com.longxing.log.LogToSystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,15 +117,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             String password = SytemSetting.GetCfg(this, ConstDef.cPassword);
             if (username != null) {
                 //Toast.makeText(LoginActivity.this, "恢复用户名", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onCreate:恢复用户名:" + username);
+                LogToSystem.d(TAG, "onCreate:恢复用户名:" + username);
                 sUserName = username;
             }
             if (password != null) {
-                Log.d(TAG, "onCreate:恢复密码:" + password);
+                LogToSystem.d(TAG, "onCreate:恢复密码:" + password);
                 sPassword = password;
             }
         //}
-        Log.d(TAG, "onCreate:自动登陆");
+        LogToSystem.d(TAG, "onCreate:自动登陆");
         attemptLogin(sUserName, sPassword);
     }
 
@@ -340,7 +341,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onDestroy(){
         super.onDestroy();
-        Log.d(TAG, "HELLO：当Activity被销毁的时候，不是用户主动按back销毁，例如按了home键");
+        LogToSystem.d(TAG, "HELLO：当Activity被销毁的时候，不是用户主动按back销毁，例如按了home键");
 
         SytemSetting.SaveCfg(this, ConstDef.cUserName, sUserName); //这里保存一个用户名
         SytemSetting.SaveCfg(this, ConstDef.cPassword, sPassword);

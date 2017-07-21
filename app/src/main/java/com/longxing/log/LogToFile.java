@@ -98,7 +98,7 @@ public class LogToFile {
     private static void writeToFile(char type, String tag, String msg) {
 
         if (null == logPath) {
-            Log.e(TAG, "logPath == null ，未初始化LogToFile");
+            LogToSystem.e(TAG, "logPath == null ，未初始化LogToFile");
             return;
         }
 

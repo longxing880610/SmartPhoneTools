@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.longxing.R;
+import com.longxing.log.LogToSystem;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -63,7 +64,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         View rootView = mViewPages[position];
         if (rootView == null) {
-            Log.d(TAG, "positionpositionrootView:" + position);
+            LogToSystem.d(TAG, "positionpositionrootView:" + position);
             int resId = mResIds[position];
             rootView = inflater.inflate(resId, container, false);
             IUI_TabMain tab = null;
@@ -91,7 +92,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     IUI_TabMain getPageInterface(int position) {
 
         IUI_TabMain tab = null;
-        //Log.d(TAG, "getPageInterface:" + position);
+        //LogToSystem.d(TAG, "getPageInterface:" + position);
         int resId = mResIds[position];
         if (resId == R.layout.tab_log) {
             tab = UI_TabLog.getInstance();

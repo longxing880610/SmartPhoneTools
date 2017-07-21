@@ -76,8 +76,8 @@ public class UI_TabLog implements IUI_TabMain {
                         Bundle bundle = msg.getData();
                         textView.append(bundle.getString(cKeyLog));
                         scrollViewLog.fullScroll(ScrollView.FOCUS_DOWN);
-                        //scrollViewLog.clearFocus();
-                        //Log.i(TAG, "mEditViewHandle: " + mTextView.getText());
+                        scrollViewLog.clearFocus();
+                        //LogToSystem.i(TAG, "mEditViewHandle: " + mTextView.getText());
                     }
                     super.handleMessage(msg);
                 }
@@ -88,12 +88,12 @@ public class UI_TabLog implements IUI_TabMain {
 
         }
         String account = AccountStorage.GetAccount(mMainActivity);
-        //Log.i(TAG, "AccountStorage.GetAccount(mMainActivity): " + account);
+        //LogToSystem.i(TAG, "AccountStorage.GetAccount(mMainActivity): " + account);
         // add listen to edit view
         EditText dataEdit = (EditText) rootView.findViewById(R.id.data_edt);
         dataEdit.setText(account);
         dataEdit.addTextChangedListener(new UI_TabLog.AccountUpdater());
-
+        //dataEdit.clearFocus();
 
         displayLog("日志面板初始化完成:" + account);
     }
@@ -131,7 +131,9 @@ public class UI_TabLog implements IUI_TabMain {
         }
     }
 
-
+    /**
+     * account update
+     */
     private class AccountUpdater implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {

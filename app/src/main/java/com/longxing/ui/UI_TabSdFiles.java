@@ -104,7 +104,7 @@ class UI_TabSdFiles implements IUI_TabMain {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.d(TAG, "跳转前一目录");
+                //LogToSystem.d(TAG, "跳转前一目录");
                 // 返回键
                 if (mCurFileDirIndex > 0) {
                     --mCurFileDirIndex;
@@ -122,7 +122,7 @@ class UI_TabSdFiles implements IUI_TabMain {
         btnForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Log.d(TAG, "跳转前一目录");
+               // LogToSystem.d(TAG, "跳转前一目录");
                 // 返回键
                 if (mCurFileDirIndex < mFileDir.size()-1) {
                     ++mCurFileDirIndex;
@@ -141,7 +141,7 @@ class UI_TabSdFiles implements IUI_TabMain {
     @Override
     public boolean processKeyDown(int keyCode, KeyEvent event) {
         /*if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Log.d(TAG, "返回上一目录");
+            LogToSystem.d(TAG, "返回上一目录");
             // 返回键
             if (mCurFileDirIndex > 0) {
                 --mCurFileDirIndex;

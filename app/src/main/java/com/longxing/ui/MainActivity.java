@@ -18,10 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.longxing.R;
 import com.longxing.common.ConstDef;
+import com.longxing.log.LogToSystem;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         String userName = getIntent().getStringExtra(ConstDef.cUserName);
         //String userName = bundle.getString(ConstDef.cUserName);// 得到子窗口ChildActivity的回传数据
-        EditText editWel = (EditText) findViewById(R.id.editText_welcome);
+        TextView editWel = (TextView) findViewById(R.id.editText_welcome);
         editWel.setText("欢迎您," + userName);
 
         sMainActivity = this;
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         int tabId = mViewPager.getCurrentItem();
-        Log.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
+        LogToSystem.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
         IUI_TabMain tab = mSectionsPagerAdapter.getPageInterface(tabId);
         if (tab != null) {
             if (tab.processKeyDown(keyCode, event)) {
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 mTimer = new Timer();
                 mTimer.schedule(new TimerTask() {
                     public void run() {
-                        Log.d(TAG, "退出应用的定时器:" + mBackKeyCount);
+                        //LogToSystem.d(TAG, "退出应用的定时器:" + mBackKeyCount);
                         mBackKeyCount = 0;
                         mTimer.cancel();
                         mTimer = null;
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 }, 5 * 1000, 5 * 1000);
             }
             if (mBackKeyCount < 2) {
-                Log.d(TAG, "再按一次退出应用");
+                //LogToSystem.d(TAG, "再按一次退出应用");
                 Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
                 return true;
             }
@@ -213,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             int tabId = getArguments().getInt(ARG_SECTION_NUMBER);
-            //Log.d(TAG, "onCreateView_page:"+tabId);
+            //LogToSystem.d(TAG, "onCreateView_page:"+tabId);
             return sMainActivity.mSectionsPagerAdapter.getPageView(tabId, inflater, container);
         }
     }

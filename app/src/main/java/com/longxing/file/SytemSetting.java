@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.longxing.log.LogToSystem;
+
 /**
  * Created by Zhang Long on 2017/7/14.
  */
@@ -23,11 +25,11 @@ public class SytemSetting {
     public static void SaveCfg(Context c, String name, String value) {
         synchronized (sAccountLock) {
             //LogToFile.i(TAG, "Setting account number: " + s);
-            //Log.i(TAG, "Setting account number: " + s);
+            //LogToSystem.i(TAG, "Setting account number: " + s);
             SharedPreferences prefs;
             prefs = PreferenceManager.getDefaultSharedPreferences(c);
             if (!prefs.getString(name, null).equals(value)) {
-                Log.d(TAG, "config: " + name + "=" + value);
+                LogToSystem.d(TAG, "config: " + name + "=" + value);
                 prefs.edit().putString(name, value).apply();
             }
         }
