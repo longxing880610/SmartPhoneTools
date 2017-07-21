@@ -11,6 +11,8 @@ import com.longxing.log.LogToSystem;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -27,7 +29,7 @@ public class FileManage {
      * @param filePath
      * @return
      */
-    public static List<FileStruct> GetFiles(String filePath) {
+    public static List<FileStruct> GetFiles(String filePath, boolean isShow_Hidefile) {
         List<FileStruct> retValue = new ArrayList<>();
         File file = new File(filePath);
         File[] files = file.listFiles(new FilenameFilter() {
@@ -38,9 +40,22 @@ public class FileManage {
         });
 
         for (File item : files) {
+            if (!isShow_Hidefile)
+            {
+                if (item.isHidden()){
+                    LogToSystem.d(TAG, item.getName());
+                    continue;
+                }
+            }
             FileStruct fileStruct = new FileStruct(item);
             retValue.add(fileStruct);
         }
+        Collections.sort(retValue, new Comparator<FileStruct>() {
+            @Override
+            public int compare(FileStruct o1, FileStruct o2) {
+                return o1.mFileName.compareTo(o2.mFileName);
+            }
+        });
 
         return retValue;
     }

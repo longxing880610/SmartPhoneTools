@@ -7,12 +7,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.longxing.R;
 import com.longxing.file.FileManage;
 import com.longxing.file.FileStruct;
+import com.longxing.log.LogToSystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,7 @@ class UI_TabSdFiles implements IUI_TabMain {
 
     private static UI_TabSdFiles sUiTabSdFiles;
 
+    private TextView mTextviewPath;
     /**
      * main ui interface
      */
@@ -42,6 +46,8 @@ class UI_TabSdFiles implements IUI_TabMain {
     private List<String> mFileDir = new ArrayList<>();
     private int mCurFileDirIndex = 0;
     private ArrayAdapter<FileStruct> mAdapter = null;
+
+    private boolean mIsShow_hidefile = false;
 
     private UI_TabSdFiles() {
 
@@ -69,6 +75,8 @@ class UI_TabSdFiles implements IUI_TabMain {
 
         ListView fileListView = (ListView) rootView.findViewById(R.id.sdFiles);
 
+
+        mTextviewPath = (TextView) rootView.findViewById(R.id.textview_path);
         //fileListView.
 
         String filePath = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -100,7 +108,7 @@ class UI_TabSdFiles implements IUI_TabMain {
         //final ScrollView scrollViewLog = (ScrollView) rootView.findViewById(R.id.ScrollLog);
 
         // back button
-        Button btnBack = (Button)rootView.findViewById(R.id.button_back);
+        Button btnBack = (Button) rootView.findViewById(R.id.button_back);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,13 +126,13 @@ class UI_TabSdFiles implements IUI_TabMain {
         });
 
         // forward button
-        Button btnForward = (Button)rootView.findViewById(R.id.button_forward);
+        Button btnForward = (Button) rootView.findViewById(R.id.button_forward);
         btnForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // LogToSystem.d(TAG, "跳转前一目录");
+                // LogToSystem.d(TAG, "跳转前一目录");
                 // 返回键
-                if (mCurFileDirIndex < mFileDir.size()-1) {
+                if (mCurFileDirIndex < mFileDir.size() - 1) {
                     ++mCurFileDirIndex;
 
                     mFileName = switchDir(mFileDir.get(mCurFileDirIndex), false);
@@ -132,6 +140,20 @@ class UI_TabSdFiles implements IUI_TabMain {
                     mAdapter.clear();
                     mAdapter.addAll(mFileName);
                 }
+            }
+        });
+
+        // show or hide the hide file
+        CheckBox showHideFile = (CheckBox) rootView.findViewById(R.id.checkBox_showHideFile);
+        showHideFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox tmpCheckbox = (CheckBox) v;
+                mIsShow_hidefile = tmpCheckbox.isChecked();
+                mFileName = switchDir(mFileDir.get(mCurFileDirIndex), false);
+
+                mAdapter.clear();
+                mAdapter.addAll(mFileName);
             }
         });
 
@@ -180,18 +202,31 @@ class UI_TabSdFiles implements IUI_TabMain {
      * @param dir directory
      */
     private List<FileStruct> switchDir(String dir, boolean isAdd) {
+        return switchDir(dir, isAdd, mIsShow_hidefile);
+    }
+
+    /**
+     * switch directory
+     *
+     * @param dir directory
+     */
+    private List<FileStruct> switchDir(String dir, boolean isAdd, boolean isShow_Hidefile) {
+
+        mTextviewPath.setText(dir);
         //mCurFileDirIndex = 0;
         if (isAdd) {
             int index = mCurFileDirIndex + 1;
             if (index >= mFileDir.size()) {
                 mFileDir.add(dir);
+                mCurFileDirIndex = mFileDir.size()-1;
             } else {
                 mFileDir.set(index, dir);
+                mCurFileDirIndex = index;
             }
-            mCurFileDirIndex = index;
+
             //mCurFileDirIndex = mFileDir.size() - 1;
         }
 
-        return FileManage.GetFiles(dir);
+        return FileManage.GetFiles(dir, isShow_Hidefile);
     }
 }
