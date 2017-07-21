@@ -99,12 +99,30 @@ class UI_TabSdFiles implements IUI_TabMain {
                 });
         //final ScrollView scrollViewLog = (ScrollView) rootView.findViewById(R.id.ScrollLog);
 
-        //
-        Button btn = (Button)rootView.findViewById(R.id.button_forward);
-        btn.setOnClickListener(new View.OnClickListener() {
+        // back button
+        Button btnBack = (Button)rootView.findViewById(R.id.button_back);
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "跳转前一目录");
+                //Log.d(TAG, "跳转前一目录");
+                // 返回键
+                if (mCurFileDirIndex > 0) {
+                    --mCurFileDirIndex;
+
+                    mFileName = switchDir(mFileDir.get(mCurFileDirIndex), false);
+
+                    mAdapter.clear();
+                    mAdapter.addAll(mFileName);
+                }
+            }
+        });
+
+        // forward button
+        Button btnForward = (Button)rootView.findViewById(R.id.button_forward);
+        btnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // Log.d(TAG, "跳转前一目录");
                 // 返回键
                 if (mCurFileDirIndex < mFileDir.size()-1) {
                     ++mCurFileDirIndex;
@@ -122,7 +140,7 @@ class UI_TabSdFiles implements IUI_TabMain {
 
     @Override
     public boolean processKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        /*if (keyCode == KeyEvent.KEYCODE_BACK) {
             Log.d(TAG, "返回上一目录");
             // 返回键
             if (mCurFileDirIndex > 0) {
@@ -134,7 +152,7 @@ class UI_TabSdFiles implements IUI_TabMain {
                 mAdapter.addAll(mFileName);
             }
             return true;
-        }
+        }*/
         return false;
     }
 

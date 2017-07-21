@@ -115,16 +115,20 @@ public class UI_TabLog implements IUI_TabMain {
      * @param line how much lines will append
      */
     private void displayLog(String msg, int line) {
-        StringBuilder strBuilder = new StringBuilder(msg);
-        for (int i = 0; i < line; ++i) {
-            strBuilder.append("\r\n");
+        if (mEditViewHandle != null) {
+
+            StringBuilder strBuilder = new StringBuilder(msg);
+            for (int i = 0; i < line; ++i) {
+                strBuilder.append("\r\n");
+            }
+            Message msgObj = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putString(cKeyLog, strBuilder.toString());
+            msgObj.setData(bundle);
+            //msgObj.what  = 1;
+
+            mEditViewHandle.sendMessage(msgObj);
         }
-        Message msgObj = new Message();
-        Bundle bundle = new Bundle();
-        bundle.putString(cKeyLog, strBuilder.toString());
-        msgObj.setData(bundle);
-        //msgObj.what  = 1;
-        mEditViewHandle.sendMessage(msgObj);
     }
 
 

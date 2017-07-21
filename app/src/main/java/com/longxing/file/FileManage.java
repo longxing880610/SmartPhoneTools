@@ -3,6 +3,10 @@ package com.longxing.file;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
+
+import com.longxing.log.LogToSystem;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -15,6 +19,8 @@ import java.util.List;
  * File manage
  */
 public class FileManage {
+    private static String TAG = "MyLog/FileManage";
+
     /**
      * 获取文件及目录列表
      *
@@ -40,23 +46,30 @@ public class FileManage {
     }
 
     /**
-     * 打开文件
-     *
-     * @param file
+     * @param context
+     * @param filePath
      */
     public static void openFile(Context context, String filePath) {
         File file = new File(filePath);
         //Uri uri = Uri.parse("file://"+file.getAbsolutePath());
+        Uri uri = FileProvider.getUriForFile(context, "com.longxing.fileprovider", file);
+
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
         //设置intent的Action属性
         intent.setAction(Intent.ACTION_VIEW);
         //获取文件file的MIME类型
         String type = getMIMEType(file);
         //设置intent的data和Type属性。
-        intent.setDataAndType(/*uri*/Uri.fromFile(file), type);
+        intent.setDataAndType(uri, type);   // /*uri*/Uri.fromFile(file)
         //跳转
-        context.startActivity(intent);
+        try {
+            context.startActivity(intent);
+        } catch (Exception ex) {
+            LogToSystem.e(TAG, ex.getMessage());
+        }
     }
 
     /**

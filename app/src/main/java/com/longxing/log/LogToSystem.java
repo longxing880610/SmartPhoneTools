@@ -25,9 +25,8 @@ import java.util.Locale;
  * <p/>
  * Created by waka on 2016/3/14.
  */
-public class LogToFile {
-
-    private static String TAG = "MyLog/LogToFile";
+public class LogToSystem {
+    private static String TAG = "MyLog/LogToSystem";
 
     private static String logPath = "storage/emulated/0/CardEmulate/Logs";//log日志存放路径
 
@@ -57,7 +56,7 @@ public class LogToFile {
             return context.getFilesDir().getPath();//直接存在/data/data里，非root手机是看不到的
         }
     }
-
+/*
     private static final char VERBOSE = 'v';
 
     private static final char DEBUG = 'd';
@@ -67,25 +66,36 @@ public class LogToFile {
     private static final char WARN = 'w';
 
     private static final char ERROR = 'e';
+*/
+
+    private static final int VERBOSE = Log.VERBOSE;
+
+    private static final int DEBUG = Log.DEBUG;
+
+    private static final int INFO = Log.INFO;
+
+    private static final int WARN = Log.WARN;
+
+    private static final int ERROR = Log.ERROR;
 
     public static void v(String tag, String msg) {
-        writeToFile(VERBOSE, tag, msg);
+        writeToSystem(VERBOSE, tag, msg);
     }
 
     public static void d(String tag, String msg) {
-        writeToFile(DEBUG, tag, msg);
+        writeToSystem(DEBUG, tag, msg);
     }
 
     public static void i(String tag, String msg) {
-        writeToFile(INFO, tag, msg);
+        writeToSystem(INFO, tag, msg);
     }
 
     public static void w(String tag, String msg) {
-        writeToFile(WARN, tag, msg);
+        writeToSystem(WARN, tag, msg);
     }
 
     public static void e(String tag, String msg) {
-        writeToFile(ERROR, tag, msg);
+        writeToSystem(ERROR, tag, msg);
     }
 
     /**
@@ -95,44 +105,9 @@ public class LogToFile {
      * @param tag
      * @param msg
      */
-    private static void writeToFile(char type, String tag, String msg) {
+    private static void writeToSystem(int prioty, String tag, String msg) {
 
-        if (null == logPath) {
-            Log.e(TAG, "logPath == null ，未初始化LogToFile");
-            return;
-        }
-
-        String fileName = logPath + "/log_" + new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()) + ".log";//log日志名，使用时间命名，保证不重复
-        String log = dateFormat.format(date) + " " + type + " " + tag + " " + msg + "\n";//log日志内容，可以自行定制
-        boolean resultb = false;
-        //如果父路径不存在
-        File file = new File(logPath);
-        if (!file.exists()) {
-            resultb = file.mkdirs();//创建父路径
-        }
-
-        FileOutputStream fos = null;//FileOutputStream会自动调用底层的close()方法，不用关闭
-        BufferedWriter bw = null;
-        try {
-
-            fos = new FileOutputStream(fileName, true);//这里的第二个参数代表追加还是覆盖，true为追加，flase为覆盖
-            bw = new BufferedWriter(new OutputStreamWriter(fos));
-            bw.write(log);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bw != null) {
-                    bw.close();//关闭缓冲流
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        Log.println(prioty, tag, msg);
 
     }
-
 }

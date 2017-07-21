@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
                 return true;
             }
+            return moveTaskToBack(false);
         }
 
         return super.onKeyDown(keyCode, event);
