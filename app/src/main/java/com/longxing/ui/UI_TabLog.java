@@ -96,6 +96,11 @@ public class UI_TabLog implements IUI_TabMain {
         return false;
     }
 
+    @Override
+    public void processDestroy() {
+
+    }
+
     /**
      * @param msg show message
      */

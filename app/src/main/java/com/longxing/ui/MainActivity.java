@@ -1,6 +1,7 @@
 package com.longxing.ui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -30,7 +31,19 @@ import java.util.TimerTask;
 
 
 public class MainActivity extends AppCompatActivity {
-    //TODO:增加音乐功能
+
+    //region 增加音乐功能
+    /**
+     * 规定开始音乐、暂停音乐、结束音乐的标志
+     */
+    public static final int PLAT_MUSIC = 1;
+    public static final int PAUSE_MUSIC = 2;
+    public static final int STOP_MUSIC = 3;
+
+    private MyBroadCastReceiver receiver;
+    //endregion
+
+
     private static final String TAG = "MyLog/MainActivity";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -64,6 +77,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        //region 增加音乐功能
+        receiver = new MyBroadCastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.complete");
+        registerReceiver(receiver, filter);
+        //endregion
 
         String userName = getIntent().getStringExtra(ConstDef.cUserName);
         //String userName = bundle.getString(ConstDef.cUserName);// 得到子窗口ChildActivity的回传数据
@@ -131,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         int tabId = mViewPager.getCurrentItem();
-        LogToSystem.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
+        //LogToSystem.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
         IUI_TabMain tab = mSectionsPagerAdapter.getPageInterface(tabId);
         if (tab != null) {
             if (tab.processKeyDown(keyCode, event)) {
@@ -161,6 +181,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onDestroy() {
+        int tabId = mViewPager.getCurrentItem();
+        //LogToSystem.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
+        IUI_TabMain tab = mSectionsPagerAdapter.getPageInterface(tabId);
+        if (tab != null) {
+            tab.processDestroy();
+        }
+
+        super.onDestroy();
+
     }
 
     @Override

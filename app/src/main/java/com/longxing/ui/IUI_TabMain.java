@@ -24,4 +24,9 @@ public interface IUI_TabMain {
      * @return true is over, false will continue to process to parent
      */
     boolean processKeyDown(int keyCode, KeyEvent event);
+
+    /**
+     *
+     */
+    void processDestroy();
 }

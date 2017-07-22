@@ -3,13 +3,11 @@ package com.longxing.ui;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.longxing.R;
-import com.longxing.log.LogToSystem;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -22,7 +20,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = "MyLog/SectionsPagerAdap";
 
     private View[] mViewPages = new View[3];
-    private static final int[] mResIds = {R.layout.tab_log, R.layout.tab_sd_card, R.layout.tab_version};
+    private static final int[] mResIds = {R.layout.tab_log, R.layout.tab_sd_card, R.layout.tab_music};
 
     SectionsPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -51,11 +49,11 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "日志";
+                return "门禁与日志";
             case 1:
                 return "SD文件管理";
             case 2:
-                return "SECTION 3";
+                return "娱乐天地";
         }
         return null;
     }
@@ -72,8 +70,8 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
                 tab = UI_TabLog.getInstance();
             } else if (resId == R.layout.tab_sd_card) {
                 tab = UI_TabSdFiles.getInstance();
-            } else if (resId == R.layout.tab_version) {
-                //tab = UI_TabSdFiles.getInstance();
+            } else if (resId == R.layout.tab_music) {
+                tab = UI_TabMusic.getInstance();
             }
             if (tab != null) {  // has instance
                 tab.initUI(rootView);
@@ -98,7 +96,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             tab = UI_TabLog.getInstance();
         } else if (resId == R.layout.tab_sd_card) {
             tab = UI_TabSdFiles.getInstance();
-        } else if (resId == R.layout.tab_version) {
+        } else if (resId == R.layout.tab_music) {
             tab = null;
         }
         return tab;
