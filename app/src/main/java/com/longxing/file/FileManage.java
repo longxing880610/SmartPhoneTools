@@ -4,15 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
-import android.util.Log;
 
 import com.longxing.log.LogToSystem;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -21,48 +17,42 @@ import java.util.List;
  * File manage
  */
 public class FileManage {
-    private static String TAG = "MyLog/FileManage";
+    private static String TAG = "MyLog/FileManage/";
 
     /**
      * 获取文件及目录列表
      *
-     * @param filePath
+     * @param filePath        current directory
+     * @param isShow_Hidefile is show the file(hide)
+     * @param fileDirList list to store the file and directory
      * @return
      */
-    public static List<FileStruct> GetFiles(String filePath, boolean isShow_Hidefile) {
-        List<FileStruct> retValue = new ArrayList<>();
+    public static List<FileStruct> GetFiles(String filePath, boolean isShow_Hidefile, List<FileStruct> fileDirList) {
+
+        fileDirList.clear();
         File file = new File(filePath);
-        File[] files = file.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return true;//name.startsWith("a");
-            }
+        File[] files = file.listFiles((dir, name) -> {
+            return true;//name.startsWith("a");
         });
 
         for (File item : files) {
-            if (!isShow_Hidefile)
-            {
-                if (item.isHidden()){
-                    LogToSystem.d(TAG, item.getName());
+            if (!isShow_Hidefile) {
+                if (item.isHidden()) {
+                    //LogToSystem.d(TAG+GetFiles, item.getName());
                     continue;
                 }
             }
             FileStruct fileStruct = new FileStruct(item);
-            retValue.add(fileStruct);
+            fileDirList.add(fileStruct);
         }
-        Collections.sort(retValue, new Comparator<FileStruct>() {
-            @Override
-            public int compare(FileStruct o1, FileStruct o2) {
-                return o1.mFileName.compareTo(o2.mFileName);
-            }
-        });
+        Collections.sort(fileDirList, (o1, o2) -> o1.mFileName.toLowerCase().compareTo(o2.mFileName.toLowerCase()));
 
-        return retValue;
+        return fileDirList;
     }
 
     /**
-     * @param context
-     * @param filePath
+     * @param context  context of activity
+     * @param filePath filepath of open file
      */
     public static void openFile(Context context, String filePath) {
         File file = new File(filePath);
@@ -90,7 +80,7 @@ public class FileManage {
     /**
      * 根据文件后缀名获得对应的MIME类型。
      *
-     * @param file
+     * @param file file input
      */
     private static String getMIMEType(File file) {
 
@@ -103,11 +93,12 @@ public class FileManage {
         }
 /* 获取文件的后缀名*/
         String end = fName.substring(dotIndex, fName.length()).toLowerCase();
-        if (end == "") return type;
+        if (end.equals("")) return type;
 //在MIME和文件类型的匹配表中找到对应的MIME类型。
-        for (int i = 0; i < MIME_MapTable.length; i++) { //MIME_MapTable??在这里你一定有疑问，这个MIME_MapTable是什么？
-            if (end.equals(MIME_MapTable[i][0]))
-                type = MIME_MapTable[i][1];
+        //MIME_MapTable??在这里你一定有疑问，这个MIME_MapTable是什么？
+        for (String[] aMIME_MapTable : MIME_MapTable) {
+            if (end.equals(aMIME_MapTable[0]))
+                type = aMIME_MapTable[1];
         }
         return type;
     }

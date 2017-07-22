@@ -9,6 +9,7 @@ public class FileStruct{
     public String mFileName;
     public String mFilePath;
     public String mFileDir;
+    public boolean mIsHide;
     /**
      * file when true, directory when false
      */
@@ -19,6 +20,7 @@ public class FileStruct{
         mFilePath = file.getPath();
         mFileDir = file.getParent();
         mIsFileOrFalseDir = file.isFile();
+        mIsHide = file.isHidden();
     }
 
     public @Override String toString(){
