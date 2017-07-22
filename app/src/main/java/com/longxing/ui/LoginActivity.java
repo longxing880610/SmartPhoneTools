@@ -116,12 +116,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             String username = SytemSetting.GetCfg(this, ConstDef.cUserName);
             String password = SytemSetting.GetCfg(this, ConstDef.cPassword);
             if (username != null) {
-                //Toast.makeText(LoginActivity.this, "恢复用户名", Toast.LENGTH_SHORT).show();
-                LogToSystem.d(TAG, "onCreate:恢复用户名:" + username);
+                //LogToSystem.d(TAG, "onCreate:恢复用户名:" + username);
                 sUserName = username;
             }
             if (password != null) {
-                LogToSystem.d(TAG, "onCreate:恢复密码:" + password);
+                //LogToSystem.d(TAG, "onCreate:恢复密码:" + password);
                 sPassword = password;
             }
         //}
@@ -341,7 +340,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onDestroy(){
         super.onDestroy();
-        LogToSystem.d(TAG, "HELLO：当Activity被销毁的时候，不是用户主动按back销毁，例如按了home键");
+        //LogToSystem.d(TAG, "HELLO：当Activity被销毁的时候，不是用户主动按back销毁，例如按了home键");
 
         SytemSetting.SaveCfg(this, ConstDef.cUserName, sUserName); //这里保存一个用户名
         SytemSetting.SaveCfg(this, ConstDef.cPassword, sPassword);

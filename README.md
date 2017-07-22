@@ -1,7 +1,11 @@
 # SmartPhoneTools
 smart phone tools, include hce, sd file manage
 
-v1.0.9
+v1.1
+1. 
+
+
+v1.0.9 20170722 16
 1. 增加文件查看的前进功能
 2. 增加文件打开功能,适配android7.0
 3. 增加一些异常处理, 特别是在打开文件和刷卡时

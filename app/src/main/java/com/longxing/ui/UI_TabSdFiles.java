@@ -1,11 +1,13 @@
 package com.longxing.ui;
 
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -17,13 +19,13 @@ import com.longxing.R;
 import com.longxing.common.CastWarn;
 import com.longxing.file.FileManage;
 import com.longxing.file.FileStruct;
-import com.longxing.log.LogToFile;
+import com.longxing.log.LogToSystem;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.layout.simple_expandable_list_item_1;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Zhang Long on .
@@ -36,11 +38,21 @@ class UI_TabSdFiles implements IUI_TabMain {
      * tag for log
      */
     private static final String TAG = "MyLog/UI_TabSdFiles/";
+    private static final String cKEY_TXT = "KEY_TXT";
+    //private static final String cCount_Down_Latch = "Count_Down_Latch";
+
+    private static final int WHAT_SHOW_PATH = 1;
+    private static final int WHAT_GET_SEARCH_TEXT = 2;
+    private static final int WHAT_SET_SEARCH_TEXT = 3;
 
     private static UI_TabSdFiles sUiTabSdFiles;
 
-    private TextView mTextViewPath;
-    private EditText mSearchText;
+    private CountDownLatch countDownLatch;
+    private String mOutputString;
+    private Handler mEditViewHandle;
+
+    //private TextView mTextViewPath;
+    //private EditText mSearchText;
     /**
      * main ui interface
      */
@@ -80,11 +92,11 @@ class UI_TabSdFiles implements IUI_TabMain {
     public void initUI(View rootView) {
 
         ListView fileListView = (ListView) rootView.findViewById(R.id.sdFiles);
-
+        // need to be initialized at first
         // file path
-        mTextViewPath = (TextView) rootView.findViewById(R.id.textview_path);
+        TextView mTextViewPath = (TextView) rootView.findViewById(R.id.textview_path);
         // search text
-        mSearchText = (EditText) rootView.findViewById(R.id.editText_search);
+        EditText mSearchText = (EditText) rootView.findViewById(R.id.editText_search);
         mSearchText.addTextChangedListener(new TextWatcher() {
             private int mLengthBefore = 0;
 
@@ -127,9 +139,30 @@ class UI_TabSdFiles implements IUI_TabMain {
                 }
             }
         });
+
+
+        mEditViewHandle = new Handler() {
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == WHAT_SHOW_PATH) {
+                    Bundle bundle = msg.getData();
+                    mTextViewPath.setText(bundle.getString(cKEY_TXT));
+                } else if (msg.what == WHAT_GET_SEARCH_TEXT) {
+                    //Bundle bundle = msg.getData();
+                    mOutputString = mSearchText.getText().toString();
+                    //CountDownLatch countDownLatch = (CountDownLatch)bundle.get(cCount_Down_Latch);
+                    countDownLatch.countDown();
+                } else if (msg.what == WHAT_SET_SEARCH_TEXT) {
+                    Bundle bundle = msg.getData();
+                    mSearchText.setText(bundle.getString(cKEY_TXT));
+                }
+                super.handleMessage(msg);
+            }
+        };
         //fileListView.
 
-        final String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        final String rootDir;
+        rootDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 
         //mAdapter = new ArrayAdapter<>(mMainActivity, simple_expandable_list_item_1, mFileNames);
         //fileListView.setAdapter(mAdapter);
@@ -157,6 +190,8 @@ class UI_TabSdFiles implements IUI_TabMain {
 
         //final ScrollView scrollViewLog = (ScrollView) rootView.findViewById(R.id.ScrollLog);
 
+
+        //region button event process
         // back button
         Button btnBack = (Button) rootView.findViewById(R.id.button_back);
         btnBack.setOnClickListener(v -> {
@@ -188,7 +223,7 @@ class UI_TabSdFiles implements IUI_TabMain {
         btnUp.setOnClickListener(v -> {
             // LogToSystem.d(TAG, "跳转上一目录");
             // 根
-            if (rootDir != mFileDir.get(mCurFileDirIndex)) {
+            if (!rootDir.equals(mFileDir.get(mCurFileDirIndex))) {
                 // 不是根目录才起作用
                 switchDir(rootDir, true);
             }
@@ -212,6 +247,8 @@ class UI_TabSdFiles implements IUI_TabMain {
                 mAdapter.addAll(alllfiles);
             }
         });
+        //endregion
+
 
 
         displayLog("SD文件管理加载完成");
@@ -269,7 +306,8 @@ class UI_TabSdFiles implements IUI_TabMain {
      */
     private boolean switchDir(String dir, boolean isAdd, boolean isShow_Hidefile) {
 
-        mTextViewPath.setText(dir);
+        sendMessage(WHAT_SHOW_PATH, dir, false);
+        //mTextViewPath.setText(dir);
         //mCurFileDirIndex = 0;
         if (isAdd) {
             int index = mCurFileDirIndex + 1;
@@ -290,7 +328,36 @@ class UI_TabSdFiles implements IUI_TabMain {
 
         mAdapter.addAll(mFileNames);
         mFileNameBackup = null;
-        mSearchText.setText("");
+        sendMessage(WHAT_SET_SEARCH_TEXT, "", false);
         return true;
+    }
+
+    /**
+     * @param what     what control
+     * @param txtMsg   txt message
+     * @param needWait need wait util result return
+     * @return result
+     */
+    private String sendMessage(int what, String txtMsg, boolean needWait) {
+        Bundle bundle = new Bundle();
+        if (what == WHAT_SHOW_PATH) {
+            bundle.putString(cKEY_TXT, txtMsg);
+        } else if (what == WHAT_SET_SEARCH_TEXT) {
+            bundle.putString(cKEY_TXT, txtMsg);
+        }
+        Message msg = new Message();
+        msg.what = what;
+        msg.setData(bundle);
+        mEditViewHandle.sendMessage(msg);
+        if (needWait) {
+            countDownLatch = new CountDownLatch(1);
+            try {
+                countDownLatch.await(5, TimeUnit.SECONDS);  //阻塞，直到countDown被执行1次，计数为0
+            } catch (InterruptedException e) {
+                LogToSystem.e(TAG + "sendMessage", e.getMessage());
+            }
+            return mOutputString;
+        }
+        return null;
     }
 }

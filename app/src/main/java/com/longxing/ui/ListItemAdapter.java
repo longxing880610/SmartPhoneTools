@@ -80,12 +80,10 @@ public class ListItemAdapter extends BaseAdapter {
         }
 
         FileStruct fileStruct = items.get(position);
-        if(items.get(position).equals(mRootDir))
-        {
+        if (items.get(position).equals(mRootDir)) {
             holder.text.setText("Back to root directory");
             holder.icon.setImageBitmap(mIcon1);
-        }
-        else {
+        } else {
             holder.text.setText(fileStruct.mFileName);
             if (!fileStruct.mIsFileOrFalseDir) {
                 holder.icon.setImageBitmap(mIcon3);
@@ -101,7 +99,7 @@ public class ListItemAdapter extends BaseAdapter {
             items.clear();
             items.addAll(alllfiles);
         }
-        if (!alllfiles.get(0).equals(mRootDir)) {
+        if (alllfiles.size() > 0 && !alllfiles.get(0).equals(mRootDir)) {
             items.add(0, mRootDir);
         }
         notifyDataSetChanged();

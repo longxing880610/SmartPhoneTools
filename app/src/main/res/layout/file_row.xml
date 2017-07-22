@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="30dip"
-        android:layout_height="30dip"></ImageView>
+        android:layout_width="40dip"
+        android:layout_height="40dip"></ImageView>
 
     <TextView
         android:id="@+id/text"
