@@ -40,13 +40,20 @@
             android:text="前进"
             tools:ignore="HardcodedText" />
 
-
         <CheckBox
             android:id="@+id/checkBox_showHideFile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="显示隐藏文件"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/button_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="根目录"
+            android:visibility="visible"
             tools:ignore="HardcodedText" />
     </GridLayout>
 

@@ -19,6 +19,7 @@ import com.longxing.file.FileManage;
 import com.longxing.file.FileStruct;
 import com.longxing.log.LogToFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ class UI_TabSdFiles implements IUI_TabMain {
     private static ArrayList<FileStruct> mFileNameBackup = null;
     private List<String> mFileDir = new ArrayList<>();
     private int mCurFileDirIndex = 0;
-    private ArrayAdapter<FileStruct> mAdapter = null;
+    private ListItemAdapter mAdapter = null;
 
     private boolean mIsShow_hidefile = false;
 
@@ -107,9 +108,7 @@ class UI_TabSdFiles implements IUI_TabMain {
                 if (keyword.isEmpty()) {
                     //switchDir(mFileDir.get(mCurFileDirIndex), false);
                     if (mFileNameBackup != null) {
-                        mFileNames.clear();
-                        mFileNames.addAll(mFileNameBackup);
-                        mAdapter.notifyDataSetChanged();
+                        mAdapter.addAll(mFileNameBackup);
                     }
                     // may be the forward or backward in the file manager
                     // LogToSystem.d(TAG+"afterTextChanged", "keyword.isEmpty");
@@ -124,15 +123,18 @@ class UI_TabSdFiles implements IUI_TabMain {
                     }
                     //List<FileStruct> tmpFiles = fileStructs.subList(0, fileStructs.size());
                     mFileNames.removeIf(fileStruct -> !fileStruct.mFileName.toLowerCase().contains(keyword));
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.addAll(mFileNames);
                 }
             }
         });
         //fileListView.
 
-        String filePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        final String rootDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-        mAdapter = new ArrayAdapter<>(mMainActivity, simple_expandable_list_item_1, mFileNames);
+        //mAdapter = new ArrayAdapter<>(mMainActivity, simple_expandable_list_item_1, mFileNames);
+        //fileListView.setAdapter(mAdapter);
+        mAdapter = new ListItemAdapter(mMainActivity, mFileNames, rootDir);
+
         fileListView.setAdapter(mAdapter);
 
         fileListView.setOnItemClickListener(
@@ -149,7 +151,7 @@ class UI_TabSdFiles implements IUI_TabMain {
                     }
                 });
 
-        switchDir(filePath);
+        switchDir(rootDir);
 
         //final ScrollView scrollViewLog = (ScrollView) rootView.findViewById(R.id.ScrollLog);
 
@@ -176,6 +178,17 @@ class UI_TabSdFiles implements IUI_TabMain {
 
                 switchDir(mFileDir.get(mCurFileDirIndex), false);
 
+            }
+        });
+
+        // root dir button
+        Button btnUp = (Button) rootView.findViewById(R.id.button_up);
+        btnUp.setOnClickListener(v -> {
+            // LogToSystem.d(TAG, "跳转上一目录");
+            // 根
+            if (rootDir != mFileDir.get(mCurFileDirIndex)) {
+                // 不是根目录才起作用
+                switchDir(rootDir, true);
             }
         });
 
@@ -263,7 +276,7 @@ class UI_TabSdFiles implements IUI_TabMain {
                 mCurFileDirIndex = mFileDir.size() - 1;
             } else {
                 mFileDir.set(index, dir);
-                for (int i=mFileDir.size()-1; i>index; --i) {
+                for (int i = mFileDir.size() - 1; i > index; --i) {
                     mFileDir.remove(i);
                 }
                 mCurFileDirIndex = index;
@@ -273,7 +286,7 @@ class UI_TabSdFiles implements IUI_TabMain {
 
         FileManage.GetFiles(dir, isShow_Hidefile, mFileNames);
 
-        mAdapter.notifyDataSetChanged();
+        mAdapter.addAll(mFileNames);
         mFileNameBackup = null;
         mSearchText.setText("");
         return true;
