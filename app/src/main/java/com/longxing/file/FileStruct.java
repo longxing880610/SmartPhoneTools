@@ -23,6 +23,9 @@ public class FileStruct{
         mIsHide = file.isHidden();
     }
 
+    private FileStruct(){
+    }
+
     public @Override String toString(){
         return mFileName;
     }

@@ -133,7 +133,9 @@ class UI_TabSdFiles implements IUI_TabMain {
 
         //mAdapter = new ArrayAdapter<>(mMainActivity, simple_expandable_list_item_1, mFileNames);
         //fileListView.setAdapter(mAdapter);
-        mAdapter = new ListItemAdapter(mMainActivity, mFileNames, rootDir);
+        FileStruct rootStruct = new FileStruct(new File(rootDir));
+        //rootStruct.mFileName =
+        mAdapter = new ListItemAdapter(mMainActivity, mFileNames, rootStruct);
 
         fileListView.setAdapter(mAdapter);
 

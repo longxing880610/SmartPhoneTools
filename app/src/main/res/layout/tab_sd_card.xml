@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="根目录"
-            android:visibility="visible"
+            android:visibility="invisible"
             tools:ignore="HardcodedText" />
     </GridLayout>
 

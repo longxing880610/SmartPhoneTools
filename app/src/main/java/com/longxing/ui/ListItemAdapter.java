@@ -32,10 +32,10 @@ public class ListItemAdapter extends BaseAdapter {
     private Bitmap mIcon3;
     private Bitmap mIcon4;
     private List<FileStruct> items;
-    private String mRootDir;
+    private FileStruct mRootDir;
 
     /* MyAdapter的构造器，传入三个参数  */
-    public ListItemAdapter(Context context, List<FileStruct> it, String rootDir) {
+    public ListItemAdapter(Context context, List<FileStruct> it, FileStruct rootDir) {
     /* 参数初始化 */
         mInflater = LayoutInflater.from(context);
         items = it;
@@ -80,14 +80,19 @@ public class ListItemAdapter extends BaseAdapter {
         }
 
         FileStruct fileStruct = items.get(position);
-
-        holder.text.setText(fileStruct.mFileName);
-        if (!fileStruct.mIsFileOrFalseDir) {
-            holder.icon.setImageBitmap(mIcon3);
-        } else {
-            holder.icon.setImageBitmap(mIcon4);
+        if(items.get(position).equals(mRootDir))
+        {
+            holder.text.setText("Back to root directory");
+            holder.icon.setImageBitmap(mIcon1);
         }
-
+        else {
+            holder.text.setText(fileStruct.mFileName);
+            if (!fileStruct.mIsFileOrFalseDir) {
+                holder.icon.setImageBitmap(mIcon3);
+            } else {
+                holder.icon.setImageBitmap(mIcon4);
+            }
+        }
         return convertView;
     }
 
@@ -95,6 +100,9 @@ public class ListItemAdapter extends BaseAdapter {
         if (alllfiles != items) {
             items.clear();
             items.addAll(alllfiles);
+        }
+        if (!alllfiles.get(0).equals(mRootDir)) {
+            items.add(0, mRootDir);
         }
         notifyDataSetChanged();
     }
