@@ -44,6 +44,7 @@ class UI_TabSdFiles implements IUI_TabMain {
     private static final int WHAT_SHOW_PATH = 1;
     private static final int WHAT_GET_SEARCH_TEXT = 2;
     private static final int WHAT_SET_SEARCH_TEXT = 3;
+    public static final int WHAT_UPDATE_FILELIST_FORCE = 4;
 
     private static UI_TabSdFiles sUiTabSdFiles;
 
@@ -140,7 +141,6 @@ class UI_TabSdFiles implements IUI_TabMain {
             }
         });
 
-
         mEditViewHandle = new Handler() {
             @Override
             public void handleMessage(android.os.Message msg) {
@@ -155,6 +155,8 @@ class UI_TabSdFiles implements IUI_TabMain {
                 } else if (msg.what == WHAT_SET_SEARCH_TEXT) {
                     Bundle bundle = msg.getData();
                     mSearchText.setText(bundle.getString(cKEY_TXT));
+                } else if (msg.what == WHAT_UPDATE_FILELIST_FORCE) {
+                    mAdapter.notifyDataSetChanged(false);
                 }
                 super.handleMessage(msg);
             }
@@ -166,7 +168,9 @@ class UI_TabSdFiles implements IUI_TabMain {
 
         //mAdapter = new ArrayAdapter<>(mMainActivity, simple_expandable_list_item_1, mFileNames);
         //fileListView.setAdapter(mAdapter);
-        FileStruct rootStruct = new FileStruct(new File(rootDir));
+        File file = new File(rootDir);
+        FileStruct rootStruct = new FileStruct(file);
+        rootStruct.mSize = file.getFreeSpace();
         //rootStruct.mFileName =
         mAdapter = new ListItemAdapter(mMainActivity, mFileNames, rootStruct);
 
@@ -175,21 +179,18 @@ class UI_TabSdFiles implements IUI_TabMain {
         fileListView.setOnItemClickListener(
                 (parent, view, position, id) -> {
                     FileStruct filedirStruct = mFileNames.get(position);
-                    Toast.makeText(mMainActivity, filedirStruct.toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mMainActivity, filedirStruct.toString(), Toast.LENGTH_SHORT).show();
 
                     if (filedirStruct.mIsFileOrFalseDir) {
                         FileManage.openFile(mMainActivity, filedirStruct.mFilePath);
                     } else {
                         //mCurFileDirIndex = position;
                         switchDir(filedirStruct.mFilePath);
-
                     }
                 });
 
+        //LogToSystem.d(TAG+"initUI","initUI");
         switchDir(rootDir);
-
-        //final ScrollView scrollViewLog = (ScrollView) rootView.findViewById(R.id.ScrollLog);
-
 
         //region button event process
         // back button
@@ -236,19 +237,18 @@ class UI_TabSdFiles implements IUI_TabMain {
             mIsShow_hidefile = tmpCheckbox.isChecked();
 
             //mFileNames = switchDir(mFileDir.get(mCurFileDirIndex), false);
-            List<FileStruct> alllfiles = mFileNames;
+            List<FileStruct> allFiles = mFileNames;
 
             if (mIsShow_hidefile) {
                 switchDir(mFileDir.get(mCurFileDirIndex), false);
-                //mAdapter.addAll(alllfiles);
+                //mAdapter.addAll(allFiles);
             } else {
-                //List<FileStruct> tmpFiles = alllfiles.subList(0, alllfiles.size());
-                alllfiles.removeIf(fileStruct -> fileStruct.mIsHide);
-                mAdapter.addAll(alllfiles);
+                //List<FileStruct> tmpFiles = allFiles.subList(0, allFiles.size());
+                allFiles.removeIf(fileStruct -> fileStruct.mIsHide);
+                mAdapter.addAll(allFiles);
             }
         });
         //endregion
-
 
 
         displayLog("SD文件管理加载完成");
@@ -306,7 +306,7 @@ class UI_TabSdFiles implements IUI_TabMain {
      */
     private boolean switchDir(String dir, boolean isAdd, boolean isShow_Hidefile) {
 
-        sendMessage(WHAT_SHOW_PATH, dir, false);
+        sendMessage(WHAT_SHOW_PATH, dir);
         //mTextViewPath.setText(dir);
         //mCurFileDirIndex = 0;
         if (isAdd) {
@@ -328,8 +328,17 @@ class UI_TabSdFiles implements IUI_TabMain {
 
         mAdapter.addAll(mFileNames);
         mFileNameBackup = null;
-        sendMessage(WHAT_SET_SEARCH_TEXT, "", false);
+        sendMessage(WHAT_SET_SEARCH_TEXT, "");
         return true;
+    }
+
+    /**
+     * @param what   what control
+     * @param txtMsg txt message
+     * @return result
+     */
+    public String sendMessage(int what, String txtMsg) {
+        return sendMessage(what, txtMsg, false);
     }
 
     /**
@@ -360,4 +369,6 @@ class UI_TabSdFiles implements IUI_TabMain {
         }
         return null;
     }
+
 }
+

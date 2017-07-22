@@ -2,7 +2,8 @@
 smart phone tools, include hce, sd file manage
 
 v1.1
-1. 
+1. 增加目录的大小显示
+2.
 
 
 v1.0.9 20170722 16

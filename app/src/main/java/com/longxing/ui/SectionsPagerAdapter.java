@@ -64,7 +64,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         View rootView = mViewPages[position];
         if (rootView == null) {
-            LogToSystem.d(TAG, "positionpositionrootView:" + position);
+            //LogToSystem.d(TAG, "positionpositionrootView:" + position);
             int resId = mResIds[position];
             rootView = inflater.inflate(resId, container, false);
             IUI_TabMain tab = null;

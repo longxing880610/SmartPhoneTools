@@ -65,9 +65,6 @@ public class UI_TabLog implements IUI_TabMain {
 
         final TextView textView = (TextView) rootView.findViewById(R.id.data_tv);
         if (textView != null) {
-            //textView.setText("hello hello");
-
-            //mTextView = textView;
 
             mEditViewHandle = new Handler() {
                 @Override
@@ -82,10 +79,6 @@ public class UI_TabLog implements IUI_TabMain {
                     super.handleMessage(msg);
                 }
             };
-
-            //textView.han
-
-
         }
         String account = AccountStorage.GetAccount(mMainActivity);
         //LogToSystem.i(TAG, "AccountStorage.GetAccount(mMainActivity): " + account);

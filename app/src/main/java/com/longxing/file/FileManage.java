@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 
+import com.longxing.common.ThreadStatus;
 import com.longxing.log.LogToSystem;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class FileManage {
      *
      * @param filePath        current directory
      * @param isShow_Hidefile is show the file(hide)
-     * @param fileDirList list to store the file and directory
+     * @param fileDirList     list to store the file and directory
      * @return
      */
     public static List<FileStruct> GetFiles(String filePath, boolean isShow_Hidefile, List<FileStruct> fileDirList) {
@@ -171,4 +172,34 @@ public class FileManage {
             {".zip", "application/zip"},
             {"", "*/*"}
     };
+
+
+    /**
+     * 获取文件夹大小
+     *
+     * @param file File实例
+     * @return long
+     */
+    public static long getFolderSize(java.io.File file, ThreadStatus status) {
+
+        long size = 0;
+        try {
+            java.io.File[] fileList = file.listFiles();
+            for (int i = 0; i < fileList.length; i++) {
+                if (status.isRestart){
+                    break;
+                }
+                if (fileList[i].isDirectory()) {
+                    size = size + getFolderSize(fileList[i], status);
+
+                } else {
+                    size = size + fileList[i].length();
+                }
+            }
+        } catch (Exception e) {
+            LogToSystem.e(TAG + "getFolderSize", e.getMessage());
+        }
+        //return size/1048576;
+        return size;
+    }
 }

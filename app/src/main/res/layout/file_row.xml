@@ -15,4 +15,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1.0"></TextView>
+
+    <TextView
+        android:id="@+id/size"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.0"></TextView>
+
 </LinearLayout>
