@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import com.longxing.R;
 import com.longxing.cardemulation.AccountStorage;
+import com.longxing.database.datamodel.FileInforModel;
+import com.longxing.log.LogToFile;
+import com.longxing.log.LogToSystem;
 
 /**
  * Created by Zhang Long on .
@@ -87,6 +90,8 @@ public class UI_TabLog implements IUI_TabMain {
         dataEdit.setText(account);
         dataEdit.addTextChangedListener(new UI_TabLog.AccountUpdater());
         //dataEdit.clearFocus();
+
+        //LogToSystem.d(TAG + "initUI", FileInforModel.class.getFields()[0].getName());
 
         displayLog("日志面板初始化完成:" + account);
     }

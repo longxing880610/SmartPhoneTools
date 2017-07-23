@@ -32,18 +32,6 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
-    //region 增加音乐功能
-    /**
-     * 规定开始音乐、暂停音乐、结束音乐的标志
-     */
-    public static final int PLAT_MUSIC = 1;
-    public static final int PAUSE_MUSIC = 2;
-    public static final int STOP_MUSIC = 3;
-
-    private MyBroadCastReceiver receiver;
-    //endregion
-
-
     private static final String TAG = "MyLog/MainActivity";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -78,13 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        //region 增加音乐功能
-        receiver = new MyBroadCastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("com.complete");
-        registerReceiver(receiver, filter);
-        //endregion
-
         String userName = getIntent().getStringExtra(ConstDef.cUserName);
         //String userName = bundle.getString(ConstDef.cUserName);// 得到子窗口ChildActivity的回传数据
         TextView editWel = (TextView) findViewById(R.id.editText_welcome);
@@ -106,13 +87,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
 
     }
 

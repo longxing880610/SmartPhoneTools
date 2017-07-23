@@ -38,7 +38,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
     private Bitmap mIcon3;
     private Bitmap mIcon4;
     private List<FileStruct> items;
-    private ArrayList<FileStruct> rootItems = new ArrayList<>() ;
+    private ArrayList<FileStruct> rootItems = new ArrayList<>();
     private FileStruct mRootDir;
 
     private volatile ThreadStatus mThreadStatus = new ThreadStatus();
@@ -162,6 +162,11 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         }
 
         if (allFiles == null || allFiles.size() <= 0 || !allFiles.get(0).equals(mRootDir)) {
+            try {
+                items.add(0, new FileStruct(new File(allFiles.get(0).mFilePath)));
+            }catch (Exception ex){
+
+            }
             items.add(0, mRootDir);
         }
         notifyDataSetChanged();
@@ -177,7 +182,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             try {
 
                 boolean isRootDir = false;
-                if (items.size() > 1){
+                if (items.size() > 1) {
                     isRootDir = items.get(firstIndex).mFileDir.equals(mRootDir.mFilePath);
                 }
                 for (int i = firstIndex; i < items.size(); ++i) {
@@ -185,25 +190,25 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                     if (!item.mIsFileOrFalseDir) {
                         // only directory
                         List<FileStruct> tmpFiles = rootItems;
-                        if (isRootDir){
+                        if (isRootDir) {
                             //List<FileStruct> tmpFiles = rootItems;
                             boolean isRestored = false;
                             for (FileStruct item1 : tmpFiles) {
-                                if (item1.mFilePath.equals(item.mFilePath)){
+                                if (item1.mFilePath.equals(item.mFilePath)) {
                                     item.mSize = item1.mSize;
                                     isRestored = true;
                                     //LogToSystem.d(TAG + "run", "恢复大小的属性"+item.mFileName);
                                     break;
                                 }
                             }
-                            if (isRestored){
+                            if (isRestored) {
                                 continue;
                             }
                         }
 
                         item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
 
-                        if (isRootDir){
+                        if (isRootDir) {
                             tmpFiles.add(item.clone());
                             //LogToSystem.d(TAG + "run", "存储大小的属性:"+item.mFileName);
                         }

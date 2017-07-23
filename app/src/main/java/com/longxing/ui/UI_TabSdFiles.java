@@ -314,8 +314,15 @@ class UI_TabSdFiles implements IUI_TabMain {
         sendMessage(WHAT_SHOW_PATH, dir);
         //mTextViewPath.setText(dir);
         //mCurFileDirIndex = 0;
-        if (isAdd) {
+        while (isAdd) {
             int index = mCurFileDirIndex + 1;
+            try {
+                if (mFileDir.get(mCurFileDirIndex).equals(dir)) {
+                    break;
+                }
+            } catch (Exception ex) {
+
+            }
             if (index >= mFileDir.size()) {
                 mFileDir.add(dir);
                 mCurFileDirIndex = mFileDir.size() - 1;
@@ -327,6 +334,7 @@ class UI_TabSdFiles implements IUI_TabMain {
                 mCurFileDirIndex = index;
             }
             //mCurFileDirIndex = mFileDir.size() - 1;
+            break;
         }
 
         FileManage.GetFiles(dir, isShow_Hidefile, mFileNames);
