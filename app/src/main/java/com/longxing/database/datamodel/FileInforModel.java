@@ -6,5 +6,11 @@ package com.longxing.database.datamodel;
 
 public class FileInforModel extends BaseModel{
 
-
+    public String fileName;
+    public String filePath;
+    public String fileSize;
+    public String fileDir;
+    public String fileCreatetime;
+    public String isHide;
+    public String isFileOrFalseDir;
 }

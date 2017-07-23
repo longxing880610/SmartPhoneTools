@@ -4,22 +4,23 @@ import android.database.sqlite.SQLiteDatabase;
 
 /**
  * Created by Zhang Long on 2017/7/23.
- *
+ * <p>
  * interface table database
  */
 
 public interface ITableDb {
     /**
-     *
-     * @param db
+     * @return
      */
-    void newTable(SQLiteDatabase db);
+    String newTable();
 
     /**
      *
-     * @param db
+     * @param oldVersion
+     * @param newVersion
+     * @return
      */
-    void upGradeTable(SQLiteDatabase db);
+    String upGradeTable(int oldVersion, int newVersion);
 
 
 }

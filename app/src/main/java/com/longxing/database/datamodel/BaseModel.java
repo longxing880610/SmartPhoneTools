@@ -5,5 +5,7 @@ package com.longxing.database.datamodel;
  */
 
 public class BaseModel {
-    public String id;
+    public int id;
+    public String code;
+    public String updatetime;
 }

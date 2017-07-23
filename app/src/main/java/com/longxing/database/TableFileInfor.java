@@ -26,7 +26,7 @@ public class TableFileInfor implements ITableDb {
     }
 
     @Override
-    public void newTable(SQLiteDatabase db) {
+    public String newTable() {
         StringBuilder sql = new StringBuilder();
         sql.append("CREATE TABLE ");
         sql.append(cNameTable);// getClass().getFields()[0].getName();
@@ -35,12 +35,13 @@ public class TableFileInfor implements ITableDb {
             sql.append(", " + item.getName() + " TEXT");
         }
         sql.append(");");
-        db.execSQL(sql.toString());
+        //db.execSQL(sql.toString());
+        return sql.toString();
     }
 
     @Override
-    public void upGradeTable(SQLiteDatabase db) {
-
+    public String upGradeTable(int oldVersion, int newVersion) {
+        return null;
     }
 
 }
