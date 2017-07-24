@@ -6,7 +6,6 @@ package com.longxing.log;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,7 +26,7 @@ import java.util.Locale;
  */
 public class LogToFile {
 
-    private static String TAG = "MyLog/LogToFile";
+    private static String TAG = "MyLog/LogToFile/";
 
     private static String logPath = "storage/emulated/0/CardEmulate/Logs";//log日志存放路径
 

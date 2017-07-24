@@ -5,10 +5,15 @@
 package javacard.framework;
 
 /**
- * Created by yuchangnet on 2017/6/29.
+ * Created by Zhang Long on 2017/6/29.
+ *
+ * iso exception
  */
 public class ISOException extends Exception {
-    public short m_reasonVal = 0;
+
+    private static final long serialVersionUID = 1000000;
+
+    private short m_reasonVal = 0;
 
     private static ISOException s_ownObj = new ISOException();
 

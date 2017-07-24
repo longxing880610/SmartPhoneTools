@@ -34,7 +34,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
     */
     private LayoutInflater mInflater;
     private Bitmap mIcon1;
-    private Bitmap mIcon2;
+    //private Bitmap mIcon2;
     private Bitmap mIcon3;
     private Bitmap mIcon4;
     private List<FileStruct> items;
@@ -49,14 +49,10 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         /* 参数初始化 */
         mInflater = LayoutInflater.from(context);
         items = it;
-        mIcon1 = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.back01);
-        mIcon2 = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.back02);
-        mIcon3 = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.folder);
-        mIcon4 = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.doc);
+        mIcon1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.back01);
+        //mIcon2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.back02);
+        mIcon3 = BitmapFactory.decodeResource(context.getResources(), R.drawable.folder);
+        mIcon4 = BitmapFactory.decodeResource(context.getResources(), R.drawable.doc);
         mRootDir = rootDir;
     }
 
@@ -164,7 +160,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         if (allFiles == null || allFiles.size() <= 0 || !allFiles.get(0).equals(mRootDir)) {
             try {
                 items.add(0, new FileStruct(new File(allFiles.get(0).mFilePath)));
-            }catch (Exception ex){
+            } catch (Exception ex) {
 
             }
             items.add(0, mRootDir);

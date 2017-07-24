@@ -1,13 +1,10 @@
 package com.longxing.ui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.longxing.R;
 import com.longxing.peripheral.MyBroadCastReceiver;

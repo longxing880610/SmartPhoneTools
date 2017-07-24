@@ -17,7 +17,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     /**
      * tag for tab view
      */
-    private static final String TAG = "MyLog/SectionsPagerAdap";
+    //private static final String TAG = "MyLog/SectionsPagerAdap/";
 
     private View[] mViewPages = new View[3];
     private static final int[] mResIds = {R.layout.tab_log, R.layout.tab_sd_card, R.layout.tab_music};

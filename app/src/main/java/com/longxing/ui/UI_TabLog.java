@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -14,9 +13,6 @@ import android.widget.TextView;
 
 import com.longxing.R;
 import com.longxing.cardemulation.AccountStorage;
-import com.longxing.database.datamodel.FileInforModel;
-import com.longxing.log.LogToFile;
-import com.longxing.log.LogToSystem;
 
 /**
  * Created by Zhang Long on .
@@ -28,7 +24,7 @@ public class UI_TabLog implements IUI_TabMain {
     /**
      * tag for log
      */
-    private static final String TAG = "MyLog/UI_TabLog";
+    //private static final String TAG = "MyLog/UI_TabLog/";
 
     private static final String cKeyLog = "logMsg";
 
