@@ -1,7 +1,5 @@
 package com.longxing.database;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import com.longxing.database.datamodel.FileInforModel;
 
 import java.lang.reflect.Field;

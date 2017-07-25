@@ -16,28 +16,28 @@
         android:id="@+id/btn_startmusic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="开始" />
+        android:text="@string/strStart" />
         <Button
             android:id="@+id/btn_pausemusic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="暂停" />
+            android:text="@string/strPause" />
         <Button
             android:id="@+id/btn_stopmusic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="停止" />
+            android:text="@string/strStop" />
     </GridLayout>
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="界面3" />
+        android:text="@string/strUi3" />
 
 
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="欢迎来到界面3" />
+        android:text="@string/str_Welcom3" />
 </LinearLayout>

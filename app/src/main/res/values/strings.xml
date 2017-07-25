@@ -21,4 +21,15 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="strStop">停止</string>
+    <string name="strStart">开始</string>
+    <string name="strPause">暂停</string>
+    <string name="str_Welcom3">欢迎来到界面3</string>
+    <string name="strUi3">界面3</string>
+    <string name="strForward">前进</string>
+    <string name="strBackward">回退</string>
+    <string name="strShowHideFile">显示隐藏文件</string>
+    <string name="strRootdir">根目录</string>
+    <string name="strDirectory">目录</string>
+    <string name="strInputKey">输入搜索关键字</string>
 </resources>
