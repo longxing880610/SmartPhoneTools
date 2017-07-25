@@ -15,6 +15,7 @@ public class FileStruct{
      * file when true, directory when false
      */
     public boolean mIsFileOrFalseDir = false;
+    public boolean mIsParent = false;
 
     public FileStruct(File file){
         mFileName = file.getName();
@@ -29,6 +30,7 @@ public class FileStruct{
         {
             mSize = 0;
         }
+        mIsParent = false;
     }
 
     private FileStruct(){

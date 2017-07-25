@@ -317,7 +317,7 @@ class UI_TabSdFiles implements IUI_TabMain {
             int index = mCurFileDirIndex + 1;
             try {
                 if (mFileDir.get(mCurFileDirIndex).equals(dir)) {
-                    break;
+                    return true;
                 }
             } catch (Exception ex) {
 

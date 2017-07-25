@@ -26,6 +26,10 @@ import com.longxing.log.LogToSystem;
 public class ListItemAdapter extends BaseAdapter implements Runnable {
 
     private static final String TAG = "MyLog/ListItemAdapter/";
+    /**
+     * 回到根目录与回到上级目录是前两个元素
+     */
+    private static final int LENGTH_SPECIAL_DIRECOTRY = 2;
     /* 变量声明
      mIcon1：回到根目录的图文件
      mIcon2：回到上一层的图档
@@ -34,7 +38,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
     */
     private LayoutInflater mInflater;
     private Bitmap mIcon1;
-    //private Bitmap mIcon2;
+    private Bitmap mIcon2;
     private Bitmap mIcon3;
     private Bitmap mIcon4;
     private List<FileStruct> items;
@@ -50,7 +54,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         mInflater = LayoutInflater.from(context);
         items = it;
         mIcon1 = BitmapFactory.decodeResource(context.getResources(), R.drawable.back01);
-        //mIcon2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.back02);
+        mIcon2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.back02);
         mIcon3 = BitmapFactory.decodeResource(context.getResources(), R.drawable.folder);
         mIcon4 = BitmapFactory.decodeResource(context.getResources(), R.drawable.doc);
         mRootDir = rootDir;
@@ -93,11 +97,15 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         FileStruct fileStruct = items.get(position);
 
         String showSize = "";
-        if (items.get(position).equals(mRootDir)) {
+        if (fileStruct.equals(mRootDir)) {
             holder.text.setText("Back to root directory");
             holder.icon.setImageBitmap(mIcon1);
 
             showSize += "空闲:";
+        } else if (fileStruct.mIsParent) {
+            holder.text.setText(fileStruct.mFileName);
+            holder.icon.setImageBitmap(mIcon2);
+            // showSize += "空闲:";
         } else {
             holder.text.setText(fileStruct.mFileName);
             if (!fileStruct.mIsFileOrFalseDir) {
@@ -159,7 +167,11 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
 
         if (allFiles == null || allFiles.size() <= 0 || !allFiles.get(0).equals(mRootDir)) {
             try {
-                items.add(0, new FileStruct(new File(allFiles.get(0).mFilePath)));
+                if (!allFiles.get(0).mFileDir.equals(mRootDir.mFilePath)) {
+                    FileStruct tmpFile = new FileStruct(new File(allFiles.get(0).mFileDir).getParentFile());
+                    tmpFile.mIsParent = true;
+                    items.add(0, tmpFile);
+                }
             } catch (Exception ex) {
 
             }
@@ -171,7 +183,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
     @Override
     public void run() {
         boolean isOver = false;
-        int firstIndex = 1;
+        int firstIndex = LENGTH_SPECIAL_DIRECOTRY;
 
         LogToSystem.d(TAG + "run", "start run:" + isOver);
         do {
@@ -204,10 +216,10 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
 
                         item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
 
-                        if (isRootDir) {
+                        //if (isRootDir) {
                             tmpFiles.add(item.clone());
                             //LogToSystem.d(TAG + "run", "存储大小的属性:"+item.mFileName);
-                        }
+                        //}
 
                         //LogToSystem.d(TAG + "run", item.mFileName + "&" + item.mSize);
                     }

@@ -36,17 +36,22 @@ public class FileManage {
             return true;//name.startsWith("a");
         });
 
-        for (File item : files) {
-            if (!isShow_Hidefile) {
-                if (item.isHidden()) {
-                    //LogToSystem.d(TAG+GetFiles, item.getName());
-                    continue;
+        if (files != null) {
+            for (File item : files) {
+                if (!isShow_Hidefile) {
+                    if (item.isHidden()) {
+                        //LogToSystem.d(TAG+GetFiles, item.getName());
+                        continue;
+                    }
                 }
+                FileStruct fileStruct = new FileStruct(item);
+                fileDirList.add(fileStruct);
             }
-            FileStruct fileStruct = new FileStruct(item);
-            fileDirList.add(fileStruct);
+            Collections.sort(fileDirList, (o1, o2) -> o1.mFileName.toLowerCase().compareTo(o2.mFileName.toLowerCase()));
+        } else {
+            LogToSystem.e(TAG + "GetFiles", "no privilege for this directory");
         }
-        Collections.sort(fileDirList, (o1, o2) -> o1.mFileName.toLowerCase().compareTo(o2.mFileName.toLowerCase()));
+
 
         return fileDirList;
     }
@@ -186,7 +191,7 @@ public class FileManage {
         try {
             java.io.File[] fileList = file.listFiles();
             for (int i = 0; i < fileList.length; i++) {
-                if (status.isRestart){
+                if (status.isRestart) {
                     break;
                 }
                 if (fileList[i].isDirectory()) {
