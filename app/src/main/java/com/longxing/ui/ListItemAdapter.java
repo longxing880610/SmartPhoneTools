@@ -180,14 +180,17 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         notifyDataSetChanged();
     }
 
+    /**
+     *
+     */
     @Override
     public void run() {
-        boolean isOver = false;
+        boolean isOver = true;
         int firstIndex = LENGTH_SPECIAL_DIRECOTRY;
 
         //LogToSystem.d(TAG + "run", "start run:" + isOver);
         List<FileStruct> tmpFiles = rootItems;
-        do {
+        while (!isOver) {
             try {
                 FileStruct tmpFileStruct = null;
 
@@ -286,7 +289,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             } catch (Exception ex) {
                 LogToSystem.e(TAG + "run", ex.getMessage());
             }
-        } while (!isOver);
+        }
 
         LogToSystem.d(TAG + "run", "end run:" + tmpFiles.size());
 

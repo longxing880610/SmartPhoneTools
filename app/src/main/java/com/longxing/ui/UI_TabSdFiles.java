@@ -8,10 +8,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.longxing.R;
@@ -218,16 +221,12 @@ class UI_TabSdFiles implements IUI_TabMain {
             }
         });
 
-        // root dir button
-        Button btnUp = (Button) rootView.findViewById(R.id.button_up);
-        btnUp.setOnClickListener(v -> {
-            // LogToSystem.d(TAG, "跳转上一目录");
-            // 根
-            if (!rootDir.equals(mFileDir.get(mCurFileDirIndex))) {
-                // 不是根目录才起作用
-                switchDir(rootDir, true);
-            }
-        });
+        Spinner searchCondition = (Spinner) rootView.findViewById(R.id.spinner_search);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter
+                .createFromResource(mMainActivity, R.array.searchCondition,
+                        android.R.layout.simple_spinner_dropdown_item);
+        searchCondition.setAdapter(adapter);
+        //searchCondition.setOnItemClickListener(new SearchConditionOnClickList());
 
         // show or hide the hide file
         CheckBox showHideFile = (CheckBox) rootView.findViewById(R.id.checkBox_showHideFile);
@@ -252,6 +251,22 @@ class UI_TabSdFiles implements IUI_TabMain {
 
         displayLog("SD文件管理加载完成");
     }
+
+    //region 窗体事件响应函数
+
+    /**
+     * 排序筛选条件点击事件处理类
+     */
+    private class SearchConditionOnClickList implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Spinner spinner = (Spinner) view;
+            LogToSystem.d(TAG + "SearchConditionOnClickList", spinner.getSelectedItem().toString());
+        }
+    }
+
+    //endregion
+
 
     @Override
     public boolean processKeyDown(int keyCode, KeyEvent event) {

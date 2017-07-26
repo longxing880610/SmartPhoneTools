@@ -46,7 +46,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private static final String TAG = "MyLog/LoginActivity";
+    private static final String TAG = "MyLog/LoginActivity/";
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -58,7 +58,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /**
      * A dummy authentication store containing known user names and passwords.
-     *
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "123:", "王雅平:我爱张龙", "张龙:我爱王雅平"
@@ -112,18 +111,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // login automatic
         //状态 判断
         //if (savedInstanceState != null) {
-            String username = SytemSetting.GetCfg(this, ConstDef.cUserName);
-            String password = SytemSetting.GetCfg(this, ConstDef.cPassword);
-            if (username != null) {
-                //LogToSystem.d(TAG, "onCreate:恢复用户名:" + username);
-                sUserName = username;
-            }
-            if (password != null) {
-                //LogToSystem.d(TAG, "onCreate:恢复密码:" + password);
-                sPassword = password;
-            }
+        String username = SytemSetting.GetCfg(this, ConstDef.cUserName);
+        String password = SytemSetting.GetCfg(this, ConstDef.cPassword);
+        if (username != null) {
+            //LogToSystem.d(TAG, "onCreate:恢复用户名:" + username);
+            sUserName = username;
+        }
+        if (password != null) {
+            //LogToSystem.d(TAG, "onCreate:恢复密码:" + password);
+            sPassword = password;
+        }
         //}
-        LogToSystem.d(TAG, "onCreate:自动登陆");
+        LogToSystem.d(TAG + "onCreate", "自动登陆");
         attemptLogin(sUserName, sPassword);
     }
 
@@ -337,7 +336,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
         //LogToSystem.d(TAG, "HELLO：当Activity被销毁的时候，不是用户主动按back销毁，例如按了home键");
 

@@ -24,16 +24,21 @@
 
         <Button
             android:id="@+id/button_back"
-            android:layout_width="wrap_content"
+            android:layout_width="200px"
             android:layout_height="wrap_content"
             android:text="@string/strBackward" />
 
         <Button
             android:id="@+id/button_forward"
-            android:layout_width="wrap_content"
+            android:layout_width="200px"
             android:layout_height="wrap_content"
             android:text="@string/strForward" />
 
+        <Spinner
+            android:id="@+id/spinner_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/searchCondition" />
         <CheckBox
             android:id="@+id/checkBox_showHideFile"
             android:layout_width="wrap_content"
@@ -41,12 +46,6 @@
             android:checked="false"
             android:text="@string/strShowHideFile" />
 
-        <Button
-            android:id="@+id/button_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/strRootdir"
-            android:visibility="invisible" />
     </GridLayout>
 
     <EditText
