@@ -222,11 +222,10 @@ class UI_TabSdFiles implements IUI_TabMain {
         });
 
         Spinner searchCondition = (Spinner) rootView.findViewById(R.id.spinner_search);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter
-                .createFromResource(mMainActivity, R.array.searchCondition,
-                        android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(mMainActivity, android.R.layout.simple_spinner_dropdown_item, ListItemAdapter.cSEARCH_CONDITION);
+
         searchCondition.setAdapter(adapter);
-        //searchCondition.setOnItemClickListener(new SearchConditionOnClickList());
+        searchCondition.setOnItemSelectedListener(new SearchConditionOnClickList());
 
         // show or hide the hide file
         CheckBox showHideFile = (CheckBox) rootView.findViewById(R.id.checkBox_showHideFile);
@@ -257,11 +256,16 @@ class UI_TabSdFiles implements IUI_TabMain {
     /**
      * 排序筛选条件点击事件处理类
      */
-    private class SearchConditionOnClickList implements AdapterView.OnItemClickListener {
+    private class SearchConditionOnClickList implements AdapterView.OnItemSelectedListener {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Spinner spinner = (Spinner) view;
-            LogToSystem.d(TAG + "SearchConditionOnClickList", spinner.getSelectedItem().toString());
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Spinner spinner = (Spinner) parent;
+            mAdapter.sortByUser(spinner.getSelectedItem().toString());
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
         }
     }
 

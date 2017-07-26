@@ -20,12 +20,14 @@ import com.longxing.log.LogToSystem;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /* 自定义的Adapter，继承android.widget.BaseAdapter */
 public class ListItemAdapter extends BaseAdapter implements Runnable {
 
     private static final String TAG = "MyLog/ListItemAdapter/";
+    public static final String cSEARCH_CONDITION[] = {"名称", "大小"};
     /**
      * 回到根目录与回到上级目录是前两个元素
      */
@@ -180,12 +182,37 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         notifyDataSetChanged();
     }
 
+    public void sortByUser(String type) {
+
+        switch (type) {
+            case "名称":
+                items.sort(new Comparator<FileStruct>() {
+                    @Override
+                    public int compare(FileStruct o1, FileStruct o2) {
+                        return o1.mFileName.compareToIgnoreCase(o2.mFileName);
+                    }
+                });
+                break;
+            case "大小":
+                items.sort(new Comparator<FileStruct>() {
+                    @Override
+                    public int compare(FileStruct o1, FileStruct o2) {
+                        return (int) (o2.mSize - o1.mSize);
+                    }
+                });
+                break;
+            default:
+                return;
+        }
+        notifyDataSetChanged(false);
+    }
+
     /**
      *
      */
     @Override
     public void run() {
-        boolean isOver = true;
+        boolean isOver = false;
         int firstIndex = LENGTH_SPECIAL_DIRECOTRY;
 
         //LogToSystem.d(TAG + "run", "start run:" + isOver);
@@ -252,7 +279,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                 //LogToSystem.i(TAG + "run", "search goon");
                 for (int i = firstIndex; i < items.size(); ++i) {
                     FileStruct item = items.get(i);
-                    if (item.mIsSizeCaled){
+                    if (item.mIsSizeCaled) {
                         // 已经有长度的不需要两次计算长度
                         continue;
                     }

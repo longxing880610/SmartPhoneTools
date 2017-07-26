@@ -11,7 +11,9 @@ import com.longxing.common.ThreadStatus_ListFiles;
 import com.longxing.log.LogToSystem;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -49,8 +51,6 @@ public class FileManage {
                 FileStruct fileStruct = new FileStruct(item);
                 fileDirList.add(fileStruct);
             }
-            System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
-            Collections.sort(fileDirList, (o1, o2) -> o1.mFileName.toLowerCase().compareTo(o2.mFileName.toLowerCase()));
         } else {
             LogToSystem.e(TAG + "GetFiles", "no privilege for this directory");
         }
