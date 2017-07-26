@@ -1,10 +1,6 @@
 package com.longxing.ui;
 //Download by http://ww.codefans.net
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,10 +13,14 @@ import android.widget.TextView;
 
 import com.longxing.R;
 import com.longxing.common.MyException;
-import com.longxing.common.ThreadStatus;
+import com.longxing.common.ThreadStatus_ListFiles;
 import com.longxing.file.FileManage;
 import com.longxing.file.FileStruct;
 import com.longxing.log.LogToSystem;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /* 自定义的Adapter，继承android.widget.BaseAdapter */
 public class ListItemAdapter extends BaseAdapter implements Runnable {
@@ -45,7 +45,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
     private ArrayList<FileStruct> rootItems = new ArrayList<>();
     private FileStruct mRootDir;
 
-    private volatile ThreadStatus mThreadStatus = new ThreadStatus();
+    private volatile ThreadStatus_ListFiles mThreadStatus = new ThreadStatus_ListFiles();
     private Thread thread = null;
 
     /* MyAdapter的构造器，传入三个参数 */
@@ -185,7 +185,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         boolean isOver = false;
         int firstIndex = LENGTH_SPECIAL_DIRECOTRY;
 
-        LogToSystem.d(TAG + "run", "start run:" + isOver);
+        //LogToSystem.d(TAG + "run", "start run:" + isOver);
         List<FileStruct> tmpFiles = rootItems;
         do {
             try {
@@ -221,7 +221,8 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                         }
                         //}
                         try {
-                            item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus, 3);
+                            mThreadStatus.mFileTryCount = 100;
+                            item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
 
                             if (mThreadStatus.isRestart) {
                                 mThreadStatus.isRestart = false;
@@ -245,7 +246,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                 }
                 UI_TabSdFiles.getInstance().sendMessage(UI_TabSdFiles.WHAT_UPDATE_FILELIST_FORCE, null);
                 //////////////////////////////////////////////////////////////////////////////////
-                LogToSystem.i(TAG + "run", "search goon");
+                //LogToSystem.i(TAG + "run", "search goon");
                 for (int i = firstIndex; i < items.size(); ++i) {
                     FileStruct item = items.get(i);
                     if (item.mIsSizeCaled){
@@ -261,9 +262,10 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                             }
                         }
 
-                        LogToSystem.d(TAG + "run", "large directory:" + item);
+                        //LogToSystem.d(TAG + "run", "large directory:" + item);
 
-                        item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus, FileManage.DEPTH_INFEINE);
+                        mThreadStatus.mFileTryCount = ThreadStatus_ListFiles.DEPTH_INFEINE;
+                        item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
                         item.mIsSizeCaled = true;
 
                         item.mSearchInSecond = false;
@@ -286,7 +288,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             }
         } while (!isOver);
 
-        LogToSystem.d(TAG + "run", "end run" + tmpFiles.size());
+        LogToSystem.d(TAG + "run", "end run:" + tmpFiles.size());
 
         UI_TabSdFiles.getInstance().sendMessage(UI_TabSdFiles.WHAT_UPDATE_FILELIST_FORCE, null);
         //notifyDataSetChanged(false);

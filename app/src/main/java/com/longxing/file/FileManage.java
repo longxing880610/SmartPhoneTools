@@ -7,6 +7,7 @@ import android.support.v4.content.FileProvider;
 
 import com.longxing.common.MyException;
 import com.longxing.common.ThreadStatus;
+import com.longxing.common.ThreadStatus_ListFiles;
 import com.longxing.log.LogToSystem;
 
 import java.io.File;
@@ -20,7 +21,6 @@ import java.util.List;
  */
 public class FileManage {
     private static final String TAG = "MyLog/FileManage/";
-    public static final int DEPTH_INFEINE = -1;
 
     /**
      * 获取文件及目录列表
@@ -82,7 +82,7 @@ public class FileManage {
         try {
             context.startActivity(intent);
         } catch (Exception ex) {
-            LogToSystem.e(TAG+"openFile", ex.getMessage());
+            LogToSystem.e(TAG + "openFile", ex.getMessage());
         }
     }
 
@@ -186,26 +186,31 @@ public class FileManage {
      * 获取文件夹大小
      *
      * @param file   File实例
-     * @param status 线程退出时的通知
-     * @param depth  大于0代表只允许搜索多少层子目录, 小于0代表会穷举所有子目录
+     * @param status 线程退出时的通知 ThreadStatus_ListFiles.mFileTryCount大于0代表只允许搜索多少层子目录, 小于0代表会穷举所有子目录
      * @return 文件大小
      */
-    public static long getFolderSize(java.io.File file, ThreadStatus status, int depth) throws MyException {
-    // TODO: depth改成类,,,计算文件与文件夹总数
+    public static long getFolderSize(java.io.File file, ThreadStatus_ListFiles status) throws MyException {
+        // TODO: depth改成类,,,计算文件与文件夹总数
         long size = 0;
 
 
         try {
-            if (depth == 0) {
+            if (status.mFileTryCount == 0) {
                 throw new MyException("超出搜索深度");
             }
             java.io.File[] fileList = file.listFiles();
-            for (int i = 0; i < fileList.length; i++) {
+            int count = fileList.length;
+            //status.mFileTryCount -= count;
+            if (status.mFileTryCount >= 0 && status.mFileTryCount < count) {
+                throw new MyException("超出搜索深度");
+            }
+            status.mFileTryCount -= count;
+            for (int i = 0; i < count; i++) {
                 if (status.isRestart) {
                     break;
                 }
                 if (fileList[i].isDirectory()) {
-                    size = size + getFolderSize(fileList[i], status, --depth);
+                    size = size + getFolderSize(fileList[i], status);
                 } else {
                     size = size + fileList[i].length();
                 }
