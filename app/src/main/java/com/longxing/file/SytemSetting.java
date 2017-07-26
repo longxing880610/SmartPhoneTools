@@ -3,7 +3,6 @@ package com.longxing.file;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.longxing.log.LogToSystem;
 

@@ -7,6 +7,7 @@ package com.longxing.peripheral;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -17,6 +18,18 @@ import com.longxing.ui.UI_TabMusic;
  * 这是一个Start Service
  */
 public class PlayingMusicServices extends Service {
+
+    /**
+     * 规定开始音乐、暂停音乐、结束音乐的标志
+     */
+    public  static final int PLAT_MUSIC=1;
+    public  static final int PAUSE_MUSIC=2;
+    public  static final int STOP_MUSIC=3;
+
+    public static final String cPARAM_TYPE = "type";
+    public static final String cPARAM_FILEPATH = "path";
+    public static final String cPARAM_FILEPATH_INT = "pathInt";
+
     //用于播放音乐等媒体资源
     private MediaPlayer mediaPlayer;
     //标志判断播放歌曲是否是停止之后重新播放，还是继续播放
@@ -70,13 +83,20 @@ public class PlayingMusicServices extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        switch (intent.getIntExtra("type", -1)) {
-            case UI_TabMusic.PLAT_MUSIC:
+        switch (intent.getIntExtra(cPARAM_TYPE, -1)) {
+            case PLAT_MUSIC:
                 if (isStop) {
                     //重置mediaplayer
                     mediaPlayer.reset();
                     //将需要播放的资源与之绑定
-                    mediaPlayer = MediaPlayer.create(this, R.raw.dingdang_shouzhangxin);
+                    int pathInt = intent.getIntExtra(cPARAM_FILEPATH_INT, -1);
+                    if (pathInt != -1){ // 使用系统资源,打包在APK里面
+                        mediaPlayer = MediaPlayer.create(this, pathInt);
+                    }
+                    else{
+                        String path = intent.getStringExtra(cPARAM_FILEPATH);
+                        mediaPlayer = MediaPlayer.create(this, Uri.parse(path));
+                    }
                     //开始播放
                     mediaPlayer.start();
                     //是否循环播放
@@ -86,14 +106,14 @@ public class PlayingMusicServices extends Service {
                     mediaPlayer.start();
                 }
                 break;
-            case UI_TabMusic.PAUSE_MUSIC:
+            case PAUSE_MUSIC:
                 //播放器不为空，并且正在播放
                 if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
 
                 }
                 break;
-            case UI_TabMusic.STOP_MUSIC:
+            case STOP_MUSIC:
                 if (mediaPlayer != null) {
                     //停止之后要开始播放音乐
                     mediaPlayer.stop();

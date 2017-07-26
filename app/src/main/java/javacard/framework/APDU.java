@@ -26,8 +26,11 @@ public class APDU {
 
     ///////////////////////////////////////////////////////
 
-    public void setOutgoing() {
+    public void setOutgoing() throws JavacardException {
         m_outgoingLen = 0;
+        if (m_isOutgoing) {
+            throw new JavacardException(JavacardException.c_javacardCheck, "setOutgoing不可重复调用");
+        }
         m_isOutgoing = true;
     }
 

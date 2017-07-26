@@ -8,12 +8,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -26,13 +20,7 @@ import java.util.Locale;
  * Created by waka on 2016/3/14.
  */
 public class LogToSystem {
-    private static String TAG = "MyLog/LogToSystem";
-
-    private static String logPath = "storage/emulated/0/CardEmulate/Logs";//log日志存放路径
-
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US);//日期格式;
-
-    private static Date date = new Date();//因为log日志是使用日期命名的，使用静态成员变量主要是为了在整个程序运行期间只存在一个.log文件中;
+    //private static String TAG = "MyLog/LogToSystem/";
 
     /**
      * 初始化，须在使用之前设置，最好在Application创建时调用
@@ -40,7 +28,7 @@ public class LogToSystem {
      * @param context
      */
     public static void init(Context context) {
-        logPath = getFilePath(context) + "/Logs";//获得文件储存路径,在后面加"/Logs"建立子文件夹
+        //logPath = getFilePath(context) + "/Logs";//获得文件储存路径,在后面加"/Logs"建立子文件夹
     }
 
     /**
@@ -101,7 +89,7 @@ public class LogToSystem {
     /**
      * 将log信息写入文件中
      *
-     * @param type
+     * @param prioty
      * @param tag
      * @param msg
      */

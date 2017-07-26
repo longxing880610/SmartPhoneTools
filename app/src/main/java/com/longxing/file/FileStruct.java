@@ -1,6 +1,7 @@
 package com.longxing.file;
 
 import java.io.File;
+import java.util.Comparator;
 
 /**
  * File struct
@@ -16,6 +17,8 @@ public class FileStruct{
      */
     public boolean mIsFileOrFalseDir = false;
     public boolean mIsParent = false;
+    public boolean mIsSizeCaled = false;
+    public boolean mSearchInSecond = false;
 
     public FileStruct(File file){
         mFileName = file.getName();
@@ -49,6 +52,21 @@ public class FileStruct{
         retValue.mFileName = mFileName;
         retValue.mFileDir = mFileDir;
         retValue.mIsHide = mIsHide;
+        retValue.mIsParent = mIsParent;
+        retValue.mIsSizeCaled = mIsSizeCaled;
+        retValue.mSearchInSecond = mSearchInSecond;
         return  retValue;
+    }
+
+    public void setByFileStruct(FileStruct fileStruct) {
+        mFilePath = fileStruct.mFilePath;
+        mSize = fileStruct.mSize;
+        mIsFileOrFalseDir = fileStruct.mIsFileOrFalseDir;
+        mFileName = fileStruct.mFileName;
+        mFileDir = fileStruct.mFileDir;
+        mIsHide = fileStruct.mIsHide;
+        mIsParent = fileStruct.mIsParent;
+        mIsSizeCaled = fileStruct.mIsSizeCaled;
+        mSearchInSecond = fileStruct.mSearchInSecond;
     }
 }

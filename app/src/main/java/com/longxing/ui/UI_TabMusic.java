@@ -15,12 +15,7 @@ import com.longxing.peripheral.PlayingMusicServices;
  * 实现播放音乐功能
  */
 public class UI_TabMusic implements IUI_TabMain {
-    /**
-     * 规定开始音乐、暂停音乐、结束音乐的标志
-     */
-    public  static final int PLAT_MUSIC=1;
-    public  static final int PAUSE_MUSIC=2;
-    public  static final int STOP_MUSIC=3;
+
 
     private MyBroadCastReceiver receiver;
 
@@ -40,22 +35,23 @@ public class UI_TabMusic implements IUI_TabMain {
         }
         return sUiTabMusic;
     }
+
     public
     @Override
     void initUI(View rootView) {
-        receiver=new MyBroadCastReceiver();
-        IntentFilter filter=new IntentFilter();
+        receiver = new MyBroadCastReceiver();
+        IntentFilter filter = new IntentFilter();
         filter.addAction("com.complete");
-        mMainActivity.registerReceiver(receiver,filter);
+        mMainActivity.registerReceiver(receiver, filter);
 
-        Button btn = (Button)rootView.findViewById(R.id.btn_startmusic);
+        Button btn = (Button) rootView.findViewById(R.id.btn_startmusic);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onClick1(v);
             }
         });
-        btn = (Button)rootView.findViewById(R.id.btn_pausemusic);
+        btn = (Button) rootView.findViewById(R.id.btn_pausemusic);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +59,7 @@ public class UI_TabMusic implements IUI_TabMain {
             }
         });
 
-        btn = (Button)rootView.findViewById(R.id.btn_stopmusic);
+        btn = (Button) rootView.findViewById(R.id.btn_stopmusic);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,27 +80,33 @@ public class UI_TabMusic implements IUI_TabMain {
         }
     }
 
-    public void onClick1(View view){
-        switch (view.getId()){
+    public void onClick1(View view) {
+        switch (view.getId()) {
             //开始音乐
             case R.id.btn_startmusic:
-                playingmusic(PLAT_MUSIC);
+                //启动服务，播放音乐
+                Intent intent = new Intent(mMainActivity, PlayingMusicServices.class);
+                intent.putExtra(PlayingMusicServices.cPARAM_TYPE, PlayingMusicServices.PLAT_MUSIC);
+                intent.putExtra(PlayingMusicServices.cPARAM_FILEPATH_INT, R.raw.dingdang_shouzhangxin);
+                mMainActivity.startService(intent);
+                //playingmusic(PLAT_MUSIC);
                 break;
             //暂停
             case R.id.btn_pausemusic:
-                playingmusic(PAUSE_MUSIC);
+                playingmusic(PlayingMusicServices.PAUSE_MUSIC);
                 break;
             //停止
             case R.id.btn_stopmusic:
-                playingmusic(STOP_MUSIC);
+                playingmusic(PlayingMusicServices.STOP_MUSIC);
                 break;
         }
     }
 
     private void playingmusic(int type) {
         //启动服务，播放音乐
-        Intent intent=new Intent(mMainActivity, PlayingMusicServices.class);
-        intent.putExtra("type",type);
+        Intent intent = new Intent(mMainActivity, PlayingMusicServices.class);
+        intent.putExtra("type", type);
+        intent.putExtra("path", type);
         mMainActivity.startService(intent);
     }
 

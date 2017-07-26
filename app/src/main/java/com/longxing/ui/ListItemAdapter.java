@@ -186,42 +186,94 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         int firstIndex = LENGTH_SPECIAL_DIRECOTRY;
 
         LogToSystem.d(TAG + "run", "start run:" + isOver);
+        List<FileStruct> tmpFiles = rootItems;
         do {
             try {
+                FileStruct tmpFileStruct = null;
 
-                boolean isRootDir = false;
-                if (items.size() > 1) {
-                    isRootDir = items.get(firstIndex).mFileDir.equals(mRootDir.mFilePath);
-                }
                 for (int i = firstIndex; i < items.size(); ++i) {
                     FileStruct item = items.get(i);
                     if (!item.mIsFileOrFalseDir) {
+
                         // only directory
-                        List<FileStruct> tmpFiles = rootItems;
-                        if (isRootDir) {
-                            //List<FileStruct> tmpFiles = rootItems;
-                            boolean isRestored = false;
-                            for (FileStruct item1 : tmpFiles) {
-                                if (item1.mFilePath.equals(item.mFilePath)) {
-                                    item.mSize = item1.mSize;
+                        //List<FileStruct> tmpFiles = rootItems;
+                        //if (isRootDir) {
+                        //List<FileStruct> tmpFiles = rootItems;
+                        boolean isRestored = false;
+                        tmpFileStruct = null;
+                        for (FileStruct item1 : tmpFiles) {
+                            if (item1.mFilePath.equals(item.mFilePath)) {
+                                tmpFileStruct = item1;
+                                if (item1.mSearchInSecond) {
                                     isRestored = true;
-                                    //LogToSystem.d(TAG + "run", "恢复大小的属性"+item.mFileName);
-                                    break;
                                 }
+                                if (item1.mIsSizeCaled) {
+                                    item.mSize = item1.mSize;
+                                    item.mIsSizeCaled = true;
+                                    isRestored = true;
+                                }
+                                //LogToSystem.d(TAG + "run", "恢复大小的属性"+item.mFileName);
+                                break;
                             }
-                            if (isRestored) {
-                                continue;
+                        }
+                        if (isRestored) {
+                            continue;
+                        }
+                        //}
+                        try {
+                            item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus, 3);
+
+                            if (mThreadStatus.isRestart) {
+                                mThreadStatus.isRestart = false;
+                                throw new MyException("计算目录大小的线程重启");
+                            }
+                            item.mIsSizeCaled = true;
+                            item.mSearchInSecond = false;
+                            //if (isRootDir) {
+                        } catch (MyException ex) {
+                            item.mSearchInSecond = true;
+                            //LogToSystem.i(TAG + "run", item.mFileName + "-" + ex.getMessage());
+                        } finally {
+                            if (tmpFileStruct == null) {
+                                tmpFileStruct = item.clone();
+                                tmpFiles.add(tmpFileStruct);
+                            } else {
+                                tmpFileStruct.setByFileStruct(item);
+                            }
+                        }
+                    }
+                }
+                UI_TabSdFiles.getInstance().sendMessage(UI_TabSdFiles.WHAT_UPDATE_FILELIST_FORCE, null);
+                //////////////////////////////////////////////////////////////////////////////////
+                LogToSystem.i(TAG + "run", "search goon");
+                for (int i = firstIndex; i < items.size(); ++i) {
+                    FileStruct item = items.get(i);
+                    if (item.mIsSizeCaled){
+                        // 已经有长度的不需要两次计算长度
+                        continue;
+                    }
+                    if (!item.mIsFileOrFalseDir) {
+                        tmpFileStruct = null;
+                        for (FileStruct item1 : tmpFiles) {
+                            if (item1.mFilePath.equals(item.mFilePath)) {
+                                tmpFileStruct = item1;
+                                break;
                             }
                         }
 
-                        item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
+                        LogToSystem.d(TAG + "run", "large directory:" + item);
 
-                        //if (isRootDir) {
-                            tmpFiles.add(item.clone());
-                            //LogToSystem.d(TAG + "run", "存储大小的属性:"+item.mFileName);
-                        //}
+                        item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus, FileManage.DEPTH_INFEINE);
+                        item.mIsSizeCaled = true;
 
-                        //LogToSystem.d(TAG + "run", item.mFileName + "&" + item.mSize);
+                        item.mSearchInSecond = false;
+
+                        if (tmpFileStruct == null) {
+                            tmpFileStruct = item.clone();
+                            tmpFiles.add(tmpFileStruct);
+                        } else {
+                            tmpFileStruct.setByFileStruct(item);
+                        }
                     }
                     if (mThreadStatus.isRestart) {
                         mThreadStatus.isRestart = false;
@@ -234,7 +286,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             }
         } while (!isOver);
 
-        LogToSystem.d(TAG + "run", "end run");
+        LogToSystem.d(TAG + "run", "end run" + tmpFiles.size());
 
         UI_TabSdFiles.getInstance().sendMessage(UI_TabSdFiles.WHAT_UPDATE_FILELIST_FORCE, null);
         //notifyDataSetChanged(false);

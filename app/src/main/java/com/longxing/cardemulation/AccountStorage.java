@@ -17,8 +17,6 @@
 package com.longxing.cardemulation;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.longxing.file.SytemSetting;
 
@@ -32,8 +30,7 @@ import com.longxing.file.SytemSetting;
  */
 public class AccountStorage {
     private static final String PREF_ACCOUNT_NUMBER = "userName";
-    private static final String DEFAULT_ACCOUNT_NUMBER = "张龙";
-    private static final String TAG = "MyLog/AccountStorage";
+    //private static final String TAG = "MyLog/AccountStorage/";
     private static String sAccount = null;
     private static final Object sAccountLock = new Object();
 

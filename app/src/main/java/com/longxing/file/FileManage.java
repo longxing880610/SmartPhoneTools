@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 
+import com.longxing.common.MyException;
 import com.longxing.common.ThreadStatus;
 import com.longxing.log.LogToSystem;
 
@@ -18,7 +19,8 @@ import java.util.List;
  * File manage
  */
 public class FileManage {
-    private static String TAG = "MyLog/FileManage/";
+    private static final String TAG = "MyLog/FileManage/";
+    public static final int DEPTH_INFEINE = -1;
 
     /**
      * 获取文件及目录列表
@@ -47,6 +49,7 @@ public class FileManage {
                 FileStruct fileStruct = new FileStruct(item);
                 fileDirList.add(fileStruct);
             }
+            System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
             Collections.sort(fileDirList, (o1, o2) -> o1.mFileName.toLowerCase().compareTo(o2.mFileName.toLowerCase()));
         } else {
             LogToSystem.e(TAG + "GetFiles", "no privilege for this directory");
@@ -79,7 +82,7 @@ public class FileManage {
         try {
             context.startActivity(intent);
         } catch (Exception ex) {
-            LogToSystem.e(TAG, ex.getMessage());
+            LogToSystem.e(TAG+"openFile", ex.getMessage());
         }
     }
 
@@ -182,25 +185,33 @@ public class FileManage {
     /**
      * 获取文件夹大小
      *
-     * @param file File实例
-     * @return long
+     * @param file   File实例
+     * @param status 线程退出时的通知
+     * @param depth  大于0代表只允许搜索多少层子目录, 小于0代表会穷举所有子目录
+     * @return 文件大小
      */
-    public static long getFolderSize(java.io.File file, ThreadStatus status) {
-
+    public static long getFolderSize(java.io.File file, ThreadStatus status, int depth) throws MyException {
+    // TODO: depth改成类,,,计算文件与文件夹总数
         long size = 0;
+
+
         try {
+            if (depth == 0) {
+                throw new MyException("超出搜索深度");
+            }
             java.io.File[] fileList = file.listFiles();
             for (int i = 0; i < fileList.length; i++) {
                 if (status.isRestart) {
                     break;
                 }
                 if (fileList[i].isDirectory()) {
-                    size = size + getFolderSize(fileList[i], status);
-
+                    size = size + getFolderSize(fileList[i], status, --depth);
                 } else {
                     size = size + fileList[i].length();
                 }
             }
+        } catch (MyException e) {
+            throw e;
         } catch (Exception e) {
             LogToSystem.e(TAG + "getFolderSize", e.getMessage());
         }
