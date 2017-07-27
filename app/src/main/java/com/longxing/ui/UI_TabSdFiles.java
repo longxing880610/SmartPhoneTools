@@ -47,7 +47,7 @@ class UI_TabSdFiles implements IUI_TabMain {
     private static final int WHAT_GET_SEARCH_TEXT = 2;
     private static final int WHAT_SET_SEARCH_TEXT = 3;
     public static final int WHAT_UPDATE_FILELIST_FORCE = 4;
-    public static final int WHAT_SET_SORT = 4;
+    public static final int WHAT_SET_SORT = 5;
 
     private static UI_TabSdFiles sUiTabSdFiles;
 
