@@ -222,7 +222,7 @@ class UI_TabSdFiles implements IUI_TabMain {
         });
 
         Spinner searchCondition = (Spinner) rootView.findViewById(R.id.spinner_search);
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(mMainActivity, android.R.layout.simple_spinner_dropdown_item, ListItemAdapter.cSEARCH_CONDITION);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(mMainActivity, android.R.layout.simple_spinner_dropdown_item, ListItemAdapter.cSEARCH_CONDITION);
 
         searchCondition.setAdapter(adapter);
         searchCondition.setOnItemSelectedListener(new SearchConditionOnClickList());

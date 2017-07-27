@@ -18,7 +18,7 @@ package com.longxing.cardemulation;
 
 import android.content.Context;
 
-import com.longxing.file.SytemSetting;
+import com.longxing.file.SystemSetting;
 
 /**
  * Utility class for persisting account numbers to disk.
@@ -40,14 +40,14 @@ public class AccountStorage {
      */
     public static void SetAccount(Context c, String s) {
 
-        SytemSetting.SaveCfg(c, PREF_ACCOUNT_NUMBER, s);
+        SystemSetting.SaveCfg(c, PREF_ACCOUNT_NUMBER, s);
         sAccount = s;
     }
 
     public static String GetAccount(Context c) {
         synchronized (sAccountLock) {
             if (sAccount == null) {
-                sAccount = SytemSetting.GetCfg(c, PREF_ACCOUNT_NUMBER);
+                sAccount = SystemSetting.GetCfg(c, PREF_ACCOUNT_NUMBER);
             }
             return sAccount;
         }

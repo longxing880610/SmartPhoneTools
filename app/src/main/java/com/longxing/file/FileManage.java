@@ -6,14 +6,11 @@ import android.net.Uri;
 import android.support.v4.content.FileProvider;
 
 import com.longxing.common.MyException;
-import com.longxing.common.ThreadStatus;
 import com.longxing.common.ThreadStatus_ListFiles;
 import com.longxing.log.LogToSystem;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -54,7 +51,7 @@ public class FileManage {
         } else {
             LogToSystem.e(TAG + "GetFiles", "no privilege for this directory");
         }
-
+        Collections.sort(fileDirList, (o1, o2) -> o1.mFileName.compareToIgnoreCase(o2.mFileName));
 
         return fileDirList;
     }
@@ -112,6 +109,7 @@ public class FileManage {
         return type;
     }
 
+    //region 文件类型常量
     //建立一个MIME类型与文件后缀名的匹配表
     private static final String[][] MIME_MapTable = {
             //{后缀名，    MIME类型}
@@ -180,7 +178,7 @@ public class FileManage {
             {".zip", "application/zip"},
             {"", "*/*"}
     };
-
+    //endregion
 
     /**
      * 获取文件夹大小

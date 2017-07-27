@@ -1,7 +1,11 @@
 # SmartPhoneTools
 smart phone tools, include hce, sd file manage
 
-v1.1
+v1.2
+1. 
+
+
+v1.1 20170727 11
 1. 增加目录的大小显示
 2. 增加音乐功能
 3. 增加数据库机制

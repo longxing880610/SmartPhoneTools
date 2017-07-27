@@ -11,11 +11,12 @@ public class FileStruct{
     public String mFilePath;
     public String mFileDir;
     public boolean mIsHide;
-    public long mSize = 0;
+    public long mSize = -1;
     /**
      * file when true, directory when false
      */
     public boolean mIsFileOrFalseDir = false;
+    public boolean mIsRoot = false;
     public boolean mIsParent = false;
     public boolean mIsSizeCaled = false;
     public boolean mSearchInSecond = false;
@@ -31,7 +32,7 @@ public class FileStruct{
         }
         else
         {
-            mSize = 0;
+            mSize = -1;
         }
         mIsParent = false;
     }

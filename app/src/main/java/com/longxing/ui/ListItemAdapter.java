@@ -19,7 +19,9 @@ import com.longxing.file.FileStruct;
 import com.longxing.log.LogToSystem;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
 
     private static final String TAG = "MyLog/ListItemAdapter/";
     public static final String cSEARCH_CONDITION[] = {"名称", "大小"};
+    private String mCurSearchCondition = "名称";
     /**
      * 回到根目录与回到上级目录是前两个元素
      */
@@ -59,6 +62,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         mIcon2 = BitmapFactory.decodeResource(context.getResources(), R.drawable.back02);
         mIcon3 = BitmapFactory.decodeResource(context.getResources(), R.drawable.folder);
         mIcon4 = BitmapFactory.decodeResource(context.getResources(), R.drawable.doc);
+        rootDir.mIsRoot = true;
         mRootDir = rootDir;
     }
 
@@ -99,7 +103,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         FileStruct fileStruct = items.get(position);
 
         String showSize = "";
-        if (fileStruct.equals(mRootDir)) {
+        if (fileStruct.mIsRoot) {
             holder.text.setText("Back to root directory");
             holder.icon.setImageBitmap(mIcon1);
 
@@ -115,24 +119,27 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             } else {
                 holder.icon.setImageBitmap(mIcon4);
             }
-
         }
         // size
         String[] unit = {"B", "K", "M", "G"};
         double size = fileStruct.mSize;
-        int index = 1;
-        while (size >= 1024 && index < unit.length) {
-            size /= 1024;
-            ++index;
+        if (size >= 0) {
+            int index = 1;
+            while (size >= 1024 && index < unit.length) {
+                size /= 1024;
+                ++index;
+            }
+            --index;
+            showSize += String.format("%.2f", size);
+            if (showSize.endsWith("00")) {
+                showSize = showSize.substring(0, showSize.length() - 3);
+            } else if (showSize.endsWith("0")) {
+                showSize = showSize.substring(0, showSize.length() - 1);
+            }
+            holder.size.setText(showSize + unit[index]);
+        } else {
+            holder.size.setText("正在计算大小");
         }
-        --index;
-        showSize += String.format("%.2f", size);
-        if (showSize.endsWith("00")) {
-            showSize = showSize.substring(0, showSize.length() - 3);
-        } else if (showSize.endsWith("0")) {
-            showSize = showSize.substring(0, showSize.length() - 1);
-        }
-        holder.size.setText(showSize + unit[index]);
 
         return convertView;
     }
@@ -172,6 +179,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                 if (!allFiles.get(0).mFileDir.equals(mRootDir.mFilePath)) {
                     FileStruct tmpFile = new FileStruct(new File(allFiles.get(0).mFileDir).getParentFile());
                     tmpFile.mIsParent = true;
+                    tmpFile.mSize = 0;
                     items.add(0, tmpFile);
                 }
             } catch (Exception ex) {
@@ -183,21 +191,34 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
     }
 
     public void sortByUser(String type) {
-
+        final String name = "名称";//cSEARCH_CONDITION[0];
+        final String size = "大小";//cSEARCH_CONDITION[1];
+        if (mCurSearchCondition.equals(type)) {
+            return;
+        }
+        mCurSearchCondition = type;
         switch (type) {
-            case "名称":
-                items.sort(new Comparator<FileStruct>() {
+            case name:
+                Collections.sort(items, new Comparator<FileStruct>() {
                     @Override
                     public int compare(FileStruct o1, FileStruct o2) {
                         return o1.mFileName.compareToIgnoreCase(o2.mFileName);
                     }
                 });
                 break;
-            case "大小":
-                items.sort(new Comparator<FileStruct>() {
+            case size:
+                Collections.sort(items, new Comparator<FileStruct>() {
                     @Override
                     public int compare(FileStruct o1, FileStruct o2) {
-                        return (int) (o2.mSize - o1.mSize);
+
+                        long tmpL = o2.mSize - o1.mSize;
+                        if (tmpL > 0 || o2.mIsRoot) {
+                            return 1;
+                        }
+                        if (tmpL < 0) {
+                            return -1;
+                        }
+                        return 0;
                     }
                 });
                 break;
@@ -215,8 +236,14 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         boolean isOver = false;
         int firstIndex = LENGTH_SPECIAL_DIRECOTRY;
 
-        //LogToSystem.d(TAG + "run", "start run:" + isOver);
         List<FileStruct> tmpFiles = rootItems;
+        UI_TabLog uiTabLog = UI_TabLog.getInstance();
+
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String date = sDateFormat.format(new java.util.Date());
+        uiTabLog.displayLog(date + ":start run:" + items.size());
+
+        LogToSystem.d(TAG + "run", "start run:" + isOver);
         while (!isOver) {
             try {
                 FileStruct tmpFileStruct = null;
@@ -251,7 +278,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                         }
                         //}
                         try {
-                            mThreadStatus.mFileTryCount = 100;
+                            mThreadStatus.mFileTryCount = 200;
                             item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
 
                             if (mThreadStatus.isRestart) {
@@ -276,7 +303,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                 }
                 UI_TabSdFiles.getInstance().sendMessage(UI_TabSdFiles.WHAT_UPDATE_FILELIST_FORCE, null);
                 //////////////////////////////////////////////////////////////////////////////////
-                //LogToSystem.i(TAG + "run", "search goon");
+                LogToSystem.i(TAG + "run", "search goon");
                 for (int i = firstIndex; i < items.size(); ++i) {
                     FileStruct item = items.get(i);
                     if (item.mIsSizeCaled) {
@@ -292,7 +319,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                             }
                         }
 
-                        //LogToSystem.d(TAG + "run", "large directory:" + item);
+                        LogToSystem.d(TAG + "run", "large directory:" + item);
 
                         mThreadStatus.mFileTryCount = ThreadStatus_ListFiles.DEPTH_INFEINE;
                         item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
@@ -319,6 +346,8 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         }
 
         LogToSystem.d(TAG + "run", "end run:" + tmpFiles.size());
+        date = sDateFormat.format(new java.util.Date());
+        uiTabLog.displayLog(date + ":end run:" + tmpFiles.size());
 
         UI_TabSdFiles.getInstance().sendMessage(UI_TabSdFiles.WHAT_UPDATE_FILELIST_FORCE, null);
         //notifyDataSetChanged(false);

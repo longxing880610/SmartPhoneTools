@@ -10,8 +10,8 @@ import com.longxing.log.LogToSystem;
  * Created by Zhang Long on 2017/7/14.
  */
 
-public class SytemSetting {
-    private static final String TAG = "MyLog/SytemSetting";
+public class SystemSetting {
+    private static final String TAG = "MyLog/SystemSetting/";
     private static final Object sAccountLock = new Object();
 
     /**
@@ -30,6 +30,9 @@ public class SytemSetting {
             if (!prefs.getString(name, null).equals(value)) {
                 LogToSystem.d(TAG, "config: " + name + "=" + value);
                 prefs.edit().putString(name, value).apply();
+            }
+            else{
+                LogToSystem.d(TAG+"SaveCfg", "no need to save value(equal)");
             }
         }
     }
