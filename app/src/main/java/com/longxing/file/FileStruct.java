@@ -34,7 +34,7 @@ public class FileStruct{
         {
             mSize = -1;
         }
-        mIsParent = false;
+        //mIsParent = false;
     }
 
     private FileStruct(){

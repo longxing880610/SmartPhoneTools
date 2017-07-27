@@ -103,23 +103,9 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         FileStruct fileStruct = items.get(position);
 
         String showSize = "";
-        if (fileStruct.mIsRoot) {
-            holder.text.setText("Back to root directory");
-            holder.icon.setImageBitmap(mIcon1);
-
-            showSize += "空闲:";
-        } else if (fileStruct.mIsParent) {
-            holder.text.setText(fileStruct.mFileName);
-            holder.icon.setImageBitmap(mIcon2);
-            // showSize += "空闲:";
-        } else {
-            holder.text.setText(fileStruct.mFileName);
-            if (!fileStruct.mIsFileOrFalseDir) {
-                holder.icon.setImageBitmap(mIcon3);
-            } else {
-                holder.icon.setImageBitmap(mIcon4);
-            }
-        }
+        String name = null;
+        Bitmap bitmap = null;
+        StringBuilder sizeStr = new StringBuilder();
         // size
         String[] unit = {"B", "K", "M", "G"};
         double size = fileStruct.mSize;
@@ -136,10 +122,31 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             } else if (showSize.endsWith("0")) {
                 showSize = showSize.substring(0, showSize.length() - 1);
             }
-            holder.size.setText(showSize + unit[index]);
+            sizeStr.append(showSize);
+            sizeStr.append(unit[index]);
         } else {
-            holder.size.setText("正在计算大小");
+            sizeStr.append("正在计算大小");
         }
+        if (fileStruct.mIsRoot) {
+            name = "Back to Root";
+            bitmap = mIcon1;
+            sizeStr.insert(0, "空闲:");
+        } else if (fileStruct.mIsParent) {
+            name = "Back to Parent";
+            bitmap = mIcon2;
+            sizeStr.setLength(0);
+            sizeStr.append(fileStruct.mFileName);
+        } else {
+            name = fileStruct.mFileName;
+            if (!fileStruct.mIsFileOrFalseDir) {
+                bitmap = mIcon3;
+            } else {
+                bitmap = mIcon4;
+            }
+        }
+        holder.text.setText(name);
+        holder.icon.setImageBitmap(bitmap);
+        holder.size.setText(sizeStr.toString());
 
         return convertView;
     }
@@ -212,7 +219,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                     public int compare(FileStruct o1, FileStruct o2) {
 
                         long tmpL = o2.mSize - o1.mSize;
-                        if (tmpL > 0 || o2.mIsRoot) {
+                        if (tmpL > 0 || o2.mIsRoot || o2.mIsParent) {
                             return 1;
                         }
                         if (tmpL < 0) {
@@ -251,7 +258,6 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                 for (int i = firstIndex; i < items.size(); ++i) {
                     FileStruct item = items.get(i);
                     if (!item.mIsFileOrFalseDir) {
-
                         // only directory
                         //List<FileStruct> tmpFiles = rootItems;
                         //if (isRootDir) {

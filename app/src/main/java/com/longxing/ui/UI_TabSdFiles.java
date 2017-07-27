@@ -47,6 +47,7 @@ class UI_TabSdFiles implements IUI_TabMain {
     private static final int WHAT_GET_SEARCH_TEXT = 2;
     private static final int WHAT_SET_SEARCH_TEXT = 3;
     public static final int WHAT_UPDATE_FILELIST_FORCE = 4;
+    public static final int WHAT_SET_SORT = 4;
 
     private static UI_TabSdFiles sUiTabSdFiles;
 
@@ -143,26 +144,6 @@ class UI_TabSdFiles implements IUI_TabMain {
             }
         });
 
-        mEditViewHandle = new Handler() {
-            @Override
-            public void handleMessage(android.os.Message msg) {
-                if (msg.what == WHAT_SHOW_PATH) {
-                    Bundle bundle = msg.getData();
-                    mTextViewPath.setText(bundle.getString(cKEY_TXT));
-                } else if (msg.what == WHAT_GET_SEARCH_TEXT) {
-                    //Bundle bundle = msg.getData();
-                    mOutputString = mSearchText.getText().toString();
-                    //CountDownLatch countDownLatch = (CountDownLatch)bundle.get(cCount_Down_Latch);
-                    countDownLatch.countDown();
-                } else if (msg.what == WHAT_SET_SEARCH_TEXT) {
-                    Bundle bundle = msg.getData();
-                    mSearchText.setText(bundle.getString(cKEY_TXT));
-                } else if (msg.what == WHAT_UPDATE_FILELIST_FORCE) {
-                    mAdapter.notifyDataSetChanged(false);
-                }
-                super.handleMessage(msg);
-            }
-        };
         //fileListView.
 
         final String rootDir;
@@ -192,7 +173,6 @@ class UI_TabSdFiles implements IUI_TabMain {
                 });
 
         //LogToSystem.d(TAG+"initUI","initUI");
-        switchDir(rootDir);
 
         //region button event process
         // back button
@@ -247,6 +227,36 @@ class UI_TabSdFiles implements IUI_TabMain {
         });
         //endregion
 
+        mEditViewHandle = new Handler() {
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == WHAT_SHOW_PATH) {
+                    Bundle bundle = msg.getData();
+                    mTextViewPath.setText(bundle.getString(cKEY_TXT));
+                } else if (msg.what == WHAT_GET_SEARCH_TEXT) {
+                    //Bundle bundle = msg.getData();
+                    mOutputString = mSearchText.getText().toString();
+                    //CountDownLatch countDownLatch = (CountDownLatch)bundle.get(cCount_Down_Latch);
+                    countDownLatch.countDown();
+                } else if (msg.what == WHAT_SET_SEARCH_TEXT) {
+                    Bundle bundle = msg.getData();
+                    mSearchText.setText(bundle.getString(cKEY_TXT));
+                } else if (msg.what == WHAT_UPDATE_FILELIST_FORCE) {
+                    mAdapter.notifyDataSetChanged(false);
+                } else if (msg.what == WHAT_SET_SORT) {
+                    Bundle bundle = msg.getData();
+                    try {
+                        int pos = Integer.decode(bundle.getString(cKEY_TXT));
+                        searchCondition.setSelection(pos);
+                    } catch (Exception ex) {
+                        LogToSystem.e(TAG + "mEditViewHandle", ex.getMessage());
+                    }
+                }
+                super.handleMessage(msg);
+            }
+        };
+
+        switchDir(rootDir);
 
         displayLog("SD文件管理加载完成");
     }
@@ -360,6 +370,7 @@ class UI_TabSdFiles implements IUI_TabMain {
         mAdapter.addAll(mFileNames);
         mFileNameBackup = null;
         sendMessage(WHAT_SET_SEARCH_TEXT, "");
+        sendMessage(WHAT_SET_SORT, "0");
         return true;
     }
 
@@ -380,11 +391,9 @@ class UI_TabSdFiles implements IUI_TabMain {
      */
     private String sendMessage(int what, String txtMsg, boolean needWait) {
         Bundle bundle = new Bundle();
-        if (what == WHAT_SHOW_PATH) {
-            bundle.putString(cKEY_TXT, txtMsg);
-        } else if (what == WHAT_SET_SEARCH_TEXT) {
-            bundle.putString(cKEY_TXT, txtMsg);
-        }
+
+        bundle.putString(cKEY_TXT, txtMsg);
+
         Message msg = new Message();
         msg.what = what;
         msg.setData(bundle);
