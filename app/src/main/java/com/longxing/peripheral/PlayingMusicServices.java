@@ -1,8 +1,6 @@
 package com.longxing.peripheral;
 
-/**
- * Created by Zhang Long on 2017/7/22.
- */
+
 
 import android.app.Service;
 import android.content.Intent;
@@ -11,11 +9,10 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.longxing.R;
-import com.longxing.ui.UI_TabMusic;
-
 /**
- * 这是一个Start Service
+ * Created by Zhang Long on 2017/7/22.
+ *
+ * music class
  */
 public class PlayingMusicServices extends Service {
 
@@ -39,8 +36,8 @@ public class PlayingMusicServices extends Service {
      * onBind，返回一个IBinder，可以与Activity交互
      * 这是Bind Service的生命周期方法
      *
-     * @param intent
-     * @return
+     * @param intent intent
+     * @return ibind
      */
     @Nullable
     @Override
@@ -56,15 +53,7 @@ public class PlayingMusicServices extends Service {
             mediaPlayer = new MediaPlayer();
 
             //为播放器添加播放完成时的监听器
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    //发送广播到MainActivity
-                    Intent intent = new Intent();
-                    intent.setAction("com.complete");
-                    sendBroadcast(intent);
-                }
-            });
+            mediaPlayer.setOnCompletionListener(new CompletionListener());
         }
     }
 
@@ -86,7 +75,7 @@ public class PlayingMusicServices extends Service {
         switch (intent.getIntExtra(cPARAM_TYPE, -1)) {
             case PLAT_MUSIC:
                 if (isStop) {
-                    //重置mediaplayer
+                    //重置mediaPlayer
                     mediaPlayer.reset();
                     //将需要播放的资源与之绑定
                     int pathInt = intent.getIntExtra(cPARAM_FILEPATH_INT, -1);
@@ -102,7 +91,7 @@ public class PlayingMusicServices extends Service {
                     //是否循环播放
                     mediaPlayer.setLooping(false);
                     isStop = false;
-                } else if (!isStop && !mediaPlayer.isPlaying() && mediaPlayer != null) {
+                } else if (!mediaPlayer.isPlaying() && mediaPlayer != null) {
                     mediaPlayer.start();
                 }
                 break;
@@ -127,5 +116,16 @@ public class PlayingMusicServices extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private class CompletionListener implements MediaPlayer.OnCompletionListener {
+
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+            //发送广播到MainActivity
+            Intent intent = new Intent();
+            intent.setAction("com.complete");
+            sendBroadcast(intent);
+        }
     }
 }

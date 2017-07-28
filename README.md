@@ -2,7 +2,8 @@
 smart phone tools, include hce, sd file manage
 
 v1.2
-1.
+1. 增加文件管理以音乐方式打开音乐与视频文件的功能
+2. 增加文件管理中的子文件和文件夹数量
 
 
 v1.1 20170727 11

@@ -2,7 +2,9 @@
   <dictionary name="yuchangnet">
     <words>
       <w>apdu</w>
+      <w>filestruct</w>
       <w>hidefile</w>
+      <w>ibind</w>
       <w>longxing</w>
       <w>structs</w>
       <w>zhang</w>

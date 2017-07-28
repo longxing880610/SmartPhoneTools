@@ -154,6 +154,7 @@ class UI_TabSdFiles implements IUI_TabMain {
         File file = new File(rootDir);
         FileStruct rootStruct = new FileStruct(file);
         rootStruct.mSize = file.getFreeSpace();
+        rootStruct.mFileCount = FileStruct.cCountFile;
         //rootStruct.mFileName =
         mAdapter = new ListItemAdapter(mMainActivity, mFileNames, rootStruct);
 

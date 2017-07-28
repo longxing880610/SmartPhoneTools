@@ -2,6 +2,9 @@ package com.longxing.ui;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +19,8 @@ import com.longxing.peripheral.PlayingMusicServices;
  */
 public class UI_TabMusic implements IUI_TabMain {
 
+    public static final int WHAT_PLAY_MUSIC = 1;
+    public static final String cKEY_TXT = "KEY_TXT";
 
     private MyBroadCastReceiver receiver;
 
@@ -24,10 +29,12 @@ public class UI_TabMusic implements IUI_TabMain {
     private MainActivity mMainActivity;
     private UI_TabLog mUI_tabLog;
 
+    private Handler mMusicHandle;
+
     /**
      * @return owner object
      */
-    static UI_TabMusic getInstance() {
+    public static UI_TabMusic getInstance() {
         if (sUiTabMusic == null) {
             sUiTabMusic = new UI_TabMusic();
             sUiTabMusic.mMainActivity = MainActivity.GetInstance();
@@ -67,6 +74,18 @@ public class UI_TabMusic implements IUI_TabMain {
             }
         });
 
+        mMusicHandle = new Handler() {
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == WHAT_PLAY_MUSIC) {
+                    Bundle bundle = msg.getData();
+                    String path = bundle.getString(cKEY_TXT);
+                    startMusic(path);
+                }
+                super.handleMessage(msg);
+            }
+        };
+
         displayLog("音乐面板初始化完成");
     }
 
@@ -102,6 +121,13 @@ public class UI_TabMusic implements IUI_TabMain {
         }
     }
 
+    private void startMusic(String path) {
+        Intent intent = new Intent(mMainActivity, PlayingMusicServices.class);
+        intent.putExtra(PlayingMusicServices.cPARAM_TYPE, PlayingMusicServices.PLAT_MUSIC);
+        intent.putExtra(PlayingMusicServices.cPARAM_FILEPATH, path);
+        mMainActivity.startService(intent);
+    }
+
     private void playingmusic(int type) {
         //启动服务，播放音乐
         Intent intent = new Intent(mMainActivity, PlayingMusicServices.class);
@@ -121,6 +147,23 @@ public class UI_TabMusic implements IUI_TabMain {
     public void processDestroy() {
         //super.onDestroy();
         mMainActivity.unregisterReceiver(receiver);
+    }
+
+    /**
+     * @param what   what control
+     * @param txtMsg txt message
+     * @return result
+     */
+    public void sendMessage(int what, String txtMsg) {
+        Bundle bundle = new Bundle();
+
+        bundle.putString(cKEY_TXT, txtMsg);
+
+        Message msg = new Message();
+        msg.what = what;
+        msg.setData(bundle);
+        mMusicHandle.sendMessage(msg);
+
     }
 }
 

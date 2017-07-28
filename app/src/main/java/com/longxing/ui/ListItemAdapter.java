@@ -94,6 +94,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             holder.text = (TextView) convertView.findViewById(R.id.text);
             holder.icon = (ImageView) convertView.findViewById(R.id.icon);
             holder.size = (TextView) convertView.findViewById(R.id.size);
+            holder.count = (TextView) convertView.findViewById(R.id.count);
 
             convertView.setTag(holder);
         } else {
@@ -144,9 +145,20 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                 bitmap = mIcon4;
             }
         }
+        int count = fileStruct.mFileCount;
+        String countStr = null;
+        if (count >= 0) {
+            countStr = count + "个";
+        } else if (count == FileStruct.cCountFile) {
+            countStr = "";
+        } else {
+            countStr = "正在计算中";
+        }
+
         holder.text.setText(name);
         holder.icon.setImageBitmap(bitmap);
         holder.size.setText(sizeStr.toString());
+        holder.count.setText(countStr);
 
         return convertView;
     }
@@ -187,6 +199,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                     FileStruct tmpFile = new FileStruct(new File(allFiles.get(0).mFileDir).getParentFile());
                     tmpFile.mIsParent = true;
                     tmpFile.mSize = 0;
+                    tmpFile.mFileCount = FileStruct.cCountFile;
                     items.add(0, tmpFile);
                 }
             } catch (Exception ex) {
@@ -271,6 +284,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                                     isRestored = true;
                                 }
                                 if (item1.mIsSizeCaled) {
+                                    item.mFileCount = item1.mFileCount;
                                     item.mSize = item1.mSize;
                                     item.mIsSizeCaled = true;
                                     isRestored = true;
@@ -284,14 +298,17 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                         }
                         //}
                         try {
-                            mThreadStatus.mFileTryCount = 200;
-                            item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
+                            final int fileTryCount = 200;
+                            mThreadStatus.mFileTryCount = fileTryCount;
+                            long fileSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
 
                             if (mThreadStatus.isRestart) {
                                 mThreadStatus.isRestart = false;
                                 throw new MyException("计算目录大小的线程重启");
                             }
                             item.mIsSizeCaled = true;
+                            item.mSize = fileSize;
+                            item.mFileCount = fileTryCount - mThreadStatus.mFileTryCount;
                             item.mSearchInSecond = false;
                             //if (isRootDir) {
                         } catch (MyException ex) {
@@ -326,9 +343,10 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                         }
 
                         LogToSystem.d(TAG + "run", "large directory:" + item);
-
-                        mThreadStatus.mFileTryCount = ThreadStatus_ListFiles.DEPTH_INFEINE;
+                        final int fileTryCount = ThreadStatus_ListFiles.DEPTH_INFEINE;
+                        mThreadStatus.mFileTryCount = fileTryCount;
                         item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
+                        item.mFileCount = fileTryCount - mThreadStatus.mFileTryCount;
                         item.mIsSizeCaled = true;
 
                         item.mSearchInSecond = false;
@@ -364,5 +382,6 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         TextView text;
         ImageView icon;
         TextView size;
+        TextView count;
     }
 }
