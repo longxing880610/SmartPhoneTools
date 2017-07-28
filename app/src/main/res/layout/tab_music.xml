@@ -3,6 +3,7 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout3"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -12,18 +13,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="@integer/toolbar_columns">
-        <Button
-        android:id="@+id/btn_startmusic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/strStart" />
-        <Button
-            android:id="@+id/btn_pausemusic"
+
+        <TextView
+            android:id="@+id/textview_musicName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/strPause" />
+            android:layout_columnSpan="@integer/toolbar_columns"
+            tools:text="@string/defaultMusic" />
+
+        <SeekBar
+            android:id="@+id/seekBar_music"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="@integer/toolbar_columns_minus1" />
+
+        <TextView
+            android:id="@+id/textView_totalLen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <Button
-            android:id="@+id/btn_stopmusic"
+            android:id="@+id/btn_startMusic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/strStart" />
+
+        <Button
+            android:id="@+id/btn_stopMusic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/strStop" />
@@ -35,9 +51,9 @@
         android:text="@string/strUi3" />
 
 
-
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/str_Welcom3" />
+
 </LinearLayout>

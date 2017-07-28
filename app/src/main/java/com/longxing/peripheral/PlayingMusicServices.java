@@ -1,7 +1,6 @@
 package com.longxing.peripheral;
 
 
-
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -9,9 +8,14 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.longxing.ui.UI_TabMusic;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by Zhang Long on 2017/7/22.
- *
+ * <p>
  * music class
  */
 public class PlayingMusicServices extends Service {
@@ -19,9 +23,10 @@ public class PlayingMusicServices extends Service {
     /**
      * 规定开始音乐、暂停音乐、结束音乐的标志
      */
-    public  static final int PLAT_MUSIC=1;
-    public  static final int PAUSE_MUSIC=2;
-    public  static final int STOP_MUSIC=3;
+    public static final int PLAT_MUSIC = 1;
+    public static final int PAUSE_MUSIC = PLAT_MUSIC + 1;
+    public static final int STOP_MUSIC = PAUSE_MUSIC + 1;
+    public static final int GOON_MUSIC = STOP_MUSIC + 1;
 
     public static final String cPARAM_TYPE = "type";
     public static final String cPARAM_FILEPATH = "path";
@@ -31,6 +36,8 @@ public class PlayingMusicServices extends Service {
     private MediaPlayer mediaPlayer;
     //标志判断播放歌曲是否是停止之后重新播放，还是继续播放
     private boolean isStop = true;
+
+    private Timer timer;
 
     /**
      * onBind，返回一个IBinder，可以与Activity交互
@@ -72,34 +79,53 @@ public class PlayingMusicServices extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        UI_TabMusic tabMusic = UI_TabMusic.getInstance();
         switch (intent.getIntExtra(cPARAM_TYPE, -1)) {
             case PLAT_MUSIC:
-                if (isStop) {
-                    //重置mediaPlayer
-                    mediaPlayer.reset();
-                    //将需要播放的资源与之绑定
-                    int pathInt = intent.getIntExtra(cPARAM_FILEPATH_INT, -1);
-                    if (pathInt != -1){ // 使用系统资源,打包在APK里面
-                        mediaPlayer = MediaPlayer.create(this, pathInt);
+                //重置mediaPlayer
+                mediaPlayer.reset();
+                //将需要播放的资源与之绑定
+                int pathInt = intent.getIntExtra(cPARAM_FILEPATH_INT, -1);
+                if (pathInt != -1) { // 使用系统资源,打包在APK里面
+                    mediaPlayer = MediaPlayer.create(this, pathInt);
+                } else {
+                    String path = intent.getStringExtra(cPARAM_FILEPATH);
+                    mediaPlayer = MediaPlayer.create(this, Uri.parse(path));
+                }
+                //开始播放
+                mediaPlayer.start();
+                //是否循环播放
+                mediaPlayer.setLooping(false);
+                isStop = false;
+
+                // 设置进度条
+                if (timer == null) {
+                    timer = new Timer();
+                }
+                timer.purge();
+                tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS_MAX, mediaPlayer.getDuration());
+
+                //监听播放时回调函数
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (mediaPlayer.isPlaying()) {
+                            tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, mediaPlayer.getCurrentPosition());
+                        }
                     }
-                    else{
-                        String path = intent.getStringExtra(cPARAM_FILEPATH);
-                        mediaPlayer = MediaPlayer.create(this, Uri.parse(path));
-                    }
-                    //开始播放
-                    mediaPlayer.start();
-                    //是否循环播放
-                    mediaPlayer.setLooping(false);
-                    isStop = false;
-                } else if (!mediaPlayer.isPlaying() && mediaPlayer != null) {
+                }, 0, 1000);
+
+                break;
+            case GOON_MUSIC:
+                //播放器不为空，并且正在播放
+                if (!isStop && mediaPlayer != null && !mediaPlayer.isPlaying()) {
                     mediaPlayer.start();
                 }
                 break;
             case PAUSE_MUSIC:
                 //播放器不为空，并且正在播放
-                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                if (!isStop && mediaPlayer != null && mediaPlayer.isPlaying()) {
                     mediaPlayer.pause();
-
                 }
                 break;
             case STOP_MUSIC:
@@ -107,6 +133,7 @@ public class PlayingMusicServices extends Service {
                     //停止之后要开始播放音乐
                     mediaPlayer.stop();
                     isStop = true;
+                    timer.purge();
                 }
                 break;
         }

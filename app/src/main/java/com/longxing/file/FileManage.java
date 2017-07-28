@@ -28,7 +28,7 @@ public class FileManage {
      * @param filePath        current directory
      * @param isShow_Hidefile is show the file(hide)
      * @param fileDirList     list to store the file and directory
-     * @return
+     * @return list of files
      */
     public static List<FileStruct> GetFiles(String filePath, boolean isShow_Hidefile, List<FileStruct> fileDirList) {
 
@@ -195,7 +195,7 @@ public class FileManage {
      * @return 文件大小
      */
     public static long getFolderSize(java.io.File file, ThreadStatus_ListFiles status) throws MyException {
-        // TODO: depth改成类,,,计算文件与文件夹总数
+        //
         long size = 0;
 
 
@@ -210,14 +210,14 @@ public class FileManage {
                 throw new MyException("超出搜索深度");
             }
             status.mFileTryCount -= count;
-            for (int i = 0; i < count; i++) {
+            for (File aFileList : fileList) {
                 if (status.isRestart) {
                     break;
                 }
-                if (fileList[i].isDirectory()) {
-                    size = size + getFolderSize(fileList[i], status);
+                if (aFileList.isDirectory()) {
+                    size = size + getFolderSize(aFileList, status);
                 } else {
-                    size = size + fileList[i].length();
+                    size = size + aFileList.length();
                 }
             }
         } catch (MyException e) {

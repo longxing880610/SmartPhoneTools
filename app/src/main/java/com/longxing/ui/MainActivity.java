@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    //private ViewPager mViewPager;
 
     private static MainActivity sMainActivity;
     //private UI_TabLog mUiTabLog;
@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Timer mTimer = null;
     //endregion
+
+    //region 窗体系统事件处理
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -109,6 +111,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onDestroy() {
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
+        int tabId = mViewPager.getCurrentItem();
+        //LogToSystem.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
+        IUI_TabMain tab = mSectionsPagerAdapter.getPageInterface(tabId);
+        if (tab != null) {
+            tab.processDestroy();
+        }
+
+        super.onDestroy();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    //endregion
+
     //region 按钮事件响应函数
 
     /**
@@ -119,10 +159,10 @@ public class MainActivity extends AppCompatActivity {
     public void onBtnVersionClick(View view) {
         Toast.makeText(MainActivity.this, this.getString(R.string.app_version), Toast.LENGTH_SHORT).show();
     }
-    //endregion
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         int tabId = mViewPager.getCurrentItem();
         //LogToSystem.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
         IUI_TabMain tab = mSectionsPagerAdapter.getPageInterface(tabId);
@@ -156,40 +196,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public void onDestroy() {
-        int tabId = mViewPager.getCurrentItem();
-        //LogToSystem.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
-        IUI_TabMain tab = mSectionsPagerAdapter.getPageInterface(tabId);
-        if (tab != null) {
-            tab.processDestroy();
-        }
-
-        super.onDestroy();
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+    //endregion
 
 
     /**
@@ -226,6 +233,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * get instance of main activity
+     * @return MainActivity
+     */
     public static MainActivity GetInstance() {
         return sMainActivity;
     }
