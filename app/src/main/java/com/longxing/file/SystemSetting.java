@@ -22,18 +22,21 @@ public class SystemSetting {
      * @param value value of config
      */
     public static void SaveCfg(Context c, String name, String value) {
-        synchronized (sAccountLock) {
-            //LogToFile.i(TAG, "Setting account number: " + s);
-            //LogToSystem.i(TAG, "Setting account number: " + s);
-            SharedPreferences prefs;
-            prefs = PreferenceManager.getDefaultSharedPreferences(c);
-            if (!prefs.getString(name, null).equals(value)) {
-                LogToSystem.d(TAG, "config: " + name + "=" + value);
-                prefs.edit().putString(name, value).apply();
+        try {
+            synchronized (sAccountLock) {
+                //LogToFile.i(TAG, "Setting account number: " + s);
+                //LogToSystem.i(TAG, "Setting account number: " + s);
+                SharedPreferences prefs;
+                prefs = PreferenceManager.getDefaultSharedPreferences(c);
+                if (!prefs.getString(name, "").equals(value)) {
+                    LogToSystem.d(TAG, "config: " + name + "=" + value);
+                    prefs.edit().putString(name, value).apply();
+                } else {
+                    LogToSystem.d(TAG + "SaveCfg", "no need to save value(equal)");
+                }
             }
-            else{
-                LogToSystem.d(TAG+"SaveCfg", "no need to save value(equal)");
-            }
+        } catch (Exception ex) {
+            LogToSystem.e(TAG + "SaveCfg", ex.getMessage());
         }
     }
 
@@ -45,9 +48,14 @@ public class SystemSetting {
      * @return value of config
      */
     public static String GetCfg(Context c, String name) {
-        synchronized (sAccountLock) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
-            return prefs.getString(name, "");
+        try {
+            synchronized (sAccountLock) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+                return prefs.getString(name, "");
+            }
+        } catch (Exception ex) {
+            LogToSystem.e(TAG + "GetCfg", ex.getMessage());
         }
+        return "";
     }
 }
