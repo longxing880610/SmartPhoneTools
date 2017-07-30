@@ -66,6 +66,8 @@ public class LogToSystem {
 
     private static final int ERROR = Log.ERROR;
 
+    private static final int ASSERT = Log.ASSERT;
+
     public static void v(String tag, String msg) {
         writeToSystem(VERBOSE, tag, msg);
     }
@@ -82,8 +84,20 @@ public class LogToSystem {
         writeToSystem(WARN, tag, msg);
     }
 
+    public static void a(String tag, String msg) {
+        writeToSystem(ASSERT, tag, msg);
+    }
+
+    /**
+     * write to log file when error occur
+     * @param tag tag of error information
+     * @param msg message of error information
+     */
     public static void e(String tag, String msg) {
+
         writeToSystem(ERROR, tag, msg);
+
+        LogToFile.e(tag, msg);
     }
 
     /**

@@ -95,7 +95,8 @@ public class CardService extends HostApduService {
             s_supperCard.process(apdu);
             apdu.sendSw1Sw2(ISO7816.SW_NO_ERROR);
         } catch (JavacardException e) {
-            LogToFile.i("processCommandApdu JavacardException", e.GetReason());
+            LogToFile.w("processCommandApdu JavacardException", e.GetReason());
+            apdu.sendSw1Sw2((short) 0x0001);
         } catch (ISOException e) {
             // LogToFile.i("processCommandApdu ISOException", ""+e.GetReason());
             apdu.sendSw1Sw2(e.GetReason());

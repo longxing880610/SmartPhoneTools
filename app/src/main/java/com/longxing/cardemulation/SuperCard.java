@@ -4,7 +4,7 @@
 package com.longxing.cardemulation;
 
 
-import com.longxing.log.LogToFile;
+import com.longxing.log.LogToSystem;
 
 import javacard.framework.APDU;
 import javacard.framework.Applet;
@@ -45,7 +45,7 @@ public class SuperCard extends Applet {
             superCard.register(bArray, (short) (bOffset + 1), bArray[bOffset]);
             return superCard;
         } catch (JavacardException e) {
-            LogToFile.e("SuperCard install", e.GetReason());
+            LogToSystem.e("SuperCard install", e.GetReason());
         }
         return null;
     }
