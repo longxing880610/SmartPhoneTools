@@ -43,6 +43,8 @@ public class UI_TabMusic implements IUI_TabMain {
 
     private Handler mMusicHandle;
 
+    private volatile boolean mIsSeekBarChangingisSeekBarChanging = false;
+
     /**
      * @return owner object
      */
@@ -55,9 +57,8 @@ public class UI_TabMusic implements IUI_TabMain {
         return sUiTabMusic;
     }
 
-    public
     @Override
-    void initUI(View rootView) {
+    public void initUI(View rootView) {
         mRootView = rootView;
 
         receiver = new MyBroadCastReceiver();
@@ -77,13 +78,16 @@ public class UI_TabMusic implements IUI_TabMain {
         TextView textView_musicName1 = (TextView) rootView.findViewById(R.id.textview_musicName);
 
         SeekBar seekBar_music1 = (SeekBar) rootView.findViewById(R.id.seekBar_music);
+        seekBar_music1.setOnSeekBarChangeListener(new ProcMusicSeekBar());
+
         TextView textView_totalLen1 = (TextView) rootView.findViewById(R.id.textView_totalLen);
 
-        mMusicHandle = new HandleMusicMsg(textView_musicName1, seekBar_music1, textView_totalLen1);
+        TextView textView_process1 = (TextView) rootView.findViewById(R.id.textView_progress);
+
+        mMusicHandle = new HandleMusicMsg(textView_musicName1, seekBar_music1, textView_totalLen1, textView_process1);
 
         displayLog("音乐面板初始化完成");
     }
-
 
     /**
      * @param msg show message
@@ -210,11 +214,13 @@ public class UI_TabMusic implements IUI_TabMain {
         private TextView mTextView_musicName;
         private SeekBar mSeekBar_music;
         private TextView mTextView_totalLen;
+        private TextView textView_process;
 
-        HandleMusicMsg(TextView textView, SeekBar seekBar, TextView textView1) {
+        HandleMusicMsg(TextView textView, SeekBar seekBar, TextView textView1, TextView textView2) {
             mTextView_musicName = textView;
             mSeekBar_music = seekBar;
             mTextView_totalLen = textView1;
+            textView_process = textView2;
         }
 
 
@@ -232,11 +238,25 @@ public class UI_TabMusic implements IUI_TabMain {
 
                     mTextView_musicName.setText(param);
                 } else if (msg.what == WHAT_SET_MUSIC_PROGRESS) {
-                    Bundle bundle = msg.getData();
+                    if (!mIsSeekBarChangingisSeekBarChanging) {
+                        Bundle bundle = msg.getData();
 
-                    int param = bundle.getInt(cKEY_TXT);
+                        int param = bundle.getInt(cKEY_TXT);
 
-                    mSeekBar_music.setProgress(param);
+                        mSeekBar_music.setProgress(param);
+
+                        int time = param / 1000;
+                        textView_process.setText(time / 3600 + ":" + time / 60 + ":" + time % 60);
+                        //textView_process.setText("00:00:00");
+
+                        //LogToSystem.d(TAG + "HandleMusicMsg", "" + param + "&" + mSeekBar_music.getMax());
+                        if (param >= mSeekBar_music.getMax()) {
+                            // 推送的进程已经达到最大值的时候
+                            Button btn = (Button) mRootView.findViewById(R.id.btn_startMusic);
+                            mMusicStatus = EStatusMusic.STOP;
+                            btn.setText(R.string.strStart);
+                        }
+                    }
                 } else if (msg.what == WHAT_SET_MUSIC_PROGRESS_MAX) {
                     Bundle bundle = msg.getData();
                     int param = bundle.getInt(cKEY_TXT);
@@ -244,6 +264,7 @@ public class UI_TabMusic implements IUI_TabMain {
                     mSeekBar_music.setMax(param);
                     param /= 1000;
                     mTextView_totalLen.setText(param / 3600 + ":" + param / 60 + ":" + param % 60);
+                    textView_process.setText(R.string.timeZero);
                 } else {
                     LogToSystem.w(TAG + "HandleMusicMsg", "Nothing to do with what:" + msg.what);
                 }
@@ -254,6 +275,41 @@ public class UI_TabMusic implements IUI_TabMain {
         }
     }
 
+    private class ProcMusicSeekBar implements SeekBar.OnSeekBarChangeListener {
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            //LogToSystem.d(TAG + "ProcMusicSeekBar", "onStartTrackingTouch");
+            mIsSeekBarChangingisSeekBarChanging = true;
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            int progress = seekBar.getProgress();
+            //LogToSystem.d(TAG + "ProcMusicSeekBar", "" + progress);
+            // 设置音乐播放器的播放进度
+            Intent intent = new Intent(mMainActivity, PlayingMusicServices.class);
+            intent.putExtra(PlayingMusicServices.cPARAM_TYPE, PlayingMusicServices.POSITION_MUSIC);
+            intent.putExtra(PlayingMusicServices.cPARAM_POSITION, progress);
+            mMainActivity.startService(intent);
+
+            TextView textView_process1 = (TextView) mRootView.findViewById(R.id.textView_progress);
+            progress /= 1000;
+            textView_process1.setText(progress / 3600 + ":" + progress / 60 + ":" + progress % 60);
+            //textView_process1.setText();
+
+            mIsSeekBarChangingisSeekBarChanging = false;
+        }
+    }
+
+    /**
+     * 音乐播放器状态的枚举
+     */
     public enum EStatusMusic {
         STOP, START, PAUSE, GOON;
     }

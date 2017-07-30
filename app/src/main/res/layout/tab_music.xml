@@ -19,18 +19,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_columnSpan="@integer/toolbar_columns"
+            android:textColor="@color/colorAccent"
             tools:text="@string/defaultMusic" />
+
+        <TextView
+            android:id="@+id/textView_progress"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:text="@string/timeZero" />
 
         <SeekBar
             android:id="@+id/seekBar_music"
-            android:layout_width="300dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:layout_columnSpan="@integer/toolbar_columns_minus1" />
+            android:layout_columnSpan="@integer/toolbar_columns_minus2" />
 
         <TextView
             android:id="@+id/textView_totalLen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:text="@string/timeZero" />
+    </GridLayout>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="@integer/toolbar_columns">
 
         <Button
             android:id="@+id/btn_startMusic"

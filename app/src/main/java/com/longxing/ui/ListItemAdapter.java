@@ -34,7 +34,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
     /**
      * 回到根目录与回到上级目录是前两个元素
      */
-    private static final int LENGTH_SPECIAL_DIRECOTRY = 2;
+    private static final int LENGTH_SPECIAL_DIRECOTRY = 1;
     /* 变量声明
      mIcon1：回到根目录的图文件
      mIcon2：回到上一层的图档
@@ -52,6 +52,10 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
 
     private volatile ThreadStatus_ListFiles mThreadStatus = new ThreadStatus_ListFiles();
     private Thread thread = null;
+    /**
+     * 是否扫描大文件夹
+     */
+    private volatile boolean mIsScanAllSize = false;
 
     /* MyAdapter的构造器，传入三个参数 */
     public ListItemAdapter(Context context, List<FileStruct> it, FileStruct rootDir) {
@@ -126,7 +130,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             sizeStr.append(showSize);
             sizeStr.append(unit[index]);
         } else {
-            sizeStr.append("正在计算大小");
+            sizeStr.append("等待扫描");
         }
         if (fileStruct.mIsRoot) {
             name = "Back to Root";
@@ -152,7 +156,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         } else if (count == FileStruct.cCountFile) {
             countStr = "";
         } else {
-            countStr = "正在计算中";
+            countStr = "等待扫描";
         }
 
         holder.text.setText(name);
@@ -183,6 +187,11 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                 mThreadStatus.isRestart = true;
             }
         }
+    }
+
+    public void EnableScanAllSize(boolean isEnable) {
+        mIsScanAllSize = isEnable;
+        notifyDataSetChanged();
     }
 
     public void addAll(List<FileStruct> allFiles) {
@@ -270,6 +279,9 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
 
                 for (int i = firstIndex; i < items.size(); ++i) {
                     FileStruct item = items.get(i);
+                    if (item.mIsParent) {
+                        continue;
+                    }
                     if (!item.mIsFileOrFalseDir) {
                         // only directory
                         //List<FileStruct> tmpFiles = rootItems;
@@ -324,43 +336,48 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                         }
                     }
                 }
-                UI_TabSdFiles.getInstance().sendMessage(UI_TabSdFiles.WHAT_UPDATE_FILELIST_FORCE, null);
-                //////////////////////////////////////////////////////////////////////////////////
-                LogToSystem.i(TAG + "run", "search goon");
-                for (int i = firstIndex; i < items.size(); ++i) {
-                    FileStruct item = items.get(i);
-                    if (item.mIsSizeCaled) {
-                        // 已经有长度的不需要两次计算长度
-                        continue;
-                    }
-                    if (!item.mIsFileOrFalseDir) {
-                        tmpFileStruct = null;
-                        for (FileStruct item1 : tmpFiles) {
-                            if (item1.mFilePath.equals(item.mFilePath)) {
-                                tmpFileStruct = item1;
-                                break;
+
+                if (mIsScanAllSize) {
+
+                    UI_TabSdFiles.getInstance().sendMessage(UI_TabSdFiles.WHAT_UPDATE_FILELIST_FORCE, null);
+                    //////////////////////////////////////////////////////////////////////////////////
+
+                    LogToSystem.i(TAG + "run", "search goon");
+                    for (int i = firstIndex; i < items.size(); ++i) {
+                        FileStruct item = items.get(i);
+                        if (item.mIsSizeCaled) {
+                            // 已经有长度的不需要两次计算长度
+                            continue;
+                        }
+                        if (!item.mIsFileOrFalseDir) {
+                            tmpFileStruct = null;
+                            for (FileStruct item1 : tmpFiles) {
+                                if (item1.mFilePath.equals(item.mFilePath)) {
+                                    tmpFileStruct = item1;
+                                    break;
+                                }
+                            }
+
+                            LogToSystem.d(TAG + "run", "large directory:" + item);
+                            final int fileTryCount = ThreadStatus_ListFiles.DEPTH_INFEINE;
+                            mThreadStatus.mFileTryCount = fileTryCount;
+                            item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
+                            item.mFileCount = fileTryCount - mThreadStatus.mFileTryCount;
+                            item.mIsSizeCaled = true;
+
+                            item.mSearchInSecond = false;
+
+                            if (tmpFileStruct == null) {
+                                tmpFileStruct = item.clone();
+                                tmpFiles.add(tmpFileStruct);
+                            } else {
+                                tmpFileStruct.setByFileStruct(item);
                             }
                         }
-
-                        LogToSystem.d(TAG + "run", "large directory:" + item);
-                        final int fileTryCount = ThreadStatus_ListFiles.DEPTH_INFEINE;
-                        mThreadStatus.mFileTryCount = fileTryCount;
-                        item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
-                        item.mFileCount = fileTryCount - mThreadStatus.mFileTryCount;
-                        item.mIsSizeCaled = true;
-
-                        item.mSearchInSecond = false;
-
-                        if (tmpFileStruct == null) {
-                            tmpFileStruct = item.clone();
-                            tmpFiles.add(tmpFileStruct);
-                        } else {
-                            tmpFileStruct.setByFileStruct(item);
+                        if (mThreadStatus.isRestart) {
+                            mThreadStatus.isRestart = false;
+                            throw new MyException("计算目录大小的线程重启");
                         }
-                    }
-                    if (mThreadStatus.isRestart) {
-                        mThreadStatus.isRestart = false;
-                        throw new MyException("计算目录大小的线程重启");
                     }
                 }
                 isOver = true;

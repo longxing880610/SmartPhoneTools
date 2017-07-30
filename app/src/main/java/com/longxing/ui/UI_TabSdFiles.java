@@ -192,14 +192,7 @@ class UI_TabSdFiles implements IUI_TabMain {
         // forward button
         Button btnForward = (Button) rootView.findViewById(R.id.button_forward);
         btnForward.setOnClickListener(v -> {
-            // LogToSystem.d(TAG, "跳转前一目录");
-            // 返回键
-            if (mCurFileDirIndex < mFileDir.size() - 1) {
-                ++mCurFileDirIndex;
-
-                switchDir(mFileDir.get(mCurFileDirIndex), false);
-
-            }
+            mAdapter.EnableScanAllSize(true);
         });
 
         Spinner searchCondition = (Spinner) rootView.findViewById(R.id.spinner_search);

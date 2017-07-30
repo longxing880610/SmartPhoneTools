@@ -34,4 +34,6 @@
     <string name="strInputKey">输入搜索关键字</string>
     <string name="defaultMusic">手掌心</string>
     <string name="strGoon">继续</string>
+    <string name="strScan">扫描</string>
+    <string name="timeZero">00:00:00</string>
 </resources>

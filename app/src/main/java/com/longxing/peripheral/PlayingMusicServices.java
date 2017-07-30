@@ -27,10 +27,12 @@ public class PlayingMusicServices extends Service {
     public static final int PAUSE_MUSIC = PLAT_MUSIC + 1;
     public static final int STOP_MUSIC = PAUSE_MUSIC + 1;
     public static final int GOON_MUSIC = STOP_MUSIC + 1;
+    public static final int POSITION_MUSIC = GOON_MUSIC + 1;
 
     public static final String cPARAM_TYPE = "type";
     public static final String cPARAM_FILEPATH = "path";
     public static final String cPARAM_FILEPATH_INT = "pathInt";
+    public static final String cPARAM_POSITION = "position";
 
     //用于播放音乐等媒体资源
     private MediaPlayer mediaPlayer;
@@ -99,18 +101,27 @@ public class PlayingMusicServices extends Service {
                 isStop = false;
 
                 // 设置进度条
-                if (timer == null) {
-                    timer = new Timer();
+                if (timer != null) {
+                    timer.cancel();
                 }
-                timer.purge();
+
+                timer = new Timer();
                 tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS_MAX, mediaPlayer.getDuration());
 
                 //监听播放时回调函数
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
+                        int pos = mediaPlayer.getCurrentPosition();
                         if (mediaPlayer.isPlaying()) {
-                            tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, mediaPlayer.getCurrentPosition());
+                            tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, pos);
+                        } else {
+                            // 停止定时器任务程序
+                            int total = mediaPlayer.getDuration();
+                            if (total - pos < 200) {    // 允许有点偏差
+                                tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, mediaPlayer.getDuration());
+                                this.cancel();
+                            }
                         }
                     }
                 }, 0, 1000);
@@ -120,6 +131,12 @@ public class PlayingMusicServices extends Service {
                 //播放器不为空，并且正在播放
                 if (!isStop && mediaPlayer != null && !mediaPlayer.isPlaying()) {
                     mediaPlayer.start();
+                }
+                break;
+            case POSITION_MUSIC://播放器不为空，并且正在播放
+                if (!isStop && mediaPlayer != null) {
+                    int position = intent.getIntExtra(cPARAM_POSITION, 0);
+                    mediaPlayer.seekTo(position);
                 }
                 break;
             case PAUSE_MUSIC:
@@ -133,7 +150,8 @@ public class PlayingMusicServices extends Service {
                     //停止之后要开始播放音乐
                     mediaPlayer.stop();
                     isStop = true;
-                    timer.purge();
+                    timer.cancel();
+                    timer = null;
                 }
                 break;
         }

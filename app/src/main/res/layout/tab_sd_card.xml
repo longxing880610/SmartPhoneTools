@@ -32,7 +32,7 @@
             android:id="@+id/button_forward"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="@string/strForward" />
+            android:text="@string/strScan" />
 
         <Spinner
             android:id="@+id/spinner_search"
