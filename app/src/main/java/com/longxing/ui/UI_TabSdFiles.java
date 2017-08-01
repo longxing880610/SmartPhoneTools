@@ -81,7 +81,7 @@ class UI_TabSdFiles implements IUI_TabMain {
     static UI_TabSdFiles getInstance() {
         if (sUiTabSdFiles == null) {
             sUiTabSdFiles = new UI_TabSdFiles();
-            sUiTabSdFiles.mMainActivity = MainActivity.GetInstance();
+            sUiTabSdFiles.mMainActivity = MainActivity.getInstance();
             sUiTabSdFiles.mUI_tabLog = UI_TabLog.getInstance();
         }
         return sUiTabSdFiles;
@@ -98,9 +98,9 @@ class UI_TabSdFiles implements IUI_TabMain {
         ListView fileListView = (ListView) rootView.findViewById(R.id.sdFiles);
         // need to be initialized at first
         // file path
-        TextView mTextViewPath = (TextView) rootView.findViewById(R.id.textview_path);
+        final TextView mTextViewPath = (TextView) rootView.findViewById(R.id.textview_path);
         // search text
-        EditText mSearchText = (EditText) rootView.findViewById(R.id.editText_search);
+        final EditText mSearchText = (EditText) rootView.findViewById(R.id.editText_search);
         mSearchText.addTextChangedListener(new TextWatcher() {
             private int mLengthBefore = 0;
 
@@ -137,8 +137,13 @@ class UI_TabSdFiles implements IUI_TabMain {
                         mFileNames.clear();
                         mFileNames.addAll(mFileNameBackup);
                     }
-                    //List<FileStruct> tmpFiles = fileStructs.subList(0, fileStructs.size());
-                    mFileNames.removeIf(fileStruct -> !fileStruct.mFileName.toLowerCase().contains(keyword));
+                    for (int i = mFileNames.size() - 1; i >= 0; --i
+                            ) {
+                        FileStruct item = mFileNames.get(i);
+                        if (!item.mFileNameKey.contains(keyword)) {
+                            mFileNames.remove(i);
+                        }
+                    }
                     mAdapter.addAll(mFileNames);
                 }
             }
@@ -161,15 +166,18 @@ class UI_TabSdFiles implements IUI_TabMain {
         fileListView.setAdapter(mAdapter);
 
         fileListView.setOnItemClickListener(
-                (parent, view, position, id) -> {
-                    FileStruct filedirStruct = mFileNames.get(position);
-                    //Toast.makeText(mMainActivity, filedirStruct.toString(), Toast.LENGTH_SHORT).show();
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        FileStruct filedirStruct = mFileNames.get(position);
+                        //Toast.makeText(mMainActivity, filedirStruct.toString(), Toast.LENGTH_SHORT).show();
 
-                    if (filedirStruct.mIsFileOrFalseDir) {
-                        FileManage.openFile(mMainActivity, filedirStruct.mFilePath);
-                    } else {
-                        //mCurFileDirIndex = position;
-                        switchDir(filedirStruct.mFilePath);
+                        if (filedirStruct.mIsFileOrFalseDir) {
+                            FileManage.openFile(mMainActivity, filedirStruct.mFilePath);
+                        } else {
+                            //mCurFileDirIndex = position;
+                            UI_TabSdFiles.this.switchDir(filedirStruct.mFilePath);
+                        }
                     }
                 });
 
@@ -178,45 +186,61 @@ class UI_TabSdFiles implements IUI_TabMain {
         //region button event process
         // back button
         Button btnBack = (Button) rootView.findViewById(R.id.button_back);
-        btnBack.setOnClickListener(v -> {
-            //LogToSystem.d(TAG, "跳转前一目录");
-            // 返回键
-            if (mCurFileDirIndex > 0) {
-                --mCurFileDirIndex;
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //LogToSystem.d(TAG, "跳转前一目录");
+                // 返回键
+                if (mCurFileDirIndex > 0) {
+                    --mCurFileDirIndex;
 
-                switchDir(mFileDir.get(mCurFileDirIndex), false);
+                    UI_TabSdFiles.this.switchDir(mFileDir.get(mCurFileDirIndex), false);
 
+                }
             }
         });
 
         // forward button
         Button btnForward = (Button) rootView.findViewById(R.id.button_forward);
-        btnForward.setOnClickListener(v -> {
-            mAdapter.EnableScanAllSize(true);
+        btnForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAdapter.EnableScanAllSize(true);
+            }
         });
 
-        Spinner searchCondition = (Spinner) rootView.findViewById(R.id.spinner_search);
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(mMainActivity, android.R.layout.simple_spinner_dropdown_item, ListItemAdapter.cSEARCH_CONDITION);
+        final Spinner searchCondition = (Spinner) rootView.findViewById(R.id.spinner_search);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mMainActivity, android.R.layout.simple_spinner_dropdown_item, ListItemAdapter.cSEARCH_CONDITION);
 
         searchCondition.setAdapter(adapter);
         searchCondition.setOnItemSelectedListener(new SearchConditionOnClickList());
 
         // show or hide the hide file
         CheckBox showHideFile = (CheckBox) rootView.findViewById(R.id.checkBox_showHideFile);
-        showHideFile.setOnClickListener(v -> {
-            CheckBox tmpCheckbox = (CheckBox) v;
-            mIsShow_hidefile = tmpCheckbox.isChecked();
+        showHideFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox tmpCheckbox = (CheckBox) v;
+                mIsShow_hidefile = tmpCheckbox.isChecked();
 
-            //mFileNames = switchDir(mFileDir.get(mCurFileDirIndex), false);
-            List<FileStruct> allFiles = mFileNames;
+                //mFileNames = switchDir(mFileDir.get(mCurFileDirIndex), false);
+                List<FileStruct> allFiles = mFileNames;
 
-            if (mIsShow_hidefile) {
-                switchDir(mFileDir.get(mCurFileDirIndex), false);
-                //mAdapter.addAll(allFiles);
-            } else {
-                //List<FileStruct> tmpFiles = allFiles.subList(0, allFiles.size());
-                allFiles.removeIf(fileStruct -> fileStruct.mIsHide);
-                mAdapter.addAll(allFiles);
+                if (mIsShow_hidefile) {
+                    UI_TabSdFiles.this.switchDir(mFileDir.get(mCurFileDirIndex), false);
+                    //mAdapter.addAll(allFiles);
+                } else {
+                    //List<FileStruct> tmpFiles = allFiles.subList(0, allFiles.size());
+                    for (int i = allFiles.size() - 1; i >= 0; --i
+                            ) {
+                        FileStruct item = allFiles.get(i);
+                        if (item.mIsHide) {
+                            allFiles.remove(i);
+                        }
+                    }
+
+                    mAdapter.addAll(allFiles);
+                }
             }
         });
         //endregion

@@ -12,6 +12,7 @@ import com.longxing.ui.UI_TabMusic;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -34,9 +35,7 @@ public class FileManage {
 
         fileDirList.clear();
         File file = new File(filePath);
-        File[] files = file.listFiles((dir, name) -> {
-            return true;//name.startsWith("a");
-        });
+        File[] files = file.listFiles();
 
         if (files != null) {
             for (File item : files) {
@@ -52,7 +51,12 @@ public class FileManage {
         } else {
             LogToSystem.e(TAG + "GetFiles", "no privilege for this directory");
         }
-        Collections.sort(fileDirList, (o1, o2) -> o1.mFileName.compareToIgnoreCase(o2.mFileName));
+        Collections.sort(fileDirList, new Comparator<FileStruct>() {
+            @Override
+            public int compare(FileStruct o1, FileStruct o2) {
+                return o1.mFileName.compareToIgnoreCase(o2.mFileName);
+            }
+        });
 
         return fileDirList;
     }

@@ -48,7 +48,7 @@ public class UI_TabLog implements IUI_TabMain {
     public static UI_TabLog getInstance() {
         if (sUiTabLog == null) {
             sUiTabLog = new UI_TabLog();
-            sUiTabLog.mMainActivity = MainActivity.GetInstance();
+            sUiTabLog.mMainActivity = MainActivity.getInstance();
         }
         return sUiTabLog;
     }

@@ -81,7 +81,7 @@ public class PlayingMusicServices extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        UI_TabMusic tabMusic = UI_TabMusic.getInstance();
+        final UI_TabMusic tabMusic = UI_TabMusic.getInstance();
         switch (intent.getIntExtra(cPARAM_TYPE, -1)) {
             case PLAT_MUSIC:
                 //重置mediaPlayer

@@ -85,8 +85,13 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
         LogToSystem.i(TAG + "onCreate", "main activity create complete");
     }
@@ -235,9 +240,10 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * get instance of main activity
+     *
      * @return MainActivity
      */
-    public static MainActivity GetInstance() {
+    public static MainActivity getInstance() {
         return sMainActivity;
     }
 

@@ -123,10 +123,10 @@ public class SuperCard extends Applet {
                 buf[pos++] = 0x01;
                 buf[pos++] = 0x30;
                 length = 3;
-                Util.arrayFillNonAtomic(buf, (short) pos, length, (byte) 0x99);
+                Util.arrayFillNonAtomic(buf,  pos, length, (byte) 0x99);
                 pos += length;
                 length = 45;
-                Util.arrayFillNonAtomic(buf, (short) pos, length, (byte) 0xFF);
+                Util.arrayFillNonAtomic(buf, pos, length, (byte) 0xFF);
                 pos += length;
                 apdu.setOutgoingAndSend((short) 0, pos);
                 break;
@@ -150,10 +150,19 @@ public class SuperCard extends Applet {
         }
     }
 
+    /**
+     * set short with int format to byte buffer
+     * @param src src of buffer
+     * @param offset offset of buffer
+     * @param value value will be set
+     */
     private void SetsInt(byte[] src, short offset, short value) {
-        src[offset++] = 0x00;
-        src[offset++] = 0x00;
-        src[offset++] = (byte) ((value >> 8) & 0x0FF);
-        src[offset++] = (byte) ((value) & 0x0FF);
+        src[offset] = 0x00;
+        ++offset;
+        src[offset] = 0x00;
+        ++offset;
+        src[offset] = (byte) ((value >> 8) & 0x0FF);
+        ++offset;
+        src[offset] = (byte) ((value) & 0x0FF);
     }
 }

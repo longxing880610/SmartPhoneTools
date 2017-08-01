@@ -8,6 +8,7 @@ import com.longxing.log.LogToSystem;
 
 /**
  * Created by Zhang Long on 2017/7/14.
+ * system setting with files
  */
 
 public class SystemSetting {
@@ -57,5 +58,26 @@ public class SystemSetting {
             LogToSystem.e(TAG + "GetCfg", ex.getMessage());
         }
         return "";
+    }
+
+
+    /**
+     * delete config
+     *
+     * @param c    context
+     * @param name name of config
+     * @return value of config
+     */
+    public static boolean DelCfg(Context c, String name) {
+        try {
+            synchronized (sAccountLock) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+                prefs.edit().remove(name);
+            }
+        } catch (Exception ex) {
+            LogToSystem.e(TAG + "DelCfg", ex.getMessage());
+            return false;
+        }
+        return true;
     }
 }

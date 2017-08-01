@@ -8,10 +8,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 /**
  * 将Log日志写入文件中
  * <p/>
@@ -88,8 +84,13 @@ public class LogToSystem {
         writeToSystem(ASSERT, tag, msg);
     }
 
+    public static void t(String tag, String msg) {
+        System.out.println(tag + ":" + msg);
+    }
+
     /**
      * write to log file when error occur
+     *
      * @param tag tag of error information
      * @param msg message of error information
      */

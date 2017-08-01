@@ -51,7 +51,7 @@ public class UI_TabMusic implements IUI_TabMain {
     public static UI_TabMusic getInstance() {
         if (sUiTabMusic == null) {
             sUiTabMusic = new UI_TabMusic();
-            sUiTabMusic.mMainActivity = MainActivity.GetInstance();
+            sUiTabMusic.mMainActivity = MainActivity.getInstance();
             sUiTabMusic.mUI_tabLog = UI_TabLog.getInstance();
         }
         return sUiTabMusic;
