@@ -20,7 +20,7 @@ public class SystemSettingTest {
 
     @Test
     public void testAllCfg() throws Exception {
-        //MainActivity mainActivity = MainActivity.getInstance();
+
         Context appContext = InstrumentationRegistry.getTargetContext();
         final String cfgName = "testAllCfg";
 
