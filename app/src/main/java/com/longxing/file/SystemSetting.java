@@ -22,7 +22,7 @@ public class SystemSetting {
      * @param name  name of config
      * @param value value of config
      */
-    public static void SaveCfg(Context c, String name, String value) {
+    public static void saveCfg(Context c, String name, String value) {
         try {
             synchronized (sAccountLock) {
                 //LogToFile.i(TAG, "Setting account number: " + s);
@@ -33,11 +33,11 @@ public class SystemSetting {
                     LogToSystem.d(TAG, "config: " + name + "=" + value);
                     prefs.edit().putString(name, value).apply();
                 } else {
-                    LogToSystem.d(TAG + "SaveCfg", "no need to save value(equal)");
+                    LogToSystem.d(TAG + "saveCfg", "no need to save value(equal)");
                 }
             }
         } catch (Exception ex) {
-            LogToSystem.e(TAG + "SaveCfg", ex.getMessage());
+            LogToSystem.e(TAG + "saveCfg", ex.getMessage());
         }
     }
 
@@ -48,14 +48,14 @@ public class SystemSetting {
      * @param name name of config
      * @return value of config
      */
-    public static String GetCfg(Context c, String name) {
+    public static String getCfg(Context c, String name) {
         try {
             synchronized (sAccountLock) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
                 return prefs.getString(name, "");
             }
         } catch (Exception ex) {
-            LogToSystem.e(TAG + "GetCfg", ex.getMessage());
+            LogToSystem.e(TAG + "getCfg", ex.getMessage());
         }
         return "";
     }
@@ -68,14 +68,14 @@ public class SystemSetting {
      * @param name name of config
      * @return value of config
      */
-    public static boolean DelCfg(Context c, String name) {
+    public static boolean delCfg(Context c, String name) {
         try {
             synchronized (sAccountLock) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
-                prefs.edit().remove(name);
+                prefs.edit().remove(name).commit();
             }
         } catch (Exception ex) {
-            LogToSystem.e(TAG + "DelCfg", ex.getMessage());
+            LogToSystem.e(TAG + "delCfg", ex.getMessage());
             return false;
         }
         return true;

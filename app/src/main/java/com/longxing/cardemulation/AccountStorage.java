@@ -40,14 +40,14 @@ public class AccountStorage {
      */
     public static void SetAccount(Context c, String s) {
 
-        SystemSetting.SaveCfg(c, PREF_ACCOUNT_NUMBER, s);
+        SystemSetting.saveCfg(c, PREF_ACCOUNT_NUMBER, s);
         sAccount = s;
     }
 
     public static String GetAccount(Context c) {
         synchronized (sAccountLock) {
             if (sAccount == null) {
-                sAccount = SystemSetting.GetCfg(c, PREF_ACCOUNT_NUMBER);
+                sAccount = SystemSetting.getCfg(c, PREF_ACCOUNT_NUMBER);
             }
             return sAccount;
         }

@@ -1,7 +1,9 @@
 package com.longxing.file;
 
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+
 import com.longxing.log.LogToSystem;
-import com.longxing.ui.MainActivity;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,15 +20,25 @@ public class SystemSettingTest {
 
     @Test
     public void testAllCfg() throws Exception {
-        MainActivity mainActivity = MainActivity.getInstance();
+        //MainActivity mainActivity = MainActivity.getInstance();
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        final String cfgName = "testAllCfg";
 
+        String testAllCfg = SystemSetting.getCfg(appContext, cfgName);
+        LogToSystem.t(TAG + "testAllCfg1", testAllCfg);
+
+        boolean result = SystemSetting.delCfg(appContext, cfgName);
+        Assert.assertTrue(result);
+
+        testAllCfg = SystemSetting.getCfg(appContext, cfgName);
+        Assert.assertSame("", testAllCfg);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         Date curDate = new Date(System.currentTimeMillis());
         String str = formatter.format(curDate);
-        SystemSetting.SaveCfg(mainActivity, "testAllCfg", str);
-        LogToSystem.t(TAG + "testAllCfg", str);
-        String testAllCfg = SystemSetting.GetCfg(mainActivity, "testAllCfg");
+        SystemSetting.saveCfg(appContext, cfgName, str);
+        LogToSystem.t(TAG + "testAllCfg2", str);
+        testAllCfg = SystemSetting.getCfg(appContext, cfgName);
         Assert.assertSame(str, testAllCfg);
     }
 

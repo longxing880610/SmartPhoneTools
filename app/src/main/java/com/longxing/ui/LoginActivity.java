@@ -111,8 +111,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // login automatic
         //状态 判断
         //if (savedInstanceState != null) {
-        String username = SystemSetting.GetCfg(this, ConstDef.cUserName);
-        String password = SystemSetting.GetCfg(this, ConstDef.cPassword);
+        String username = SystemSetting.getCfg(this, ConstDef.cUserName);
+        String password = SystemSetting.getCfg(this, ConstDef.cPassword);
         if (username != null) {
             //LogToSystem.d(TAG, "onCreate:恢复用户名:" + username);
             sUserName = username;
@@ -340,8 +340,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onDestroy();
         //LogToSystem.d(TAG, "HELLO：当Activity被销毁的时候，不是用户主动按back销毁，例如按了home键");
 
-        SystemSetting.SaveCfg(this, ConstDef.cUserName, sUserName); //这里保存一个用户名
-        SystemSetting.SaveCfg(this, ConstDef.cPassword, sPassword);
+        SystemSetting.saveCfg(this, ConstDef.cUserName, sUserName); //这里保存一个用户名
+        SystemSetting.saveCfg(this, ConstDef.cPassword, sPassword);
     }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
