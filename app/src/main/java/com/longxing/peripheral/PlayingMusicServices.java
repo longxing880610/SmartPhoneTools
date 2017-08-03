@@ -38,7 +38,7 @@ public class PlayingMusicServices extends Service {
     private MediaPlayer mediaPlayer;
     //标志判断播放歌曲是否是停止之后重新播放，还是继续播放
     private boolean isStop = true;
-
+    private boolean mIsLoop = true;
     private Timer timer;
 
     /**
@@ -97,7 +97,7 @@ public class PlayingMusicServices extends Service {
                 //开始播放
                 mediaPlayer.start();
                 //是否循环播放
-                mediaPlayer.setLooping(true);
+                mediaPlayer.setLooping(mIsLoop);
                 isStop = false;
 
                 // 设置进度条
@@ -157,20 +157,34 @@ public class PlayingMusicServices extends Service {
     }
 
     /**
+     * check if the music play to end
+     *
+     * @param mediaPlayer media player object
+     * @return if the music play to end
+     */
+    private boolean CheckIsMusicOver(MediaPlayer mediaPlayer) {
+        int pos = mediaPlayer.getCurrentPosition();
+        int total = mediaPlayer.getDuration();
+        return !mIsLoop && total - pos < 200;
+    }
+
+    /**
      * show progress when play music
      */
     private class ShowProgress extends TimerTask {
         @Override
         public void run() {
             final UI_TabMusic tabMusic = UI_TabMusic.getInstance();
-            int pos = mediaPlayer.getCurrentPosition();
             if (mediaPlayer.isPlaying()) {
-                tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, pos);
+                if (!CheckIsMusicOver(mediaPlayer)) {
+                    int pos = mediaPlayer.getCurrentPosition();
+                    tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, pos);
+                }
             } else {
                 // 停止定时器任务程序
-                int total = mediaPlayer.getDuration();
-                if (total - pos < 200) {    // 允许有点偏差
-                    tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, mediaPlayer.getDuration());
+                if (CheckIsMusicOver(mediaPlayer)) {    // 允许有点偏差
+                    int total = mediaPlayer.getDuration();
+                    tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, total);
                     this.cancel();
                 }
             }
