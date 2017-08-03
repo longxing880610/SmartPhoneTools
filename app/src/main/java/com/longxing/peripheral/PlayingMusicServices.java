@@ -97,35 +97,17 @@ public class PlayingMusicServices extends Service {
                 //开始播放
                 mediaPlayer.start();
                 //是否循环播放
-                mediaPlayer.setLooping(false);
+                mediaPlayer.setLooping(true);
                 isStop = false;
 
                 // 设置进度条
                 if (timer != null) {
                     timer.cancel();
                 }
-
                 timer = new Timer();
                 tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS_MAX, mediaPlayer.getDuration());
-
                 //监听播放时回调函数
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        int pos = mediaPlayer.getCurrentPosition();
-                        if (mediaPlayer.isPlaying()) {
-                            tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, pos);
-                        } else {
-                            // 停止定时器任务程序
-                            int total = mediaPlayer.getDuration();
-                            if (total - pos < 200) {    // 允许有点偏差
-                                tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, mediaPlayer.getDuration());
-                                this.cancel();
-                            }
-                        }
-                    }
-                }, 0, 1000);
-
+                timer.schedule(new ShowProgress(), 0, 1000);
                 break;
             case GOON_MUSIC:
                 //播放器不为空，并且正在播放
@@ -171,6 +153,27 @@ public class PlayingMusicServices extends Service {
             Intent intent = new Intent();
             intent.setAction("com.complete");
             sendBroadcast(intent);
+        }
+    }
+
+    /**
+     * show progress when play music
+     */
+    private class ShowProgress extends TimerTask {
+        @Override
+        public void run() {
+            final UI_TabMusic tabMusic = UI_TabMusic.getInstance();
+            int pos = mediaPlayer.getCurrentPosition();
+            if (mediaPlayer.isPlaying()) {
+                tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, pos);
+            } else {
+                // 停止定时器任务程序
+                int total = mediaPlayer.getDuration();
+                if (total - pos < 200) {    // 允许有点偏差
+                    tabMusic.sendMessage(UI_TabMusic.WHAT_SET_MUSIC_PROGRESS, mediaPlayer.getDuration());
+                    this.cancel();
+                }
+            }
         }
     }
 }
