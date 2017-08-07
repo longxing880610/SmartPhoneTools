@@ -216,6 +216,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             }
             items.add(0, mRootDir);
         }
+
         notifyDataSetChanged();
     }
 
@@ -364,7 +365,6 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                             item.mSize = FileManage.getFolderSize(new File(item.mFilePath), mThreadStatus);
                             item.mFileCount = fileTryCount - mThreadStatus.mFileTryCount;
                             item.mIsSizeCaled = true;
-
                             item.mSearchInSecond = false;
 
                             if (tmpFileStruct == null) {

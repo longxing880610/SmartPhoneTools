@@ -5,8 +5,6 @@ app/libs/
 .idea/workspace.xml
 api_document/
 .gradle/
-app/src/main/java/com/longxing/database/datamodel/BaseModelDao.java
-app/src/main/java/com/longxing/database/datamodel/DaoMaster.java
-app/src/main/java/com/longxing/database/datamodel/DaoSession.java
-app/src/main/java/com/longxing/database/datamodel/FileInforModelDao.java
+app/src/main/java/com/longxing/database/datamodel/*Dao*.java
 storage/
+local.properties

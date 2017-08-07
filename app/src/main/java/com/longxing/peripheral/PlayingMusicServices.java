@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-
 import com.longxing.ui.UI_TabMusic;
 
 import java.util.Timer;
@@ -48,7 +46,6 @@ public class PlayingMusicServices extends Service {
      * @param intent intent
      * @return ibind
      */
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;

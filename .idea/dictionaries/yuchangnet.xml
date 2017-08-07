@@ -2,6 +2,7 @@
   <dictionary name="yuchangnet">
     <words>
       <w>apdu</w>
+      <w>createtime</w>
       <w>filestruct</w>
       <w>hidefile</w>
       <w>ibind</w>
@@ -11,6 +12,7 @@
       <w>startservice</w>
       <w>structs</w>
       <w>textview</w>
+      <w>updatetime</w>
       <w>zhang</w>
     </words>
   </dictionary>

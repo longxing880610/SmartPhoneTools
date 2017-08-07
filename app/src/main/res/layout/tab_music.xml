@@ -65,9 +65,4 @@
         android:text="@string/strUi3" />
 
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/str_Welcom3" />
-
 </LinearLayout>

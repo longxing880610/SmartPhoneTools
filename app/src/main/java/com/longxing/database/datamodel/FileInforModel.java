@@ -16,14 +16,22 @@ public class FileInforModel{
     public String code;
     @Property(nameInDb = "UpdateTime")
     public String updatetime;
-
+    @Property(nameInDb = "FileName")
     public String fileName;
+    @Property(nameInDb = "FilePath")
     public String filePath;
+    @Property(nameInDb = "FileSize")
     public String fileSize;
+    @Property(nameInDb = "FileDir")
     public String fileDir;
+    @Property(nameInDb = "FileCreatetime")
     public String fileCreatetime;
+    @Property(nameInDb = "IsHide")
     public String isHide;
+    @Property(nameInDb = "IsFileOrFalseDir")
     public String isFileOrFalseDir;
+
+
     @Generated(hash = 1466767361)
     public FileInforModel(long id, String code, String updatetime, String fileName,
             String filePath, String fileSize, String fileDir, String fileCreatetime,

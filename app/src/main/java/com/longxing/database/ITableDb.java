@@ -1,5 +1,6 @@
 package com.longxing.database;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -8,7 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
  * interface table database
  */
 
-public interface ITableDb {
+public  interface ITableDb {
     /**
      * @return
      */
