@@ -1,10 +1,7 @@
 package com.longxing.database;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +41,7 @@ public class DatabaseService{
      */
     public DatabaseService(Context context) {//构造函数,接收上下文作为参数,直接调用的父类的构造函数
         //super(context, DATABASE_NAME, null, SCHEMA_VERSION);
-        mListTabs.add(new TableFileInfor(context));
+        mListTabs.add(new TableFileInforService(context));
     }
 
     //@Override

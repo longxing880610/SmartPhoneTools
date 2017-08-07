@@ -16,12 +16,12 @@ import java.util.List;
  * table of file information
  */
 
-public class TableFileInfor extends BaseTable implements ITableDb {
+public class MediaFileService extends BaseTable implements ITableDb {
 
-    public static final String cNameTable = "FileInfor";
+    public static final String cNameTable = "MediaFile";
 
 
-    public TableFileInfor(Context context) {
+    public MediaFileService(Context context) {
         super(context, cNameTable);
     }
 

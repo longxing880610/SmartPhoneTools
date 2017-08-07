@@ -1,41 +1,28 @@
-package com.longxing.database.datamodel;
+package com.longxing.ui.viewModel;
 
-import org.greenrobot.greendao.annotation.*;
+import org.greenrobot.greendao.annotation.Property;
 
 /**
  * Created by Zhang Long on 2017/7/23.
- *
  */
-@Entity
-public class FileInforModel{
+public class FileInferViewModel {
 
-    @Id(autoincrement = true)
-    @Property(nameInDb = "Id")
     private long id;
     @Property(nameInDb = "Code")
     private String code;
-    @Property(nameInDb = "UpdateTime")
     private String updatetime;
-    @Property(nameInDb = "FileName")
     private String fileName;
-    @Property(nameInDb = "FilePath")
     private String filePath;
-    @Property(nameInDb = "FileSize")
     private String fileSize;
-    @Property(nameInDb = "FileDir")
     private String fileDir;
-    @Property(nameInDb = "FileCreatetime")
     private String fileCreatetime;
-    @Property(nameInDb = "IsHide")
     private String isHide;
-    @Property(nameInDb = "IsFileOrFalseDir")
     private String isFileOrFalseDir;
 
 
-    @Generated(hash = 1466767361)
-    public FileInforModel(long id, String code, String updatetime, String fileName,
-            String filePath, String fileSize, String fileDir, String fileCreatetime,
-            String isHide, String isFileOrFalseDir) {
+    public FileInferViewModel(long id, String code, String updatetime, String fileName,
+                              String filePath, String fileSize, String fileDir, String fileCreatetime,
+                              String isHide, String isFileOrFalseDir) {
         this.id = id;
         this.code = code;
         this.updatetime = updatetime;
@@ -47,66 +34,86 @@ public class FileInforModel{
         this.isHide = isHide;
         this.isFileOrFalseDir = isFileOrFalseDir;
     }
-    @Generated(hash = 1815834255)
-    public FileInforModel() {
+
+    public FileInferViewModel() {
     }
+
     public String getFileName() {
         return this.fileName;
     }
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
     public String getFilePath() {
         return this.filePath;
     }
+
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
     public String getFileSize() {
         return this.fileSize;
     }
+
     public void setFileSize(String fileSize) {
         this.fileSize = fileSize;
     }
+
     public String getFileDir() {
         return this.fileDir;
     }
+
     public void setFileDir(String fileDir) {
         this.fileDir = fileDir;
     }
+
     public String getFileCreatetime() {
         return this.fileCreatetime;
     }
+
     public void setFileCreatetime(String fileCreatetime) {
         this.fileCreatetime = fileCreatetime;
     }
+
     public String getIsHide() {
         return this.isHide;
     }
+
     public void setIsHide(String isHide) {
         this.isHide = isHide;
     }
+
     public String getIsFileOrFalseDir() {
         return this.isFileOrFalseDir;
     }
+
     public void setIsFileOrFalseDir(String isFileOrFalseDir) {
         this.isFileOrFalseDir = isFileOrFalseDir;
     }
+
     public long getId() {
         return this.id;
     }
+
     public void setId(long id) {
         this.id = id;
     }
+
     public String getCode() {
         return this.code;
     }
+
     public void setCode(String code) {
         this.code = code;
     }
+
     public String getUpdatetime() {
         return this.updatetime;
     }
+
     public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
     }
