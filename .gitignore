@@ -15,6 +15,7 @@ out/
 libs/
 api_document/
 storage/
+.idea/libraries/
 
 # Gradle files
 .gradle/
