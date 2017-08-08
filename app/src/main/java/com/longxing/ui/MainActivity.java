@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.longxing.R;
 import com.longxing.common.ConstDef;
+import com.longxing.database.DatabaseService;
+import com.longxing.database.TableProfileService;
 import com.longxing.log.LogToSystem;
 
 import java.util.Timer;
@@ -60,7 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sMainActivity = this;
+
         super.onCreate(savedInstanceState);
+
+
+        // 初始化系统资源
+        DatabaseService.getInstance(this);
 
         setContentView(R.layout.activity_main);
 
@@ -68,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
         //String userName = bundle.getString(ConstDef.cUserName);// 得到子窗口ChildActivity的回传数据
         TextView editWel = (TextView) findViewById(R.id.editText_welcome);
         editWel.setText("欢迎您," + userName);
-
-        sMainActivity = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

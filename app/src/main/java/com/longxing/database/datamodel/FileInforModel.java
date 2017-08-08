@@ -12,10 +12,12 @@ public class FileInforModel{
     @Id(autoincrement = true)
     @Property(nameInDb = "Id")
     private long id;
-    @Property(nameInDb = "Code")
-    private String code;
     @Property(nameInDb = "UpdateTime")
     private String updatetime;
+    @Property(nameInDb = "FileTag")
+    private String fileTag;
+    @Property(nameInDb = "Code")
+    private String code;
     @Property(nameInDb = "FileName")
     private String fileName;
     @Property(nameInDb = "FilePath")
@@ -32,13 +34,14 @@ public class FileInforModel{
     private String isFileOrFalseDir;
 
 
-    @Generated(hash = 1466767361)
-    public FileInforModel(long id, String code, String updatetime, String fileName,
-            String filePath, String fileSize, String fileDir, String fileCreatetime,
-            String isHide, String isFileOrFalseDir) {
+    @Generated(hash = 983877596)
+    public FileInforModel(long id, String updatetime, String fileTag, String code,
+            String fileName, String filePath, String fileSize, String fileDir,
+            String fileCreatetime, String isHide, String isFileOrFalseDir) {
         this.id = id;
-        this.code = code;
         this.updatetime = updatetime;
+        this.fileTag = fileTag;
+        this.code = code;
         this.fileName = fileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
@@ -109,5 +112,11 @@ public class FileInforModel{
     }
     public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
+    }
+    public String getFileTag() {
+        return this.fileTag;
+    }
+    public void setFileTag(String fileTag) {
+        this.fileTag = fileTag;
     }
 }

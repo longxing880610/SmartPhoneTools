@@ -31,6 +31,8 @@ import android.widget.TextView;
 
 import com.longxing.R;
 import com.longxing.common.ConstDef;
+import com.longxing.database.DatabaseService;
+import com.longxing.database.TableProfileService;
 import com.longxing.file.SystemSetting;
 import com.longxing.log.LogToSystem;
 
@@ -339,6 +341,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void onDestroy() {
         super.onDestroy();
         //LogToSystem.d(TAG, "HELLO：当Activity被销毁的时候，不是用户主动按back销毁，例如按了home键");
+
 
         SystemSetting.saveCfg(this, ConstDef.cUserName, sUserName); //这里保存一个用户名
         SystemSetting.saveCfg(this, ConstDef.cPassword, sPassword);

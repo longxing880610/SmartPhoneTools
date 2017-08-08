@@ -1,16 +1,13 @@
 package com.longxing.ui.viewModel;
 
-import org.greenrobot.greendao.annotation.Property;
-
 /**
  * Created by Zhang Long on 2017/7/23.
  */
 public class FileInferViewModel {
 
     private long id;
-    @Property(nameInDb = "Code")
-    private String code;
     private String updatetime;
+    private String code;
     private String fileName;
     private String filePath;
     private String fileSize;

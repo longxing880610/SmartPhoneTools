@@ -3,6 +3,7 @@ package com.longxing.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * <p>
  * service for database
  */
-public class DatabaseService{
+public class DatabaseService {
     private static final String DATABASE_NAME = "smartPhone.db";//数据库名称
     private static final int SCHEMA_VERSION = 1;//版本号,则是升级之后的,升级方法请看onUpgrade方法里面的判断
 
@@ -42,6 +43,21 @@ public class DatabaseService{
     public DatabaseService(Context context) {//构造函数,接收上下文作为参数,直接调用的父类的构造函数
         //super(context, DATABASE_NAME, null, SCHEMA_VERSION);
         mListTabs.add(new TableFileInforService(context));
+        mListTabs.add(new TableMediaFileService(context));
+        mListTabs.add(new TableProfileService(context));
+    }
+
+    public ITableDb getTable(Type type) {
+        ITableDb retValue = null;
+        String name = type.toString();
+        for (ITableDb item : mListTabs) {
+            if (item.getClass().toString().equals(name)){
+                retValue = item;
+                break;
+            }
+            retValue = null;
+        }
+        return retValue;
     }
 
     //@Override

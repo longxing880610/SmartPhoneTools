@@ -18,7 +18,9 @@ package com.longxing.cardemulation;
 
 import android.content.Context;
 
-import com.longxing.file.SystemSetting;
+import com.longxing.database.DatabaseService;
+import com.longxing.database.TableProfileService;
+import com.longxing.database.datamodel.ProfileModel;
 
 /**
  * Utility class for persisting account numbers to disk.
@@ -39,15 +41,26 @@ public class AccountStorage {
      * @param s account
      */
     public static void SetAccount(Context c, String s) {
+        DatabaseService dbService = DatabaseService.getInstance(null);
 
-        SystemSetting.saveCfg(c, PREF_ACCOUNT_NUMBER, s);
+        TableProfileService tableProfile = (TableProfileService) dbService.getTable(TableProfileService.class);
+
+        tableProfile.insertProfile(PREF_ACCOUNT_NUMBER, s);
+        //SystemSetting.saveCfg(c, PREF_ACCOUNT_NUMBER, s);
         sAccount = s;
     }
 
     public static String GetAccount(Context c) {
         synchronized (sAccountLock) {
             if (sAccount == null) {
-                sAccount = SystemSetting.getCfg(c, PREF_ACCOUNT_NUMBER);
+                DatabaseService dbService = DatabaseService.getInstance(null);
+
+                TableProfileService tableProfile = (TableProfileService) dbService.getTable(TableProfileService.class);
+
+                ProfileModel profile = tableProfile.getProfile(PREF_ACCOUNT_NUMBER);
+                if (profile != null) {
+                    sAccount = profile.getProfileValue();
+                }
             }
             return sAccount;
         }

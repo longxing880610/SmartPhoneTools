@@ -7,11 +7,11 @@ package com.longxing.ui.viewModel;
 public class MediaFileViewModel {
 
     private long id;
+    private String updateTime;
     private String mediaPath;
     private String mediaDuration;
     private String mediaName;
     private String mediaTag;
-    private String updateTime;
 
     public MediaFileViewModel(long id, String mediaPath, String mediaDuration,
                           String mediaName, String mediaTag, String updateTime) {

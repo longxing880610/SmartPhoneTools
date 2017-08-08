@@ -12,6 +12,8 @@ public class MediaFileModel {
     @Id(autoincrement = true)
     @Property(nameInDb = "Id")
     private long id;
+    @Property(nameInDb = "UpdateTime")
+    private String updateTime;
     @Property(nameInDb = "MediaPath")
     private String mediaPath;
     @Property(nameInDb = "MediaDuration")
@@ -20,17 +22,15 @@ public class MediaFileModel {
     private String mediaName;
     @Property(nameInDb = "MediaTag")
     private String mediaTag;
-    @Property(nameInDb = "MediaName")
-    private String updateTime;
-    @Generated(hash = 1956131761)
-    public MediaFileModel(long id, String mediaPath, String mediaDuration,
-            String mediaName, String mediaTag, String updateTime) {
+    @Generated(hash = 749944548)
+    public MediaFileModel(long id, String updateTime, String mediaPath,
+            String mediaDuration, String mediaName, String mediaTag) {
         this.id = id;
+        this.updateTime = updateTime;
         this.mediaPath = mediaPath;
         this.mediaDuration = mediaDuration;
         this.mediaName = mediaName;
         this.mediaTag = mediaTag;
-        this.updateTime = updateTime;
     }
     @Generated(hash = 1707378537)
     public MediaFileModel() {
