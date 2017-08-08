@@ -1,10 +1,10 @@
 build/
-app/libs/
 .gradle/4.0/
 .gradle/buildOutputCleanup/
 .idea/workspace.xml
 api_document/
 .gradle/
-app/src/main/java/com/longxing/database/datamodel/*Dao*.java
 storage/
 local.properties
+.idea/libraries/
+.idea/misc.xml
