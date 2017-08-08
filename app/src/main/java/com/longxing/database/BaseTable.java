@@ -75,9 +75,9 @@ public class BaseTable {
         private Context mContext;
 
         public GreenDaoContext() {
-            super(ApplicationCache.context);
+            super(null);/*
             this.mContext = ApplicationCache.context;
-            this.currentUserId = AppUserCache.userInfo.getUserId();
+            this.currentUserId = AppUserCache.userInfo.getUserId();*/
         }
 
         /**
@@ -87,7 +87,7 @@ public class BaseTable {
          */
         @Override
         public File getDatabasePath(String dbName) {
-            File baseFile = AppPathUtil.getDbCacheDir(mContext);
+            File baseFile = null;//AppPathUtil.getDbCacheDir(mContext);
             StringBuffer buffer = new StringBuffer();
             buffer.append(baseFile.getPath());
             buffer.append(File.separator);
