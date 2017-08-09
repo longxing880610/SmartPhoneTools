@@ -18,6 +18,7 @@ libs/
 # Gradle files
 .gradle/
 build/
+.idea/libraries/
 
 # Local configuration file (sdk path, etc)
 local.properties

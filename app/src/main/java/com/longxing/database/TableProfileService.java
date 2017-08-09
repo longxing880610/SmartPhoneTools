@@ -96,7 +96,7 @@ public class TableProfileService extends BaseTable implements ITableDb {
             }
 
             profile.setProfileValue(value);
-            userDao.save(profile);
+            userDao.update(profile);
         }
     }
 

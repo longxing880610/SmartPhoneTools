@@ -19,7 +19,7 @@ public class ProfileModel {
 
     @Id(autoincrement = true)
     @Property(nameInDb = "Id")
-    private long id;
+    private Long id;
     @Property(nameInDb = "UpdateTime")
     private String updateTime;
     @Index(unique = true)
@@ -44,8 +44,8 @@ public class ProfileModel {
         this.profileTag = "";
     }
 
-    @Generated(hash = 838994705)
-    public ProfileModel(long id, String updateTime, String profileName,
+    @Generated(hash = 914206591)
+    public ProfileModel(Long id, String updateTime, String profileName,
             String profileValue, String profileRemark, String profileTag) {
         this.id = id;
         this.updateTime = updateTime;

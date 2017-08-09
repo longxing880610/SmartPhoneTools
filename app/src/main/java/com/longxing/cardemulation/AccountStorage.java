@@ -45,8 +45,11 @@ public class AccountStorage {
         DatabaseService dbService = DatabaseService.getInstance(null);
 
         TableProfileService tableProfile = (TableProfileService) dbService.getTable(TableProfileService.class);
-
-        tableProfile.insertOrUpdateProfile(PREF_ACCOUNT_NUMBER, s);
+        try {
+            tableProfile.insertOrUpdateProfile(PREF_ACCOUNT_NUMBER, s);
+        } catch (Exception ex) {
+            LogToSystem.e(TAG + "SetAccount", ex.getMessage());
+        }
         //SystemSetting.saveCfg(c, PREF_ACCOUNT_NUMBER, s);
         sAccount = s;
     }

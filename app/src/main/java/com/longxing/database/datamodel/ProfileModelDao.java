@@ -22,7 +22,7 @@ public class ProfileModelDao extends AbstractDao<ProfileModel, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "Id");
+        public final static Property Id = new Property(0, Long.class, "id", true, "Id");
         public final static Property UpdateTime = new Property(1, String.class, "updateTime", false, "UpdateTime");
         public final static Property ProfileName = new Property(2, String.class, "profileName", false, "ProfileName");
         public final static Property ProfileValue = new Property(3, String.class, "profileValue", false, "ProfileValue");
@@ -43,7 +43,7 @@ public class ProfileModelDao extends AbstractDao<ProfileModel, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"PROFILE_MODEL\" (" + //
-                "\"Id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: id
+                "\"Id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"UpdateTime\" TEXT," + // 1: updateTime
                 "\"ProfileName\" TEXT," + // 2: profileName
                 "\"ProfileValue\" TEXT," + // 3: profileValue
@@ -63,7 +63,11 @@ public class ProfileModelDao extends AbstractDao<ProfileModel, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, ProfileModel entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String updateTime = entity.getUpdateTime();
         if (updateTime != null) {
@@ -94,7 +98,11 @@ public class ProfileModelDao extends AbstractDao<ProfileModel, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, ProfileModel entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String updateTime = entity.getUpdateTime();
         if (updateTime != null) {
@@ -124,13 +132,13 @@ public class ProfileModelDao extends AbstractDao<ProfileModel, Long> {
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     @Override
     public ProfileModel readEntity(Cursor cursor, int offset) {
         ProfileModel entity = new ProfileModel( //
-            cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // updateTime
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // profileName
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // profileValue
@@ -142,7 +150,7 @@ public class ProfileModelDao extends AbstractDao<ProfileModel, Long> {
      
     @Override
     public void readEntity(Cursor cursor, ProfileModel entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUpdateTime(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setProfileName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setProfileValue(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -167,7 +175,7 @@ public class ProfileModelDao extends AbstractDao<ProfileModel, Long> {
 
     @Override
     public boolean hasKey(ProfileModel entity) {
-        throw new UnsupportedOperationException("Unsupported for entities with a non-null key");
+        return entity.getId() != null;
     }
 
     @Override
