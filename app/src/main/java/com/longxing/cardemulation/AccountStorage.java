@@ -32,10 +32,10 @@ import com.longxing.log.LogToSystem;
  * <p>This class is thread-safe.
  */
 public class AccountStorage {
-    private static final String PREF_ACCOUNT_NUMBER = "userName";
+    //private static final String PREF_ACCOUNT_NUMBER = "user.name";
     private static final String TAG = "MyLog/AccountStorage/";
     private static String sAccount = null;
-    private static final Object sAccountLock = new Object();
+    //private static final Object sAccountLock = new Object();
 
     /**
      * @param c context
@@ -46,7 +46,7 @@ public class AccountStorage {
 
         TableProfileService tableProfile = (TableProfileService) dbService.getTable(TableProfileService.class);
         try {
-            tableProfile.insertOrUpdateProfile(PREF_ACCOUNT_NUMBER, s);
+            tableProfile.insertOrUpdateProfile(TableProfileService.cProfileUserName, s);
         } catch (Exception ex) {
             LogToSystem.e(TAG + "SetAccount", ex.getMessage());
         }
@@ -61,7 +61,7 @@ public class AccountStorage {
 
             TableProfileService tableProfile = (TableProfileService) dbService.getTable(TableProfileService.class);
             try {
-                ProfileModel profile = tableProfile.getProfile(PREF_ACCOUNT_NUMBER);
+                ProfileModel profile = tableProfile.getProfile(TableProfileService.cProfileUserName);
                 if (profile != null) {
                     sAccount = profile.getProfileValue();
                 }

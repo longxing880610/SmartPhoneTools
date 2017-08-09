@@ -23,8 +23,7 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:text="welcome"
-            android:textIsSelectable="false"
-            tools:ignore="HardcodedText,LabelFor" />
+            tools:ignore="HardcodedText,LabelFor,TextViewEdits" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"

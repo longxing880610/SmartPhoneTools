@@ -21,7 +21,11 @@ import java.util.List;
 
 public class TableProfileService extends BaseTable implements ITableDb {
 
-    public static final String cNameTable = "Profile";
+    public static final String cProfileUserName = "user.name";
+    public static final String cProfileTableSelect = "table.select";
+
+    private static final String cNameTable = "Profile";
+
 
 
     public TableProfileService(Context context) {
@@ -103,7 +107,7 @@ public class TableProfileService extends BaseTable implements ITableDb {
     /**
      * 查询某条记录
      *
-     * @param name
+     * @param name name of profile
      */
     public ProfileModel getProfile(String name) {
 
@@ -112,10 +116,6 @@ public class TableProfileService extends BaseTable implements ITableDb {
         ProfileModelDao userDao = daoSession.getProfileModelDao();
         QueryBuilder<ProfileModel> qb = userDao.queryBuilder();
         qb.where(ProfileModelDao.Properties.ProfileName.eq(name));
-
-        //List<ProfileModel> profileModels = qb.list();
-        //userDao.delete(profileModels.get(1));
-        //ProfileModel profileModel =
 
         return qb.unique();
     }

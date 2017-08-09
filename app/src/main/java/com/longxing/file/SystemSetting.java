@@ -33,7 +33,7 @@ public class SystemSetting {
                     LogToSystem.d(TAG, "config: " + name + "=" + value);
                     prefs.edit().putString(name, value).apply();
                 } else {
-                    LogToSystem.d(TAG + "saveCfg", "no need to save value(equal)");
+                    //LogToSystem.d(TAG + "saveCfg", "no need to save value(equal)");
                 }
             }
         } catch (Exception ex) {

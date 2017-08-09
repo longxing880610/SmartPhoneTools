@@ -3,6 +3,7 @@ smart phone tools, include hce, sd file manage
 
 v1.3
 1. 将音乐播放器的播放模式置为循环
+2. 数据库框架ok了, 将用户输入姓名及选项卡窗体的当前选中选项卡存入数据库
 
 
 v1.2 20170730 12

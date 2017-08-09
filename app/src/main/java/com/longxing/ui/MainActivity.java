@@ -22,6 +22,7 @@ import com.longxing.R;
 import com.longxing.common.ConstDef;
 import com.longxing.database.DatabaseService;
 import com.longxing.database.TableProfileService;
+import com.longxing.database.datamodel.ProfileModel;
 import com.longxing.log.LogToSystem;
 
 import java.util.Timer;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private static MainActivity sMainActivity;
     //private UI_TabLog mUiTabLog;
 
+    private TableProfileService mTableProfile;
+
     //region back key to exit application
     /**
      * count of back key, use to check if exit the application
@@ -66,9 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-
         // 初始化系统资源
         DatabaseService.getInstance(this);
+
+        DatabaseService dbService = DatabaseService.getInstance(null);
+
+        mTableProfile = (TableProfileService) dbService.getTable(TableProfileService.class);
 
         setContentView(R.layout.activity_main);
 
@@ -99,6 +105,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        try {
+            ProfileModel profile = mTableProfile.getProfile(TableProfileService.cProfileTableSelect);
+            if (profile != null) {
+                LogToSystem.d(TAG + "onCreate", profile.toString());
+                int select = Integer.parseInt(profile.getProfileValue());
+                LogToSystem.d(TAG + "onCreate", "select" + select);
+                mViewPager.setCurrentItem(select);
+            }
+        } catch (Exception ex) {
+            LogToSystem.e(TAG + "onCreate", ex.getMessage());
+        }
+
         LogToSystem.i(TAG + "onCreate", "main activity create complete");
     }
 
@@ -126,10 +144,21 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         int tabId = mViewPager.getCurrentItem();
-        //LogToSystem.d(TAG, "onKeyDown:" + keyCode + "&" + tabId);
-        IUI_TabMain tab = mSectionsPagerAdapter.getPageInterface(tabId);
-        if (tab != null) {
-            tab.processDestroy();
+
+        // 清理table
+        LogToSystem.d(TAG+"onDestroy", "onKeyDown:" + tabId);
+        int size = mSectionsPagerAdapter.getCount();
+        for (int i = 0; i < size; ++i) {
+            IUI_TabMain tab = mSectionsPagerAdapter.getPageInterface(i);
+            if (tab != null) {
+                tab.processDestroy();
+            }
+        }
+        // 保存窗体状态
+        try {
+            mTableProfile.insertOrUpdateProfile(TableProfileService.cProfileTableSelect, ""+tabId);
+        } catch (Exception ex) {
+            LogToSystem.e(TAG + "onDestroy", ex.getMessage());
         }
 
         super.onDestroy();
