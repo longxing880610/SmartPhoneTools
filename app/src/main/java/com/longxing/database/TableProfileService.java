@@ -5,7 +5,6 @@ import android.content.Context;
 import com.longxing.database.datamodel.DaoMaster;
 import com.longxing.database.datamodel.DaoSession;
 import com.longxing.database.datamodel.FileInforModel;
-import com.longxing.database.datamodel.FileInforModelDao;
 import com.longxing.database.datamodel.ProfileModel;
 import com.longxing.database.datamodel.ProfileModelDao;
 
@@ -50,6 +49,7 @@ public class TableProfileService extends BaseTable implements ITableDb {
 
     /**
      * 插入一条记录
+     *
      * @param name
      * @param value
      */
@@ -60,6 +60,44 @@ public class TableProfileService extends BaseTable implements ITableDb {
         DaoSession daoSession = daoMaster.newSession();
         ProfileModelDao userDao = daoSession.getProfileModelDao();
         userDao.insert(profile);
+        //userDao.
+    }
+
+
+    /**
+     * 插入一条记录
+     *
+     * @param name
+     * @param value
+     */
+    public void insertOrUpdateProfile(String name, String value) {
+
+        ProfileModel profile;
+
+        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        ProfileModelDao userDao = daoSession.getProfileModelDao();
+
+        QueryBuilder<ProfileModel> qb = userDao.queryBuilder();
+        qb.where(ProfileModelDao.Properties.ProfileName.eq(name));
+
+        List<ProfileModel> profileModels = qb.list();
+        int size = profileModels.size();
+        if (size <= 0) {
+            // need to insert
+            profile = new ProfileModel(name, value);
+
+            userDao.insert(profile);
+        } else {   //
+            profile = profileModels.get(size - 1);
+            if (size > 1) {
+                profileModels.remove(profile);
+                userDao.deleteInTx(profileModels);
+            }
+
+            profile.setProfileValue(value);
+            userDao.save(profile);
+        }
     }
 
     /**
@@ -69,11 +107,15 @@ public class TableProfileService extends BaseTable implements ITableDb {
      */
     public ProfileModel getProfile(String name) {
 
-        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+        DaoMaster daoMaster = new DaoMaster(getReadableDatabase());
         DaoSession daoSession = daoMaster.newSession();
         ProfileModelDao userDao = daoSession.getProfileModelDao();
         QueryBuilder<ProfileModel> qb = userDao.queryBuilder();
-        qb.where(ProfileModelDao.Properties.ProfileName.gt(name));
+        qb.where(ProfileModelDao.Properties.ProfileName.eq(name));
+
+        //List<ProfileModel> profileModels = qb.list();
+        //userDao.delete(profileModels.get(1));
+        //ProfileModel profileModel =
 
         return qb.unique();
     }

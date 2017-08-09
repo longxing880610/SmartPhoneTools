@@ -22,7 +22,7 @@ public class FileInforModelDao extends AbstractDao<FileInforModel, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "Id");
+        public final static Property Id = new Property(0, Long.class, "id", true, "Id");
         public final static Property Updatetime = new Property(1, String.class, "updatetime", false, "UpdateTime");
         public final static Property FileTag = new Property(2, String.class, "fileTag", false, "FileTag");
         public final static Property Code = new Property(3, String.class, "code", false, "Code");
@@ -48,7 +48,7 @@ public class FileInforModelDao extends AbstractDao<FileInforModel, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"FILE_INFOR_MODEL\" (" + //
-                "\"Id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: id
+                "\"Id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"UpdateTime\" TEXT," + // 1: updatetime
                 "\"FileTag\" TEXT," + // 2: fileTag
                 "\"Code\" TEXT," + // 3: code
@@ -70,7 +70,11 @@ public class FileInforModelDao extends AbstractDao<FileInforModel, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, FileInforModel entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String updatetime = entity.getUpdatetime();
         if (updatetime != null) {
@@ -126,7 +130,11 @@ public class FileInforModelDao extends AbstractDao<FileInforModel, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, FileInforModel entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String updatetime = entity.getUpdatetime();
         if (updatetime != null) {
@@ -181,13 +189,13 @@ public class FileInforModelDao extends AbstractDao<FileInforModel, Long> {
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     @Override
     public FileInforModel readEntity(Cursor cursor, int offset) {
         FileInforModel entity = new FileInforModel( //
-            cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // updatetime
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // fileTag
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // code
@@ -204,7 +212,7 @@ public class FileInforModelDao extends AbstractDao<FileInforModel, Long> {
      
     @Override
     public void readEntity(Cursor cursor, FileInforModel entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUpdatetime(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setFileTag(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setCode(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -234,7 +242,7 @@ public class FileInforModelDao extends AbstractDao<FileInforModel, Long> {
 
     @Override
     public boolean hasKey(FileInforModel entity) {
-        throw new UnsupportedOperationException("Unsupported for entities with a non-null key");
+        return entity.getId() != null;
     }
 
     @Override

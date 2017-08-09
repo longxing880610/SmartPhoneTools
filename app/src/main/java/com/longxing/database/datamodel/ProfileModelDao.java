@@ -25,7 +25,7 @@ public class ProfileModelDao extends AbstractDao<ProfileModel, Long> {
         public final static Property Id = new Property(0, long.class, "id", true, "Id");
         public final static Property UpdateTime = new Property(1, String.class, "updateTime", false, "UpdateTime");
         public final static Property ProfileName = new Property(2, String.class, "profileName", false, "ProfileName");
-        public final static Property ProfileValue = new Property(3, String.class, "profileValue", false, "profileValue");
+        public final static Property ProfileValue = new Property(3, String.class, "profileValue", false, "ProfileValue");
         public final static Property ProfileRemark = new Property(4, String.class, "profileRemark", false, "ProfileRemark");
         public final static Property ProfileTag = new Property(5, String.class, "profileTag", false, "ProfileTag");
     }
@@ -46,9 +46,12 @@ public class ProfileModelDao extends AbstractDao<ProfileModel, Long> {
                 "\"Id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: id
                 "\"UpdateTime\" TEXT," + // 1: updateTime
                 "\"ProfileName\" TEXT," + // 2: profileName
-                "\"profileValue\" TEXT," + // 3: profileValue
+                "\"ProfileValue\" TEXT," + // 3: profileValue
                 "\"ProfileRemark\" TEXT," + // 4: profileRemark
                 "\"ProfileTag\" TEXT);"); // 5: profileTag
+        // Add Indexes
+        db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_PROFILE_MODEL_ProfileName ON PROFILE_MODEL" +
+                " (\"ProfileName\" ASC);");
     }
 
     /** Drops the underlying database table. */

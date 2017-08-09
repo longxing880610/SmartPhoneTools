@@ -22,7 +22,7 @@ public class MediaFileModelDao extends AbstractDao<MediaFileModel, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "Id");
+        public final static Property Id = new Property(0, Long.class, "id", true, "Id");
         public final static Property UpdateTime = new Property(1, String.class, "updateTime", false, "UpdateTime");
         public final static Property MediaPath = new Property(2, String.class, "mediaPath", false, "MediaPath");
         public final static Property MediaDuration = new Property(3, String.class, "mediaDuration", false, "MediaDuration");
@@ -43,7 +43,7 @@ public class MediaFileModelDao extends AbstractDao<MediaFileModel, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"MEDIA_FILE_MODEL\" (" + //
-                "\"Id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: id
+                "\"Id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"UpdateTime\" TEXT," + // 1: updateTime
                 "\"MediaPath\" TEXT," + // 2: mediaPath
                 "\"MediaDuration\" TEXT," + // 3: mediaDuration
@@ -60,7 +60,11 @@ public class MediaFileModelDao extends AbstractDao<MediaFileModel, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, MediaFileModel entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String updateTime = entity.getUpdateTime();
         if (updateTime != null) {
@@ -91,7 +95,11 @@ public class MediaFileModelDao extends AbstractDao<MediaFileModel, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, MediaFileModel entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String updateTime = entity.getUpdateTime();
         if (updateTime != null) {
@@ -121,13 +129,13 @@ public class MediaFileModelDao extends AbstractDao<MediaFileModel, Long> {
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     @Override
     public MediaFileModel readEntity(Cursor cursor, int offset) {
         MediaFileModel entity = new MediaFileModel( //
-            cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // updateTime
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // mediaPath
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // mediaDuration
@@ -139,7 +147,7 @@ public class MediaFileModelDao extends AbstractDao<MediaFileModel, Long> {
      
     @Override
     public void readEntity(Cursor cursor, MediaFileModel entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUpdateTime(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setMediaPath(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setMediaDuration(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -164,7 +172,7 @@ public class MediaFileModelDao extends AbstractDao<MediaFileModel, Long> {
 
     @Override
     public boolean hasKey(MediaFileModel entity) {
-        throw new UnsupportedOperationException("Unsupported for entities with a non-null key");
+        return entity.getId() != null;
     }
 
     @Override

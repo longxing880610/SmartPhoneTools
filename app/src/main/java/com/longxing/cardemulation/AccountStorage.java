@@ -21,6 +21,7 @@ import android.content.Context;
 import com.longxing.database.DatabaseService;
 import com.longxing.database.TableProfileService;
 import com.longxing.database.datamodel.ProfileModel;
+import com.longxing.log.LogToSystem;
 
 /**
  * Utility class for persisting account numbers to disk.
@@ -32,7 +33,7 @@ import com.longxing.database.datamodel.ProfileModel;
  */
 public class AccountStorage {
     private static final String PREF_ACCOUNT_NUMBER = "userName";
-    //private static final String TAG = "MyLog/AccountStorage/";
+    private static final String TAG = "MyLog/AccountStorage/";
     private static String sAccount = null;
     private static final Object sAccountLock = new Object();
 
@@ -45,24 +46,28 @@ public class AccountStorage {
 
         TableProfileService tableProfile = (TableProfileService) dbService.getTable(TableProfileService.class);
 
-        tableProfile.insertProfile(PREF_ACCOUNT_NUMBER, s);
+        tableProfile.insertOrUpdateProfile(PREF_ACCOUNT_NUMBER, s);
         //SystemSetting.saveCfg(c, PREF_ACCOUNT_NUMBER, s);
         sAccount = s;
     }
 
     public static String GetAccount(Context c) {
-        synchronized (sAccountLock) {
-            if (sAccount == null) {
-                DatabaseService dbService = DatabaseService.getInstance(null);
+        //synchronized (sAccountLock) {
+        if (sAccount == null) {
+            DatabaseService dbService = DatabaseService.getInstance(null);
 
-                TableProfileService tableProfile = (TableProfileService) dbService.getTable(TableProfileService.class);
-
+            TableProfileService tableProfile = (TableProfileService) dbService.getTable(TableProfileService.class);
+            try {
                 ProfileModel profile = tableProfile.getProfile(PREF_ACCOUNT_NUMBER);
                 if (profile != null) {
                     sAccount = profile.getProfileValue();
                 }
+            } catch (Exception ex) {
+                LogToSystem.e(TAG + "GetAccount", ex.getMessage());
             }
-            return sAccount;
+
         }
+        return sAccount;
+        //}
     }
 }
