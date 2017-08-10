@@ -66,10 +66,6 @@ public class UI_TabMusic implements IUI_TabMain {
         filter.addAction("com.complete");
         mMainActivity.registerReceiver(receiver, filter);
 
-        WindowManager wm = mMainActivity.getWindowManager();
-        Point screenSize = new Point();
-        wm.getDefaultDisplay().getSize(screenSize);
-
         Button btn = (Button) rootView.findViewById(R.id.btn_startMusic);
         btn.setOnClickListener(new ClickMusicBtn());
         btn = (Button) rootView.findViewById(R.id.btn_stopMusic);

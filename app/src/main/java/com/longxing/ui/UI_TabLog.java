@@ -53,9 +53,8 @@ public class UI_TabLog implements IUI_TabMain {
         return sUiTabLog;
     }
 
-    public
     @Override
-    void initUI(View rootView) {
+    public void initUI(View rootView) {
 
         //mIsInited = true;
         //View rootView = mMainActivity.GetLayerById(R.layout.tab_log);

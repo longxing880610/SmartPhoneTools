@@ -19,8 +19,8 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
      */
     //private static final String TAG = "MyLog/SectionsPagerAdap/";
 
-    private View[] mViewPages = new View[3];
-    private static final int[] mResIds = {R.layout.tab_log, R.layout.tab_sd_card, R.layout.tab_music};
+    private static final int[] mResIds = {R.layout.tab_log, R.layout.tab_sd_card, R.layout.tab_music, R.layout.tab_video};
+    private View[] mViewPages = new View[mResIds.length];
 
     SectionsPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -35,8 +35,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
-        return 3;
+        return mResIds.length;
     }
 
     /**
@@ -53,7 +52,9 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return "SD文件管理";
             case 2:
-                return "娱乐天地";
+                return "娱乐音乐";
+            case 3:
+                return "娱乐视频";
         }
         return null;
     }
@@ -72,6 +73,8 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
                 tab = UI_TabSdFiles.getInstance();
             } else if (resId == R.layout.tab_music) {
                 tab = UI_TabMusic.getInstance();
+            }else if (resId == R.layout.tab_video) {
+                tab = UI_TabVideo.getInstance();
             }
             if (tab != null) {  // has instance
                 tab.initUI(rootView);
@@ -97,7 +100,9 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
         } else if (resId == R.layout.tab_sd_card) {
             tab = UI_TabSdFiles.getInstance();
         } else if (resId == R.layout.tab_music) {
-            tab = null;
+            tab = UI_TabMusic.getInstance();
+        } else if (resId == R.layout.tab_video) {
+            tab = UI_TabVideo.getInstance();
         }
         return tab;
     }

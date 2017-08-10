@@ -8,7 +8,7 @@ import android.support.v4.content.FileProvider;
 import com.longxing.common.MyException;
 import com.longxing.common.ThreadStatus_ListFiles;
 import com.longxing.log.LogToSystem;
-import com.longxing.ui.UI_TabMusic;
+import com.longxing.ui.UI_TabVideo;
 
 import java.io.File;
 import java.util.Collections;
@@ -82,9 +82,13 @@ public class FileManage {
         intent.setDataAndType(uri, type);   // /*uri*/Uri.fromFile(file)
         //跳转
         try {
-            if (type.startsWith("audio") || type.startsWith("video")) {
+            /*if (type.startsWith("audio") || type.startsWith("video")) {
                 // 音乐文件
                 UI_TabMusic.getInstance().sendMessage(UI_TabMusic.WHAT_PLAY_MUSIC, filePath);
+            }else */
+            if (type.startsWith("audio") || type.startsWith("video")) {
+                // 音乐文件
+                UI_TabVideo.getInstance().playUrl(filePath);
             } else {
                 context.startActivity(intent);
             }

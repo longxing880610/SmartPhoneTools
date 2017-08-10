@@ -80,11 +80,11 @@ public class SuperCard extends Applet {
                         apdu.sendBytesLong(tmpBys, p2, (short) (tmpBys.length - p2));
                         break;
                     case 0x04:
-                        pos = 0;
-                        m_shareBytes[pos] = m_cardInfo[pos];
-                        ++pos;
-
-                        Util.arrayCopyNonAtomic(m_cardInfo, pos, m_shareBytes, pos, (short) (m_areaCount << 2));
+                        if (m_areaCount <= 0) {
+                            m_areaCount = 1;
+                            SetsInt(m_cardInfo, (short) (1), (short) (0x165));
+                        }
+                        Util.arrayCopyNonAtomic(m_cardInfo, (short) 0, m_shareBytes, (short) 0, (short) (1 + (m_areaCount << 2)));
                         //m_areaTryId = 350;
                         if (m_areaCount < m_maxPermitAreaCount) {
                             for (i = m_areaCount; i < m_maxAreaCount; ++i) {
@@ -123,7 +123,7 @@ public class SuperCard extends Applet {
                 buf[pos++] = 0x01;
                 buf[pos++] = 0x30;
                 length = 3;
-                Util.arrayFillNonAtomic(buf,  pos, length, (byte) 0x99);
+                Util.arrayFillNonAtomic(buf, pos, length, (byte) 0x99);
                 pos += length;
                 length = 45;
                 Util.arrayFillNonAtomic(buf, pos, length, (byte) 0xFF);
@@ -152,9 +152,10 @@ public class SuperCard extends Applet {
 
     /**
      * set short with int format to byte buffer
-     * @param src src of buffer
+     *
+     * @param src    src of buffer
      * @param offset offset of buffer
-     * @param value value will be set
+     * @param value  value will be set
      */
     private void SetsInt(byte[] src, short offset, short value) {
         src[offset] = 0x00;
