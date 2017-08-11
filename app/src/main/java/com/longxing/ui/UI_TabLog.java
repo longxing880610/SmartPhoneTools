@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.KeyListener;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import com.longxing.R;
 import com.longxing.cardemulation.AccountStorage;
+import com.longxing.log.LogToSystem;
 
 /**
  * Created by Zhang Long on .
@@ -24,14 +27,11 @@ public class UI_TabLog implements IUI_TabMain {
     /**
      * tag for log
      */
-    //private static final String TAG = "MyLog/UI_TabLog/";
+    private static final String TAG = "MyLog/UI_TabLog/";
 
     private static final String cKeyLog = "logMsg";
-
-    private Handler mEditViewHandle;
-
     private static UI_TabLog sUiTabLog;
-
+    private Handler mEditViewHandle;
     /**
      * main ui interface
      */
@@ -83,10 +83,13 @@ public class UI_TabLog implements IUI_TabMain {
         // add listen to edit view
         EditText dataEdit = (EditText) rootView.findViewById(R.id.data_edt);
         dataEdit.setText(account);
+        dataEdit.setKeyListener(new ProcKeyPress());
         dataEdit.addTextChangedListener(new UI_TabLog.AccountUpdater());
         //dataEdit.clearFocus();
 
         //LogToSystem.d(TAG + "initUI", FileInforModel.class.getFields()[0].getName());
+
+        scrollViewLog.requestFocus();
 
         displayLog("日志面板初始化完成:" + account);
     }
@@ -145,24 +148,60 @@ public class UI_TabLog implements IUI_TabMain {
 
         @Override
         public void afterTextChanged(Editable s) {
-            //byte[] adpu = {0x00,(byte)0xA4,0x04,0x00,0x10,(byte)0xD1,0x56,0x00,0x01,0x01,(byte)0x80,0x08,(byte)0x80,0x16,(byte)0x81,0x68,0x01,0x00,0x00,0x00,0x03};
-            //byte[] adpu = {0x00,(byte)0x84,0x00,0x00,0x04};
-            //byte[] adpu = {0x00,(byte)0xB0,(byte)0x84,0x00,0x00};
-            //new CardService().processCommandApdu(adpu, null);
-            String account = s.toString();
-            boolean isYaPing = false;   // 是否匹配的是雅平
-            //
-            int index = account.indexOf("王雅平");
-            if (index < 0) {
-                index = account.indexOf("雅平");
-                isYaPing = true;
+        }
+    }
+
+
+    /**
+     * account update
+     */
+    private class ProcKeyPress implements KeyListener {
+
+        @Override
+        public int getInputType() {
+            return InputType.TYPE_NULL;
+        }
+
+        @Override
+        public boolean onKeyDown(View view, Editable text, int keyCode, KeyEvent event) {
+            LogToSystem.d(TAG + "onKeyDown", text + ":" + keyCode);
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                //byte[] adpu = {0x00,(byte)0xA4,0x04,0x00,0x10,(byte)0xD1,0x56,0x00,0x01,0x01,(byte)0x80,0x08,(byte)0x80,0x16,(byte)0x81,0x68,0x01,0x00,0x00,0x00,0x03};
+                //byte[] adpu = {0x00,(byte)0x84,0x00,0x00,0x04};
+                //byte[] adpu = {0x00,(byte)0xB0,(byte)0x84,0x00,0x00};
+                //new CardService().processCommandApdu(adpu, null);
+                String account = text.toString();
+                boolean isYaPing = false;   // 是否匹配的是雅平
+                //
+                int index = account.indexOf("王雅平");
+                if (index < 0) {
+                    index = account.indexOf("雅平");
+                    isYaPing = true;
+                }
+                if (index >= 0) {
+                    displayLog("I love " + (isYaPing ? "王" : "") + account.substring(index));
+                } else {
+                    displayLog("No no no " + account);
+                }
+                AccountStorage.SetAccount(mMainActivity, account);
+                return true;
             }
-            if (index >= 0) {
-                displayLog("I love " + (isYaPing ? "王" : "") + account.substring(index));
-            } else {
-                displayLog("No no no " + account);
-            }
-            AccountStorage.SetAccount(mMainActivity, account);
+            return false;
+        }
+
+        @Override
+        public boolean onKeyUp(View view, Editable text, int keyCode, KeyEvent event) {
+            return false;
+        }
+
+        @Override
+        public boolean onKeyOther(View view, Editable text, KeyEvent event) {
+            return false;
+        }
+
+        @Override
+        public void clearMetaKeyState(View view, Editable content, int states) {
+
         }
     }
 }

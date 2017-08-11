@@ -21,7 +21,7 @@ public class SuperCard extends Applet {
     private short m_areaCount = 0;
     private byte[] m_userInfo = null;    // 30 bytes
     private byte[] m_shareBytes = null;    // 45 bytes
-    private short m_areaTryId = 350;
+    private short m_areaTryId = 1;
     private short m_maxAreaTryId = 1000;
     private short m_maxAreaCount = 10;
     private short m_maxPermitAreaCount = 10;

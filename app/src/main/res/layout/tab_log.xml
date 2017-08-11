@@ -22,7 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/textview_border"
-        android:inputType=""
+        android:imeOptions="actionDone"
+        android:inputType="text"
         android:labelFor="@+id/data_edt"
         android:text="@string/defaultName"
         android:textColor="@android:color/holo_orange_light" />
