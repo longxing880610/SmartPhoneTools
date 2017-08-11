@@ -1,6 +1,4 @@
-/**
- *
- */
+
 package com.longxing.cardemulation;
 
 
@@ -26,7 +24,7 @@ public class SuperCard extends Applet {
     private short m_areaTryId = 350;
     private short m_maxAreaTryId = 1000;
     private short m_maxAreaCount = 10;
-    private short m_maxPermitAreaCount = 1;
+    private short m_maxPermitAreaCount = 10;
     //private byte[] m_apduBufer = new byte[10000];
     //private short m_apduLen = 0;
 
@@ -38,7 +36,7 @@ public class SuperCard extends Applet {
         m_shareBytes = JCSystem.makeTransientByteArray((short) 45, JCSystem.CLEAR_ON_DESELECT);
     }
 
-    public static SuperCard install(byte[] bArray, short bOffset, byte bLength) {
+    static SuperCard install(byte[] bArray, short bOffset, byte bLength) {
         // GP-compliant JavaCard applet registration
         try {
             SuperCard superCard = new SuperCard();
@@ -51,7 +49,7 @@ public class SuperCard extends Applet {
     }
 
     public void process(APDU apdu) throws JavacardException, ISOException {
-        byte[] tmpBys = null;
+        byte[] tmpBys;
         // Good practice: Return 9000 on SELECT
         if (selectingApplet()) {
             tmpBys = m_userInfo;
@@ -60,12 +58,12 @@ public class SuperCard extends Applet {
             apdu.sendBytesLong(tmpBys, (short) 0, (short) (4));
             return;
         }
-        short pos = 0;
+        short pos;
         byte[] buf = apdu.getBuffer();
         short p1 = (short) (buf[ISO7816.OFFSET_P1] & 0x0FF);
         short p2 = (short) (buf[ISO7816.OFFSET_P2] & 0x0FF);
         short length = (short) (buf[ISO7816.OFFSET_LC] & 0x0FF);
-        short i = 0;
+        short i;
 
         //tmpBys = m_apduBufer;
         //byte p2 = buf[ISO7816.OFFSET_P2];
@@ -82,7 +80,7 @@ public class SuperCard extends Applet {
                     case 0x04:
                         if (m_areaCount <= 0) {
                             m_areaCount = 1;
-                            SetsInt(m_cardInfo, (short) (1), (short) (0x165));
+                            SetsInt(m_cardInfo, (short) (1), (short) (0x164));
                         }
                         Util.arrayCopyNonAtomic(m_cardInfo, (short) 0, m_shareBytes, (short) 0, (short) (1 + (m_areaCount << 2)));
                         //m_areaTryId = 350;
