@@ -4,18 +4,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.method.KeyListener;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.longxing.R;
 import com.longxing.cardemulation.AccountStorage;
-import com.longxing.log.LogToSystem;
 
 /**
  * Created by Zhang Long on .
@@ -83,7 +81,7 @@ public class UI_TabLog implements IUI_TabMain {
         // add listen to edit view
         EditText dataEdit = (EditText) rootView.findViewById(R.id.data_edt);
         dataEdit.setText(account);
-        dataEdit.setKeyListener(new ProcKeyPress());
+        dataEdit.setOnEditorActionListener(new ProcEnterKeyPress());
         dataEdit.addTextChangedListener(new UI_TabLog.AccountUpdater());
         //dataEdit.clearFocus();
 
@@ -155,17 +153,19 @@ public class UI_TabLog implements IUI_TabMain {
     /**
      * account update
      */
-    private class ProcKeyPress implements KeyListener {
+    private class ProcEnterKeyPress implements TextView.OnEditorActionListener {
 
         @Override
-        public int getInputType() {
-            return InputType.TYPE_NULL;
-        }
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            //LogToSystem.d(TAG + "onEditorAction1", "" + actionId);
 
-        @Override
-        public boolean onKeyDown(View view, Editable text, int keyCode, KeyEvent event) {
-            LogToSystem.d(TAG + "onKeyDown", text + ":" + keyCode);
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            int keyCode = 0;
+            if (event != null) {
+                keyCode = event.getKeyCode();
+            }
+            Editable text = v.getEditableText();
+            //LogToSystem.d(TAG + "onEditorAction", text + ":" + keyCode + "==" + KeyEvent.KEYCODE_ENTER);
+            if (actionId == EditorInfo.IME_ACTION_DONE || keyCode == KeyEvent.KEYCODE_ENTER) {
                 //byte[] adpu = {0x00,(byte)0xA4,0x04,0x00,0x10,(byte)0xD1,0x56,0x00,0x01,0x01,(byte)0x80,0x08,(byte)0x80,0x16,(byte)0x81,0x68,0x01,0x00,0x00,0x00,0x03};
                 //byte[] adpu = {0x00,(byte)0x84,0x00,0x00,0x04};
                 //byte[] adpu = {0x00,(byte)0xB0,(byte)0x84,0x00,0x00};
@@ -187,21 +187,6 @@ public class UI_TabLog implements IUI_TabMain {
                 return true;
             }
             return false;
-        }
-
-        @Override
-        public boolean onKeyUp(View view, Editable text, int keyCode, KeyEvent event) {
-            return false;
-        }
-
-        @Override
-        public boolean onKeyOther(View view, Editable text, KeyEvent event) {
-            return false;
-        }
-
-        @Override
-        public void clearMetaKeyState(View view, Editable content, int states) {
-
         }
     }
 }
