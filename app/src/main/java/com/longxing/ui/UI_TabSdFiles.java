@@ -7,6 +7,8 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,6 +25,8 @@ import com.longxing.common.CastWarn;
 import com.longxing.file.FileManage;
 import com.longxing.file.FileStruct;
 import com.longxing.log.LogToSystem;
+import com.longxing.ui.Control.ListItemAdapter;
+import com.longxing.ui.Control.PopupWindowHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,41 +40,39 @@ import java.util.concurrent.TimeUnit;
  * show sd files
  */
 
-class UI_TabSdFiles implements IUI_TabMain {
+public class UI_TabSdFiles implements IUI_TabMain {
+    public static final int WHAT_UPDATE_FILELIST_FORCE = 4;
+    public static final int WHAT_SET_SORT = 5;
+    //private static final String cCount_Down_Latch = "Count_Down_Latch";
     /**
      * tag for log
      */
     private static final String TAG = "MyLog/UI_TabSdFiles/";
     private static final String cKEY_TXT = "KEY_TXT";
-    //private static final String cCount_Down_Latch = "Count_Down_Latch";
-
     private static final int WHAT_SHOW_PATH = 1;
     private static final int WHAT_GET_SEARCH_TEXT = 2;
     private static final int WHAT_SET_SEARCH_TEXT = 3;
-    public static final int WHAT_UPDATE_FILELIST_FORCE = 4;
-    public static final int WHAT_SET_SORT = 5;
-
     private static UI_TabSdFiles sUiTabSdFiles;
-
+    private static ArrayList<FileStruct> mFileNames = new ArrayList<>();
+    private static ArrayList<FileStruct> mFileNameBackup = null;
     private CountDownLatch countDownLatch;
-    private String mOutputString;
-    private Handler mEditViewHandle;
 
     //private TextView mTextViewPath;
     //private EditText mSearchText;
+    private String mOutputString;
+    private Handler mEditViewHandle;
     /**
      * main ui interface
      */
     private MainActivity mMainActivity;
     private UI_TabLog mUI_tabLog;
-
-    private static ArrayList<FileStruct> mFileNames = new ArrayList<>();
-    private static ArrayList<FileStruct> mFileNameBackup = null;
     private List<String> mFileDir = new ArrayList<>();
     private int mCurFileDirIndex = 0;
     private ListItemAdapter mAdapter = null;
 
     private boolean mIsShow_hidefile = false;
+
+    //region SD文件管理器初始化
 
     private UI_TabSdFiles() {
 
@@ -78,7 +81,7 @@ class UI_TabSdFiles implements IUI_TabMain {
     /**
      * @return owner object
      */
-    static UI_TabSdFiles getInstance() {
+    public static UI_TabSdFiles getInstance() {
         if (sUiTabSdFiles == null) {
             sUiTabSdFiles = new UI_TabSdFiles();
             sUiTabSdFiles.mMainActivity = MainActivity.getInstance();
@@ -276,29 +279,27 @@ class UI_TabSdFiles implements IUI_TabMain {
 
         switchDir(rootDir);
 
+        // 初始化弹出菜单
+        PopupMenu popupMenu = new PopupMenu(mMainActivity, fileListView);
+        Menu menu = popupMenu.getMenu();
+
+        // 通过代码添加菜单项
+        menu.add(Menu.NONE, Menu.FIRST + 0, 0, "复制");
+        menu.add(Menu.NONE, Menu.FIRST + 1, 1, "粘贴");
+
+        // 通过XML文件添加菜单项
+        MenuInflater menuInflater = mMainActivity.getMenuInflater();
+        menuInflater.inflate(R.menu.menu_file, menu);
+
+        PopupWindowHelper popupWindowHelper = new PopupWindowHelper(fileListView);
+        fileListView.setOnItemLongClickListener(new ProcListItemLongClick(popupWindowHelper));
+
         displayLog("SD文件管理加载完成");
-    }
-
-    //region 窗体事件响应函数
-
-    /**
-     * 排序筛选条件点击事件处理类
-     */
-    private class SearchConditionOnClickList implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Spinner spinner = (Spinner) parent;
-            mAdapter.sortByUser(spinner.getSelectedItem().toString());
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-
-        }
     }
 
     //endregion
 
+    //region 窗体事件响应函数
 
     @Override
     public boolean processKeyDown(int keyCode, KeyEvent event) {
@@ -340,6 +341,8 @@ class UI_TabSdFiles implements IUI_TabMain {
     private boolean switchDir(String dir) {
         return switchDir(dir, true);
     }
+
+    //endregion
 
     /**
      * switch directory
@@ -426,6 +429,39 @@ class UI_TabSdFiles implements IUI_TabMain {
             return mOutputString;
         }
         return null;
+    }
+
+    /**
+     * 排序筛选条件点击事件处理类
+     */
+    private class SearchConditionOnClickList implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Spinner spinner = (Spinner) parent;
+            mAdapter.sortByUser(spinner.getSelectedItem().toString());
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    }
+
+    private class ProcListItemLongClick implements AdapterView.OnItemLongClickListener {
+
+        private PopupWindowHelper mPopMenu;
+
+        ProcListItemLongClick(PopupWindowHelper popMenu) {
+            mPopMenu = popMenu;
+        }
+
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            int x = (int) view.getX();
+            int y = 0;//(int)view.getY();
+            mPopMenu.showAsDropDown(view, x, y);
+            return true;
+        }
     }
 
 }

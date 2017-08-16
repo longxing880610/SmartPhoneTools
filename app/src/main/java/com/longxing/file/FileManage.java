@@ -8,6 +8,7 @@ import android.support.v4.content.FileProvider;
 import com.longxing.common.MyException;
 import com.longxing.common.ThreadStatus_ListFiles;
 import com.longxing.log.LogToSystem;
+import com.longxing.ui.UI_TabMusic;
 import com.longxing.ui.UI_TabVideo;
 
 import java.io.File;
@@ -22,107 +23,6 @@ import java.util.List;
  */
 public class FileManage {
     private static final String TAG = "MyLog/FileManage/";
-
-    /**
-     * 获取文件及目录列表
-     *
-     * @param filePath        current directory
-     * @param isShow_Hidefile is show the file(hide)
-     * @param fileDirList     list to store the file and directory
-     * @return list of files
-     */
-    public static List<FileStruct> GetFiles(String filePath, boolean isShow_Hidefile, List<FileStruct> fileDirList) {
-
-        fileDirList.clear();
-        File file = new File(filePath);
-        File[] files = file.listFiles();
-
-        if (files != null) {
-            for (File item : files) {
-                if (!isShow_Hidefile) {
-                    if (item.isHidden()) {
-                        //LogToSystem.d(TAG+GetFiles, item.getName());
-                        continue;
-                    }
-                }
-                FileStruct fileStruct = new FileStruct(item);
-                fileDirList.add(fileStruct);
-            }
-        } else {
-            LogToSystem.e(TAG + "GetFiles", "no privilege for this directory");
-        }
-        Collections.sort(fileDirList, new Comparator<FileStruct>() {
-            @Override
-            public int compare(FileStruct o1, FileStruct o2) {
-                return o1.mFileName.compareToIgnoreCase(o2.mFileName);
-            }
-        });
-
-        return fileDirList;
-    }
-
-    /**
-     * @param context  context of activity
-     * @param filePath filepath of open file
-     */
-    public static void openFile(Context context, String filePath) {
-        File file = new File(filePath);
-        //Uri uri = Uri.parse("file://"+file.getAbsolutePath());
-        Uri uri = FileProvider.getUriForFile(context, "com.longxing.fileprovider", file);
-
-        Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        //设置intent的Action属性
-        intent.setAction(Intent.ACTION_VIEW);
-        //获取文件file的MIME类型
-        String type = getMIMEType(file);
-        //设置intent的data和Type属性。
-        intent.setDataAndType(uri, type);   // /*uri*/Uri.fromFile(file)
-        //跳转
-        try {
-            /*if (type.startsWith("audio") || type.startsWith("video")) {
-                // 音乐文件
-                UI_TabMusic.getInstance().sendMessage(UI_TabMusic.WHAT_PLAY_MUSIC, filePath);
-            }else */
-            if (type.startsWith("audio") || type.startsWith("video")) {
-                // 音乐文件
-                UI_TabVideo.getInstance().playUrl(filePath);
-            } else {
-                context.startActivity(intent);
-            }
-        } catch (Exception ex) {
-            LogToSystem.e(TAG + "openFile", ex.getMessage());
-        }
-    }
-
-    /**
-     * 根据文件后缀名获得对应的MIME类型。
-     *
-     * @param file file input
-     */
-    private static String getMIMEType(File file) {
-
-        String type = "*/*";
-        String fName = file.getName();
-//获取后缀名前的分隔符"."在fName中的位置。
-        int dotIndex = fName.lastIndexOf(".");
-        if (dotIndex < 0) {
-            return type;
-        }
-/* 获取文件的后缀名*/
-        String end = fName.substring(dotIndex, fName.length()).toLowerCase();
-        if (end.equals("")) return type;
-//在MIME和文件类型的匹配表中找到对应的MIME类型。
-        //MIME_MapTable??在这里你一定有疑问，这个MIME_MapTable是什么？
-        for (String[] aMIME_MapTable : MIME_MapTable) {
-            if (end.equals(aMIME_MapTable[0]))
-                type = aMIME_MapTable[1];
-        }
-        return type;
-    }
-
     //region 文件类型常量
     //建立一个MIME类型与文件后缀名的匹配表
     private static final String[][] MIME_MapTable = {
@@ -193,6 +93,105 @@ public class FileManage {
             {".dat", "video/dat"},
             {"", "*/*"}
     };
+
+    /**
+     * 获取文件及目录列表
+     *
+     * @param filePath        current directory
+     * @param isShow_Hidefile is show the file(hide)
+     * @param fileDirList     list to store the file and directory
+     * @return list of files
+     */
+    public static List<FileStruct> GetFiles(String filePath, boolean isShow_Hidefile, List<FileStruct> fileDirList) {
+
+        fileDirList.clear();
+        File file = new File(filePath);
+        File[] files = file.listFiles();
+
+        if (files != null) {
+            for (File item : files) {
+                if (!isShow_Hidefile) {
+                    if (item.isHidden()) {
+                        //LogToSystem.d(TAG+GetFiles, item.getName());
+                        continue;
+                    }
+                }
+                FileStruct fileStruct = new FileStruct(item);
+                fileDirList.add(fileStruct);
+            }
+        } else {
+            LogToSystem.e(TAG + "GetFiles", "no privilege for this directory");
+        }
+        Collections.sort(fileDirList, new Comparator<FileStruct>() {
+            @Override
+            public int compare(FileStruct o1, FileStruct o2) {
+                return o1.mFileName.compareToIgnoreCase(o2.mFileName);
+            }
+        });
+
+        return fileDirList;
+    }
+
+    /**
+     * @param context  context of activity
+     * @param filePath filepath of open file
+     */
+    public static void openFile(Context context, String filePath) {
+        File file = new File(filePath);
+        //Uri uri = Uri.parse("file://"+file.getAbsolutePath());
+        Uri uri = FileProvider.getUriForFile(context, "com.longxing.fileprovider", file);
+
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        //设置intent的Action属性
+        intent.setAction(Intent.ACTION_VIEW);
+        //获取文件file的MIME类型
+        String type = getMIMEType(file);
+        //设置intent的data和Type属性。
+        intent.setDataAndType(uri, type);   // /*uri*/Uri.fromFile(file)
+        //跳转
+        try {
+            if (type.startsWith("audio") || type.startsWith("video")) {
+                // 音乐文件
+                UI_TabMusic.getInstance().sendMessage(UI_TabMusic.WHAT_PLAY_MUSIC, filePath);
+            } else if (type.startsWith("video")) {
+                // 视频文件
+                UI_TabVideo.getInstance().playUrl(filePath);
+            } else {
+                context.startActivity(intent);
+            }
+        } catch (Exception ex) {
+            LogToSystem.e(TAG + "openFile", ex.getMessage());
+        }
+    }
+
+    /**
+     * 根据文件后缀名获得对应的MIME类型。
+     *
+     * @param file file input
+     */
+    private static String getMIMEType(File file) {
+
+        String type = "*/*";
+        String fName = file.getName();
+//获取后缀名前的分隔符"."在fName中的位置。
+        int dotIndex = fName.lastIndexOf(".");
+        if (dotIndex < 0) {
+            return type;
+        }
+/* 获取文件的后缀名*/
+        String end = fName.substring(dotIndex, fName.length()).toLowerCase();
+        if (end.equals("")) return type;
+//在MIME和文件类型的匹配表中找到对应的MIME类型。
+        //MIME_MapTable??在这里你一定有疑问，这个MIME_MapTable是什么？
+        for (String[] aMIME_MapTable : MIME_MapTable) {
+            if (end.equals(aMIME_MapTable[0]))
+                type = aMIME_MapTable[1];
+        }
+        return type;
+    }
     //endregion
 
     /**

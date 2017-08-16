@@ -24,6 +24,7 @@ import com.longxing.database.DatabaseService;
 import com.longxing.database.TableProfileService;
 import com.longxing.database.datamodel.ProfileModel;
 import com.longxing.log.LogToSystem;
+import com.longxing.ui.Control.SectionsPagerAdapter;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MyLog/MainActivity/";
     /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    //private ViewPager mViewPager;
+
+    private static MainActivity sMainActivity;
+    /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
      * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which will keep every
@@ -41,15 +48,7 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    //private ViewPager mViewPager;
-
-    private static MainActivity sMainActivity;
     //private UI_TabLog mUiTabLog;
-
     private TableProfileService mTableProfile;
 
     //region back key to exit application
@@ -62,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
     //endregion
 
     //region 窗体系统事件处理
+
+    /**
+     * get instance of main activity
+     *
+     * @return MainActivity
+     */
+    public static MainActivity getInstance() {
+        return sMainActivity;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
     @Override
     public void onDestroy() {
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
@@ -172,6 +179,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //endregion
+
+    //region 按钮事件响应函数
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -187,10 +198,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //endregion
-
-    //region 按钮事件响应函数
-
     /**
      * 点击程序版本按钮
      *
@@ -199,6 +206,8 @@ public class MainActivity extends AppCompatActivity {
     public void onBtnVersionClick(View view) {
         Toast.makeText(MainActivity.this, this.getString(R.string.app_version), Toast.LENGTH_SHORT).show();
     }
+
+    //endregion
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -236,9 +245,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    //endregion
-
-
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -248,6 +254,9 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public PlaceholderFragment() {
+        }
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -261,9 +270,6 @@ public class MainActivity extends AppCompatActivity {
             return fragment;
         }
 
-        public PlaceholderFragment() {
-        }
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -271,15 +277,6 @@ public class MainActivity extends AppCompatActivity {
             //LogToSystem.d(TAG, "onCreateView_page:"+tabId);
             return sMainActivity.mSectionsPagerAdapter.getPageView(tabId, inflater, container);
         }
-    }
-
-    /**
-     * get instance of main activity
-     *
-     * @return MainActivity
-     */
-    public static MainActivity getInstance() {
-        return sMainActivity;
     }
 
 }

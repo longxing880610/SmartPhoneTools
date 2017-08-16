@@ -1,4 +1,4 @@
-package com.longxing.ui;
+package com.longxing.ui.Control;
 //Download by http://ww.codefans.net
 
 import android.content.Context;
@@ -17,6 +17,8 @@ import com.longxing.common.ThreadStatus_ListFiles;
 import com.longxing.file.FileManage;
 import com.longxing.file.FileStruct;
 import com.longxing.log.LogToSystem;
+import com.longxing.ui.UI_TabLog;
+import com.longxing.ui.UI_TabSdFiles;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -28,13 +30,13 @@ import java.util.List;
 /* 自定义的Adapter，继承android.widget.BaseAdapter */
 public class ListItemAdapter extends BaseAdapter implements Runnable {
 
-    private static final String TAG = "MyLog/ListItemAdapter/";
     public static final String cSEARCH_CONDITION[] = {"名称", "大小"};
-    private String mCurSearchCondition = "名称";
+    private static final String TAG = "MyLog/ListItemAdapter/";
     /**
      * 回到根目录与回到上级目录是前两个元素
      */
     private static final int LENGTH_SPECIAL_DIRECOTRY = 1;
+    private String mCurSearchCondition = "名称";
     /* 变量声明
      mIcon1：回到根目录的图文件
      mIcon2：回到上一层的图档

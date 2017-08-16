@@ -1,4 +1,4 @@
-package com.longxing.ui;
+package com.longxing.ui.Control;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,12 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.longxing.R;
+import com.longxing.ui.IUI_TabMain;
+import com.longxing.ui.MainActivity;
+import com.longxing.ui.UI_TabLog;
+import com.longxing.ui.UI_TabMusic;
+import com.longxing.ui.UI_TabSdFiles;
+import com.longxing.ui.UI_TabVideo;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-class SectionsPagerAdapter extends FragmentPagerAdapter {
+public class SectionsPagerAdapter extends FragmentPagerAdapter {
     /**
      * tag for tab view
      */
@@ -22,7 +28,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     private static final int[] mResIds = {R.layout.tab_log, R.layout.tab_sd_card, R.layout.tab_music, R.layout.tab_video};
     private View[] mViewPages = new View[mResIds.length];
 
-    SectionsPagerAdapter(FragmentManager fm) {
+    public SectionsPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -59,7 +65,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
         return null;
     }
 
-    View getPageView(int position, LayoutInflater inflater, ViewGroup container) {
+    public View getPageView(int position, LayoutInflater inflater, ViewGroup container) {
 
         View rootView = mViewPages[position];
         if (rootView == null) {
@@ -90,7 +96,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
      * @param position page index
      * @return interface of page
      */
-    IUI_TabMain getPageInterface(int position) {
+    public IUI_TabMain getPageInterface(int position) {
 
         IUI_TabMain tab = null;
         //LogToSystem.d(TAG, "getPageInterface:" + position);
