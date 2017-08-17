@@ -292,7 +292,7 @@ public class UI_TabSdFiles implements IUI_TabMain {
         menuInflater.inflate(R.menu.menu_file, menu);
 
         PopupWindowHelper popupWindowHelper = new PopupWindowHelper(fileListView);
-        fileListView.setOnItemLongClickListener(new ProcListItemLongClick(popupWindowHelper));
+        fileListView.setOnItemLongClickListener(new ProcListItemLongClick(popupWindowHelper, fileListView));
 
         displayLog("SD文件管理加载完成");
     }
@@ -450,16 +450,30 @@ public class UI_TabSdFiles implements IUI_TabMain {
     private class ProcListItemLongClick implements AdapterView.OnItemLongClickListener {
 
         private PopupWindowHelper mPopMenu;
+        private View mPopView;
 
-        ProcListItemLongClick(PopupWindowHelper popMenu) {
+
+        ProcListItemLongClick(PopupWindowHelper popMenu, View popView) {
             mPopMenu = popMenu;
+            mPopView = popView;
         }
 
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             int x = (int) view.getX();
             int y = 0;//(int)view.getY();
-            mPopMenu.showAsDropDown(view, x, y);
+
+            try {
+                //((LinearLayout)view).removeView(mPopView);
+                /*ViewGroup parent1 = (ViewGroup) mPopView.getParent();
+                if (parent1 != null) {
+                    parent1.removeView(mPopView);
+                }*/
+                mPopMenu.showAsPopUp(mPopView, x, y);
+                //parent1.addView(mPopView);
+            } catch (Exception ex) {
+                LogToSystem.e(TAG + "onItemLongClick", ex.getMessage());
+            }
             return true;
         }
     }
