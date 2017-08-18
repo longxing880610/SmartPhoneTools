@@ -4,6 +4,8 @@ package com.longxing.cardemulation;
 
 import com.longxing.log.LogToSystem;
 
+import java.util.Random;
+
 import javacard.framework.APDU;
 import javacard.framework.Applet;
 import javacard.framework.ISO7816;
@@ -32,7 +34,17 @@ public class SuperCard extends Applet {
         //short pos = 0;
 
         m_cardInfo = new byte[]{(byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+
+
         m_userInfo = new byte[]{(byte) 0x02, (byte) 0x8D, (byte) 0x9B, (byte) 0x3B, (byte) 0x01, (byte) 0x01, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x99, (byte) 0x99, (byte) 0x99, (byte) 0x99, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+
+        short pos = 0;
+        short rnd = (short) new Random().nextInt();
+        Util.makeShort(m_userInfo, pos, rnd);
+        pos += 2;
+        rnd = (short) new Random().nextInt();
+        Util.makeShort(m_userInfo, pos, rnd);
+
         m_shareBytes = JCSystem.makeTransientByteArray((short) 45, JCSystem.CLEAR_ON_DESELECT);
     }
 

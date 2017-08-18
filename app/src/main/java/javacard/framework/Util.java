@@ -35,7 +35,7 @@ public class Util {
         }
     }
 
-    public static int arrayCompare(byte[] src, short soff, byte[] des, short doff, short length) {
+    public static short arrayCompare(byte[] src, short soff, byte[] des, short doff, short length) {
 
         for (short i = 0; i < length; ++i) {
             short tmp = (short) (des[i + doff] - src[i + soff]);
@@ -46,5 +46,11 @@ public class Util {
             }
         }
         return 0;
+    }
+
+    public static void makeShort(byte[] src, short offset, short value) {
+        src[offset] = (byte) ((value >> 8) & 0x0FF);
+        ++offset;
+        src[offset] = (byte) ((value) & 0x0FF);
     }
 }
