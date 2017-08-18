@@ -239,6 +239,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
                 return true;
             }
+            // 保存窗体状态
+            try {
+                mTableProfile.insertOrUpdateProfile(TableProfileService.cProfileTableSelect, "" + tabId);
+            } catch (Exception ex) {
+                LogToSystem.e(TAG + "onDestroy", ex.getMessage());
+            }
             return moveTaskToBack(false);
         }
 
