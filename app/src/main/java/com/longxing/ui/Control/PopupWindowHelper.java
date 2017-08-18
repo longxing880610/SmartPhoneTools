@@ -83,12 +83,16 @@ public class PopupWindowHelper {
 
     public void initPopupWindow(int type) {
         if (type == TYPE_WRAP_CONTENT) {
-            mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         } else if (type == TYPE_MATCH_PARENT) {
-            mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            mPopupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         }
         mPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setCancelable(true);
+    }
+
+    public PopupWindow GetPopWindow() {
+        return mPopupWindow;
     }
 
     private int getStatusBarHeight() {

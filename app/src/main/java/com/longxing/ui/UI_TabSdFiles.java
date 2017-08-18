@@ -25,8 +25,8 @@ import com.longxing.common.CastWarn;
 import com.longxing.file.FileManage;
 import com.longxing.file.FileStruct;
 import com.longxing.log.LogToSystem;
+import com.longxing.ui.Control.FileManageContextMenu;
 import com.longxing.ui.Control.ListItemAdapter;
-import com.longxing.ui.Control.PopupWindowHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -291,8 +291,12 @@ public class UI_TabSdFiles implements IUI_TabMain {
         MenuInflater menuInflater = mMainActivity.getMenuInflater();
         menuInflater.inflate(R.menu.menu_file, menu);
 
-        PopupWindowHelper popupWindowHelper = new PopupWindowHelper(fileListView);
-        fileListView.setOnItemLongClickListener(new ProcListItemLongClick(popupWindowHelper, fileListView));
+        View view = mMainActivity.getLayoutInflater().inflate(R.layout.layout_popupwindow, null);
+
+        FileManageContextMenu fileManageContextMenu = new FileManageContextMenu();
+        fileManageContextMenu.initUI(view);
+
+        fileListView.setOnItemLongClickListener(new ProcListItemLongClick(fileManageContextMenu, fileListView));
 
         displayLog("SD文件管理加载完成");
     }
@@ -449,11 +453,11 @@ public class UI_TabSdFiles implements IUI_TabMain {
 
     private class ProcListItemLongClick implements AdapterView.OnItemLongClickListener {
 
-        private PopupWindowHelper mPopMenu;
+        private FileManageContextMenu mPopMenu;
         private View mPopView;
 
 
-        ProcListItemLongClick(PopupWindowHelper popMenu, View popView) {
+        ProcListItemLongClick(FileManageContextMenu popMenu, View popView) {
             mPopMenu = popMenu;
             mPopView = popView;
         }
@@ -461,16 +465,11 @@ public class UI_TabSdFiles implements IUI_TabMain {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             int x = (int) view.getX();
-            int y = 0;//(int)view.getY();
+            int y = (int) view.getY();
 
             try {
-                //((LinearLayout)view).removeView(mPopView);
-                /*ViewGroup parent1 = (ViewGroup) mPopView.getParent();
-                if (parent1 != null) {
-                    parent1.removeView(mPopView);
-                }*/
-                mPopMenu.showAsPopUp(mPopView, x, y);
-                //parent1.addView(mPopView);
+                View parent2 = mPopView;
+                mPopMenu.showAsPopUp(parent2, x, y);
             } catch (Exception ex) {
                 LogToSystem.e(TAG + "onItemLongClick", ex.getMessage());
             }
