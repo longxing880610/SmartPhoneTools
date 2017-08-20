@@ -36,4 +36,8 @@
     <string name="strGoon">继续</string>
     <string name="strScan">扫描</string>
     <string name="timeZero">00:00:00</string>
+    <string name="newDir">新建文件夹</string>
+    <string name="rename">重命名</string>
+    <string name="delete">删除</string>
+    <string name="hint_name">请输入要添加的文件夹名字</string>
 </resources>

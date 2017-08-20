@@ -3,28 +3,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
 
     <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_weight="0.06">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/button_newDir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="新建文件夹" />
+            android:layout_column="0"
+            android:layout_row="1"
+            android:text="@string/newDir" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/button_rename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="重命名" />
+            android:text="@string/rename" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/button_del"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="删除" />
+            android:text="@string/delete" />
+
     </GridLayout>
+
+    <EditText
+        android:id="@+id/editText_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:visibility="invisible" />
+
 </LinearLayout>
