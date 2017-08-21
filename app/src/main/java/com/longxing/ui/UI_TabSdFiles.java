@@ -123,17 +123,24 @@ public class UI_TabSdFiles implements IUI_TabMain {
             public void afterTextChanged(Editable s) {
                 // ArrayList<FileStruct> fileStructs;
                 String keyword = s.toString().toLowerCase();
+                String dir = null;
+                if (mFileNameBackup != null && mFileNameBackup.size() > 0) {
+                    dir = mFileNameBackup.get(1).mFilePath; // parent directory
+                }
                 //LogToSystem.d(TAG + "afterTextChanged", keyword);
                 if (keyword.isEmpty()) {
                     //switchDir(mFileDir.get(mCurFileDirIndex), false);
                     if (mFileNameBackup != null) {
-                        mAdapter.addAll(mFileNameBackup);
+                        mAdapter.addAll(dir, mFileNameBackup);
                     }
                     // may be the forward or backward in the file manager
                     // LogToSystem.d(TAG+"afterTextChanged", "keyword.isEmpty");
                 } else {
                     if (mFileNameBackup == null) {
                         mFileNameBackup = CastWarn.cast(mFileNames.clone());
+                        if (mFileNameBackup != null && mFileNameBackup.size() > 0) {
+                            dir = mFileNameBackup.get(1).mFilePath; // parent directory
+                        }
                     } else if (mLengthBefore > keyword.length()) {
                         // length of keyword is decrease
                         //LogToSystem.d(TAG + "afterTextChanged", "length of keyword is decrease");
@@ -147,7 +154,7 @@ public class UI_TabSdFiles implements IUI_TabMain {
                             mFileNames.remove(i);
                         }
                     }
-                    mAdapter.addAll(mFileNames);
+                    mAdapter.addAll(dir, mFileNames);
                 }
             }
         });
@@ -233,6 +240,10 @@ public class UI_TabSdFiles implements IUI_TabMain {
                     UI_TabSdFiles.this.switchDir(mFileDir.get(mCurFileDirIndex), false);
                     //mAdapter.addAll(allFiles);
                 } else {
+                    String dir = null;
+                    if (allFiles != null && allFiles.size() > 0) {
+                        dir = mFileNameBackup.get(1).mFilePath; // parent directory
+                    }
                     //List<FileStruct> tmpFiles = allFiles.subList(0, allFiles.size());
                     for (int i = allFiles.size() - 1; i >= 0; --i
                             ) {
@@ -242,7 +253,7 @@ public class UI_TabSdFiles implements IUI_TabMain {
                         }
                     }
 
-                    mAdapter.addAll(allFiles);
+                    mAdapter.addAll(dir, allFiles);
                 }
             }
         });
@@ -369,13 +380,7 @@ public class UI_TabSdFiles implements IUI_TabMain {
         //mCurFileDirIndex = 0;
         while (isAdd) {
             int index = mCurFileDirIndex + 1;
-            try {
-                if (mFileDir.get(mCurFileDirIndex).equals(dir)) {
-                    return true;
-                }
-            } catch (Exception ex) {
 
-            }
             if (index >= mFileDir.size()) {
                 mFileDir.add(dir);
                 mCurFileDirIndex = mFileDir.size() - 1;
@@ -392,7 +397,7 @@ public class UI_TabSdFiles implements IUI_TabMain {
 
         FileManage.GetFiles(dir, isShow_Hidefile, mFileNames);
 
-        mAdapter.addAll(mFileNames);
+        mAdapter.addAll(dir, mFileNames);
         mFileNameBackup = null;
         sendMessage(WHAT_SET_SEARCH_TEXT, "");
         sendMessage(WHAT_SET_SORT, "0");

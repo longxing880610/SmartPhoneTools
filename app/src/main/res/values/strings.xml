@@ -40,4 +40,6 @@
     <string name="rename">重命名</string>
     <string name="delete">删除</string>
     <string name="hint_name">请输入要添加的文件夹名字</string>
+    <string name="strOk">确定</string>
+    <string name="deleteYes">是否真的要删除这个文件(夹)</string>
 </resources>

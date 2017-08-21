@@ -196,7 +196,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         notifyDataSetChanged();
     }
 
-    public void addAll(List<FileStruct> allFiles) {
+    public void addAll(String dir, List<FileStruct> allFiles) {
         if (allFiles != null) {
             if (allFiles != items) {
                 items.clear();
@@ -206,15 +206,18 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
 
         if (allFiles == null || allFiles.size() <= 0 || !allFiles.get(0).equals(mRootDir)) {
             try {
-                if (!allFiles.get(0).mFileDir.equals(mRootDir.mFilePath)) {
-                    FileStruct tmpFile = new FileStruct(new File(allFiles.get(0).mFileDir).getParentFile());
+                if (allFiles.size() <= 0 || !allFiles.get(0).getmFileDir().equals(mRootDir.mFilePath)) {
+                    if (dir == null) {
+                        dir = allFiles.get(0).getmFileDir();
+                    }
+                    FileStruct tmpFile = new FileStruct(new File(dir).getParentFile());
                     tmpFile.mIsParent = true;
                     tmpFile.mSize = 0;
                     tmpFile.mFileCount = FileStruct.cCountFile;
                     items.add(0, tmpFile);
                 }
             } catch (Exception ex) {
-
+                LogToSystem.e(TAG + "addAll", ex.getMessage());
             }
             items.add(0, mRootDir);
         }
@@ -275,7 +278,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
         String date = sDateFormat.format(new java.util.Date());
         uiTabLog.displayLog(date + ":start run:" + items.size());
 
-        LogToSystem.d(TAG + "run", "start run:" + isOver);
+        //LogToSystem.d(TAG + "run", "start run:" + isOver);
         while (!isOver) {
             try {
                 FileStruct tmpFileStruct = null;
@@ -329,7 +332,6 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                         } catch (MyException ex) {
                             item.mSearchInSecond = true;
                             //LogToSystem.i(TAG + "run", item.mFileName + "-" + ex.getMessage());
-                        } finally {
                             if (tmpFileStruct == null) {
                                 tmpFileStruct = item.clone();
                                 tmpFiles.add(tmpFileStruct);
@@ -388,7 +390,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             }
         }
 
-        LogToSystem.d(TAG + "run", "end run:" + tmpFiles.size());
+        //LogToSystem.d(TAG + "run", "end run:" + tmpFiles.size());
         date = sDateFormat.format(new java.util.Date());
         uiTabLog.displayLog(date + ":end run:" + tmpFiles.size());
 

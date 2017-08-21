@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * File struct
  */
-public class FileStruct{
+public class FileStruct {
 
     public static final int cCounting = -2;
     public static final int cCountFile = -1;
@@ -13,7 +13,6 @@ public class FileStruct{
     public String mFileNameKey;
     public String mFileName;
     public String mFilePath;
-    public String mFileDir;
     public boolean mIsHide;
     public long mSize = -1;
     /**
@@ -25,54 +24,59 @@ public class FileStruct{
     public boolean mIsSizeCaled = false;
     public boolean mSearchInSecond = false;
     public int mFileCount = cCounting;
+    private String mFileDir;
 
-    public FileStruct(File file){
+    public FileStruct(File file) {
         mFileName = file.getName();
         mFileNameKey = mFileName.toLowerCase();
         mFilePath = file.getPath();
         mFileDir = file.getParent();
         mIsFileOrFalseDir = file.isFile();
         mIsHide = file.isHidden();
-        if (mIsFileOrFalseDir){
+        if (mIsFileOrFalseDir) {
             mSize = file.length();
             mFileCount = cCountFile;
-        }
-        else
-        {
+        } else {
             mSize = -1;
         }
         //mIsParent = false;
     }
 
-    private FileStruct(){
+    private FileStruct() {
     }
 
-    public @Override String toString(){
+    public
+    @Override
+    String toString() {
         return mFileName;
     }
 
     /**
      * clone the filestruct
+     *
      * @return
      */
-    public @Override FileStruct clone(){
+    public
+    @Override
+    FileStruct clone() {
         FileStruct retValue = new FileStruct();
         retValue.mFilePath = mFilePath;
         retValue.mSize = mSize;
         retValue.mIsFileOrFalseDir = mIsFileOrFalseDir;
         retValue.mFileName = mFileName;
         retValue.mFileNameKey = mFileNameKey;
-        retValue.mFileDir = mFileDir;
+        retValue.mFileDir = getmFileDir();
         retValue.mIsHide = mIsHide;
         retValue.mIsParent = mIsParent;
         retValue.mIsSizeCaled = mIsSizeCaled;
         retValue.mSearchInSecond = mSearchInSecond;
         retValue.mFileCount = mFileCount;
-        return  retValue;
+        return retValue;
     }
 
     /**
      * set by filestruct
+     *
      * @param fileStruct
      */
     public void setByFileStruct(FileStruct fileStruct) {
@@ -81,11 +85,15 @@ public class FileStruct{
         mIsFileOrFalseDir = fileStruct.mIsFileOrFalseDir;
         mFileName = fileStruct.mFileName;
         mFileNameKey = fileStruct.mFileNameKey;
-        mFileDir = fileStruct.mFileDir;
+        mFileDir = fileStruct.getmFileDir();
         mIsHide = fileStruct.mIsHide;
         mIsParent = fileStruct.mIsParent;
         mIsSizeCaled = fileStruct.mIsSizeCaled;
         mSearchInSecond = fileStruct.mSearchInSecond;
         mFileCount = fileStruct.mFileCount;
+    }
+
+    public String getmFileDir() {
+        return mIsParent ? mFilePath : mFileDir;
     }
 }

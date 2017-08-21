@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 /**
  * Created by Zhang Long on 2017/7/23.
+ *
+ * broad receiver
  */
 
 public class MyBroadCastReceiver extends BroadcastReceiver {

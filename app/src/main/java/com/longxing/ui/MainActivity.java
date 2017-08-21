@@ -172,16 +172,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //endregion
+
+    //region 按钮事件响应函数
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-    //endregion
-
-    //region 按钮事件响应函数
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -198,16 +198,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //endregion
+
     /**
      * 点击程序版本按钮
      *
      * @param view the view
      */
     public void onBtnVersionClick(View view) {
-        Toast.makeText(MainActivity.this, this.getString(R.string.app_version), Toast.LENGTH_SHORT).show();
+        MainActivity.getInstance().showToast(this.getString(R.string.app_version));
     }
-
-    //endregion
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -235,8 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 }, 5 * 1000, 5 * 1000);
             }
             if (mBackKeyCount < 2) {
-                //LogToSystem.d(TAG, "再按一次退出应用");
-                Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+                MainActivity.getInstance().showToast("再按一次退出应用");
                 return true;
             }
             // 保存窗体状态
@@ -249,6 +248,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    public void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showSnackbar(String msg) {
+        Snackbar.make(this.getCurrentFocus(), msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
     /**
@@ -284,5 +291,4 @@ public class MainActivity extends AppCompatActivity {
             return sMainActivity.mSectionsPagerAdapter.getPageView(tabId, inflater, container);
         }
     }
-
 }
