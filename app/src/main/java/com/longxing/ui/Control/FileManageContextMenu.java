@@ -34,6 +34,9 @@ public class FileManageContextMenu {
     private Button mButtonOK;
     private TextView mTextPath;
     private FileStruct mSelFileStruct;
+    private Button mbtnNewDir;
+    private Button mbtnRename;
+    private Button mbtnDel;
 
     public void initUI(View rootView) {
         mPopupWindowHelper = new PopupWindowHelper(rootView);
@@ -48,29 +51,43 @@ public class FileManageContextMenu {
         Button btnNewDir = (Button) rootView.findViewById(R.id.button_newDir);
         btnNewDir.setOnClickListener(procBtnClick);
         btnNewDir.setTag(cTagValue_addDir);
+        mbtnNewDir = btnNewDir;
 
         Button btnRename = (Button) rootView.findViewById(R.id.button_rename);
         btnRename.setOnClickListener(procBtnClick);
         btnRename.setTag(cTagValue_rename);
+        mbtnRename = btnRename;
 
         Button btnDel = (Button) rootView.findViewById(R.id.button_del);
         btnDel.setOnClickListener(procBtnClick);
         btnDel.setTag(cTagValue_delete);
+        mbtnDel = btnDel;
 
         mTextPath = (TextView) rootView.findViewById(R.id.textView_pathMenu);
 
     }
 
     public void showAsPopUp(View parent, int x, int y) {
-        // init menu
-        mEditText.setVisibility(View.INVISIBLE);
-        mButtonOK.setVisibility(View.INVISIBLE);
 
         // get the select item file path
         ListView listView = (ListView) parent;
         int position = listView.pointToPosition(x, y);
         mSelFileStruct = (FileStruct) listView.getItemAtPosition(position);
+        if (mSelFileStruct.mIsRoot || mSelFileStruct.mIsParent) {
+            mbtnRename.setVisibility(View.INVISIBLE);
+            mbtnDel.setVisibility(View.INVISIBLE);
+        } else {
+
+            mbtnRename.setVisibility(View.VISIBLE);
+            mbtnDel.setVisibility(View.VISIBLE);
+        }
+
         mTextPath.setText(mSelFileStruct.mFilePath);
+
+
+        // init menu
+        mEditText.setVisibility(View.INVISIBLE);
+        mButtonOK.setVisibility(View.INVISIBLE);
 
         mPopupWindowHelper.showAsPopUp(parent, x, y);
     }
@@ -107,7 +124,7 @@ public class FileManageContextMenu {
                             switch (mButtonTag) {
                                 case cTagValue_addDir:
                                     String fileName = mEditText.getText().toString().trim();
-                                    String newPath = mSelFileStruct.getmFileDir() + File.separator + fileName;
+                                    String newPath = mSelFileStruct.mCurdirIn + File.separator + fileName;
                                     File file = new File(newPath);
                                     if (!file.exists()) {
                                         boolean reslt = file.mkdirs();
@@ -138,9 +155,9 @@ public class FileManageContextMenu {
                                         } else {
                                             boolean reslt = file.renameTo(newFile);
                                             if (!reslt) {
-                                                showSnackbar(premsg + fileName + ")删除失败");
+                                                showSnackbar(premsg + fileName + ")重命名失败");
                                             } else {
-                                                showToast(premsg + fileName + ")删除成功,需要打开才不可见");
+                                                showToast(premsg + fileName + ")重命名成功,需要打开看得到效果");
                                             }
                                         }
                                     }

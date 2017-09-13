@@ -15,6 +15,7 @@ public class FileStruct {
     public String mFilePath;
     public boolean mIsHide;
     public long mSize = -1;
+    public String mCurdirIn;
     /**
      * file when true, directory when false
      */
@@ -39,6 +40,7 @@ public class FileStruct {
         } else {
             mSize = -1;
         }
+        mCurdirIn = mFileDir;
         //mIsParent = false;
     }
 
@@ -71,6 +73,7 @@ public class FileStruct {
         retValue.mIsSizeCaled = mIsSizeCaled;
         retValue.mSearchInSecond = mSearchInSecond;
         retValue.mFileCount = mFileCount;
+        retValue.mCurdirIn = mCurdirIn;
         return retValue;
     }
 
@@ -91,6 +94,7 @@ public class FileStruct {
         mIsSizeCaled = fileStruct.mIsSizeCaled;
         mSearchInSecond = fileStruct.mSearchInSecond;
         mFileCount = fileStruct.mFileCount;
+        mCurdirIn = fileStruct.mCurdirIn;
     }
 
     public String getmFileDir() {

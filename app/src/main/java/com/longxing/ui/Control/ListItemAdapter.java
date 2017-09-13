@@ -211,6 +211,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
                         dir = allFiles.get(0).getmFileDir();
                     }
                     FileStruct tmpFile = new FileStruct(new File(dir).getParentFile());
+                    tmpFile.mCurdirIn = dir;
                     tmpFile.mIsParent = true;
                     tmpFile.mSize = 0;
                     tmpFile.mFileCount = FileStruct.cCountFile;
@@ -219,6 +220,7 @@ public class ListItemAdapter extends BaseAdapter implements Runnable {
             } catch (Exception ex) {
                 LogToSystem.e(TAG + "addAll", ex.getMessage());
             }
+            mRootDir.mCurdirIn = dir;
             items.add(0, mRootDir);
         }
 

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.longxing.R;
 import com.longxing.cardemulation.AccountStorage;
+import com.longxing.log.LogToSystem;
 
 /**
  * Created by Zhang Long on .
@@ -51,6 +52,7 @@ public class UI_TabLog implements IUI_TabMain {
         return sUiTabLog;
     }
 
+    //region 窗体对象的事件处理
     @Override
     public void initUI(View rootView) {
 
@@ -90,6 +92,7 @@ public class UI_TabLog implements IUI_TabMain {
         scrollViewLog.requestFocus();
 
         displayLog("日志面板初始化完成:" + account);
+        LogToSystem.i(TAG + "initUI", "日志面板初始化完成:" + account);
     }
 
     @Override
@@ -101,6 +104,9 @@ public class UI_TabLog implements IUI_TabMain {
     public void processDestroy() {
 
     }
+    //endregion
+
+    //region 界面日志打印
 
     /**
      * @param msg show message
@@ -129,6 +135,7 @@ public class UI_TabLog implements IUI_TabMain {
             mEditViewHandle.sendMessage(msgObj);
         }
     }
+    //endregion
 
     /**
      * account update
@@ -151,7 +158,7 @@ public class UI_TabLog implements IUI_TabMain {
 
 
     /**
-     * account update
+     * account key press event
      */
     private class ProcEnterKeyPress implements TextView.OnEditorActionListener {
 
