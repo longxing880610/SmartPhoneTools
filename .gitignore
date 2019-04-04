@@ -16,6 +16,7 @@ libs/
 api_document/
 storage/
 .idea/libraries/
+.idea/caches/
 
 # Gradle files
 .gradle/
